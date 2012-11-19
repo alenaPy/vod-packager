@@ -16,21 +16,37 @@ FORMAT = (
 	('3D', '3D'),
 )	
 
+
+LANGUAGE = (
+	('SP', 'Spanish'),
+	('EN', 'English'),
+	('PO', 'Portiguesse'),
+)
+
 #
 # INCOMPLETA
 #
 class Customer(models.Model):
+
 	name = models.CharField(max_length=256)
 #	path_id = models.ForeignKey(Path)
 	vod_active = models.BooleanField(default=True)
-	video_profile_id = models.ForeignKey('VideoProfile')
-	image_profile_id = models.ForeignKey('ImageProfile')
-	metadata_profile_id = models.ForeignKey('MetadataProfile')
 	rental_period_start_date = models.DateField()
 	rental_period_end_date = models.DateField()
 	cost_HD = models.IntegerField()
 	cost_SD = models.IntegerField()
+	
 	# notificaciones email
+
+	image_profile_hard = models.ForeignKey('ImageProfile')
+	image_profile_soft = models.ForeignKey('ImageProfile')
+	image_type	   = models.CharField(max_length=128)
+	video_profile = models.ForeignKey('VideoProfile')
+	metadata_profile = models.ForeingKey('MetadataProfile')
+	language      = models.CharField(max_length=2, choices=LANGUAGE)
+	
+	
+
 	def __unicode__(self):
 		return self.name
 
@@ -51,9 +67,42 @@ class Item(models.Model):
 	kill_date         = models.DateTimeField(default=datetime.now()+timedelta(days=45))
 	format		  = models.CharField(max_length=1, choices=FORMAT)
 	status		  = models.CharField(max_length=2, choices=ITEM_STATUS)
+	asset_id 	   = models.CharField(max_length=20) # autogenerar
+	title_sort_name_sp	  = models.CharField(max_length=22)
+	title_brief_sp	  = models.CharField(max_length=19)
+	title_sp		  = models.CharField(max_length=128)
+	title_sort_name_en   = models.CharField(max_length=22)
+        title_brief_en       = models.CharField(max_length=19)
+        title_en             = models.CharField(max_length=128)
+	title_sort_name_po   = models.CharField(max_length=22)
+        title_brief_po       = models.CharField(max_length=19)
+        title_po             = models.CharField(max_length=128)
+	summary_long_sp	  = models.CharField(max_length=4096)
+	summary_medium_sp	  = models.CharField(max_length=1024)
+	summary_short_sp	  = models.CharField(max_length=256)
+	summary_long_en      = models.CharField(max_length=4096)
+        summary_medium_en    = models.CharField(max_length=1024)
+        summary_short_en     = models.CharField(max_length=256)
+	summary_long_po      = models.CharField(max_length=4096)
+        summary_medium_po    = models.CharField(max_length=1024)
+        summary_short_po     = models.CharField(max_length=256)
+	episode_number	= models.CharField(max_length=256)
+	episode_title_sp = models.CharField(max_length=256)
+	episode_title_en = models.CharField(max_length=256)
+	episode_title_po = models.CharField(max_length=256)
+	rating = models.CharField(max_length=128)
+	genre = models.CharField(max_length=32)
+	actors = models.CharField(max_length=512)
+	origin_country = models.CharField(max_length=2)
+	year = models.CharField(max_length=4)
+	director = models.CharField(max_length=128)
+	studio_name = models.CharField(max_length=128)
+	format = models.CharField(max_length=2, choices=FORMAT)
+	mam_id = models.CharField(max_length=64)
 
 	def __unicode__(self):
-		return self.name
+		
+return self.name
 
 class ImportQueue(models.Model):
 	IMPORT_QUEUE_STATUS = (
@@ -100,6 +149,7 @@ class ImageRendition(models.Model):
 	checksum         = models.CharField(max_length=32)
 	image_profile    = models.ForeignKey('ImageProfile')
 	item             = models.ForeignKey('Item')
+
 	def __unicode__(self):
                 return self.file_name
                 
@@ -172,6 +222,8 @@ class ImageProfile(models.Model):
 	file_extension = models.CharField(max_length=32)
 	status         = models.CharField(max_length=1, choices=ACTIVE_STATUS)
 	regex          = models.CharField(max_length=512)
+	content_aspect = models.CharField(max_length=24)
+
 	def __unicode__(self):
                 return self.name
 
@@ -197,3 +249,22 @@ class AppError(models.Model):
         def __unicode__(self):
                 return self.name
 
+class Category(models.Model):
+	name = models.CharField(max_length=256)
+	
+	def __unicode__(self):
+                return self.name
+
+class CustomCategory(models.Model):
+	name = models.CharField(max_length=256)
+
+	def __unicode__(self):
+                return self.name
+
+class CategoryRelation(models.Model):
+	category = models.ForeignKey('Category')
+	custom_category = models.ForeignKey('CustomCategory')
+	customer = models.ForeignKey('Customer')
+
+	def __unicode__(self):
+                return self.customer
