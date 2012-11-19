@@ -681,3 +681,334 @@
 2012-11-19 10:03:51,778 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
 2012-11-19 10:03:51,778 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
 2012-11-19 10:03:51,779 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 10:04:03,360 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 10:04:03,363 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 10:04:03,367 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 10:04:03,368 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 10:04:03,371 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:19:29,321 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:19:29,470 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:19:29,672 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:19:39,916 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:19:39,919 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:19:39,923 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:19:39,924 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:19:39,927 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:19:49,937 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:19:49,940 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:19:49,943 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:19:49,943 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:19:49,947 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:19:59,956 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:19:59,959 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:19:59,962 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:19:59,962 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:19:59,966 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:20:09,975 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:20:09,978 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:20:09,981 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:20:09,981 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:20:09,984 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:20:19,994 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:20:19,997 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:20:20,000 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:20:20,001 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:20:20,004 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:20:30,014 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:20:30,017 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:20:30,020 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:20:30,021 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:20:30,024 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:20:40,033 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:20:40,036 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:20:40,039 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:20:40,039 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:20:40,042 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:20:50,052 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:20:50,055 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:20:50,059 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:20:50,060 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:20:50,063 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:21:00,073 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:21:00,076 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:21:00,079 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:21:00,079 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:21:00,082 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:21:10,092 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:21:10,094 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:21:10,098 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:21:10,098 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:21:10,101 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:21:20,111 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:21:20,114 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:21:20,117 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:21:20,118 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:21:20,123 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:21:30,133 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:21:30,136 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:21:30,139 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:21:30,140 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:21:30,143 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:21:40,152 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:21:40,155 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:21:40,158 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:21:40,158 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:21:40,162 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:21:50,171 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:21:50,173 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:21:50,177 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:21:50,177 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:21:50,181 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:22:00,198 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:22:00,201 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:22:00,206 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:22:00,206 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:22:00,209 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:22:10,219 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:22:10,221 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:22:10,225 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:22:10,225 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:22:10,228 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:22:20,238 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:22:20,240 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:22:20,244 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:22:20,244 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:22:20,247 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:22:30,257 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:22:30,259 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:22:30,262 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:22:30,263 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:22:30,266 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:22:40,275 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:22:40,278 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:22:40,281 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:22:40,281 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:22:40,284 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:22:50,294 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:22:50,297 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:22:50,300 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:22:50,300 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:22:50,303 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:23:00,313 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:23:00,315 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:23:00,319 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:23:00,319 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:23:00,322 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:23:10,333 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:23:10,335 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:23:10,339 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:23:10,339 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:23:10,342 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:23:20,352 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:23:20,354 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:23:20,357 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:23:20,358 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:23:20,361 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:23:30,371 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:23:30,373 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:23:30,377 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:23:30,377 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:23:30,380 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:39:30,375 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:39:30,389 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:39:30,555 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:39:40,713 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:39:40,735 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:39:40,738 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:39:40,739 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:39:40,742 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:39:50,753 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:39:51,047 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:39:51,051 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:39:51,051 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:39:51,054 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:40:01,064 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:40:01,067 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:40:01,070 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:40:01,071 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:40:01,074 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:40:11,084 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:40:11,096 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:40:11,101 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:40:11,102 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:40:11,107 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:40:21,116 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:40:21,119 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:40:21,122 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:40:21,123 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:40:21,127 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:40:31,137 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:40:31,139 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:40:31,143 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:40:31,143 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:40:31,146 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:40:41,155 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:40:41,158 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:40:41,161 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:40:41,161 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:40:41,165 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:40:51,174 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:40:51,178 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:40:51,181 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:40:51,181 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:40:51,185 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:41:01,194 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:41:01,197 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:41:01,200 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:41:01,200 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:41:01,203 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:41:11,213 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:41:11,215 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:41:11,219 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:41:11,219 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:41:11,222 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:41:21,232 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:41:21,234 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:41:21,238 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:41:21,238 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:41:21,241 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:41:31,251 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:41:31,253 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:41:31,256 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:41:31,257 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:41:31,260 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:41:41,270 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:41:41,272 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:41:41,276 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:41:41,276 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:41:41,279 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:41:51,289 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:41:51,291 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:41:51,295 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:41:51,295 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:41:51,298 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:42:01,308 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:42:01,310 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:42:01,314 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:42:01,314 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:42:01,318 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:42:11,328 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:42:11,331 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:42:11,334 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:42:11,334 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:42:11,337 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:42:21,347 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:42:21,349 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:42:21,353 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:42:21,353 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:42:21,356 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:42:31,369 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:42:31,372 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:42:31,376 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:42:31,376 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:42:31,380 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:42:41,390 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:42:41,392 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:42:41,396 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:42:41,396 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:42:41,399 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:42:51,409 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:42:51,411 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:42:51,414 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:42:51,415 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:42:51,418 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:43:01,428 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:43:01,430 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:43:01,433 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:43:01,434 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:43:01,437 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:43:11,447 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:43:11,449 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:43:11,453 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:43:11,453 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:43:11,457 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:43:21,466 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:43:21,469 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:43:21,472 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:43:21,472 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:43:21,475 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:43:31,485 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:43:31,488 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:43:31,492 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:43:31,492 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:43:31,495 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:43:41,505 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:43:41,508 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:43:41,511 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:43:41,511 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:43:41,514 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:43:51,525 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:43:51,528 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:43:51,532 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:43:51,532 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:43:51,536 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:44:01,546 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:44:01,548 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:44:01,552 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:44:01,552 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:44:01,556 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:44:11,566 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:44:11,568 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:44:11,571 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:44:11,572 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:44:11,575 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:44:21,585 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:44:21,587 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:44:21,590 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:44:21,591 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:44:21,594 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:44:31,603 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:44:31,606 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:44:31,609 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:44:31,609 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:44:31,613 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:44:41,623 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:44:41,626 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:44:41,629 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:44:41,629 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:44:41,633 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:44:51,643 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:44:51,645 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:44:51,649 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:44:51,649 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:44:51,653 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:45:01,662 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:45:01,665 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:45:01,668 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:45:01,668 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:45:01,671 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:45:11,681 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:45:11,684 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:45:11,687 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:45:11,687 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:45:11,691 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:45:21,700 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:45:21,703 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:45:21,706 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:45:21,706 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:45:21,709 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:45:31,719 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:45:31,721 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:45:31,724 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:45:31,725 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:45:31,728 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:45:41,738 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:45:41,740 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:45:41,744 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:45:41,744 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:45:41,747 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:45:51,762 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:45:51,765 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:45:51,768 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:45:51,768 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:45:51,772 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:46:01,782 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:46:01,785 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:46:01,788 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:46:01,788 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:46:01,792 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:46:11,802 - QImport.py -[INFO]: MakeVideoRenditions(): Creating video rendition for item: Trolita
+2012-11-19 12:46:11,805 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 1
+2012-11-19 12:46:11,808 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue
+2012-11-19 12:46:11,808 - QImport.py -[INFO]: MakeVideoRenditions(): VProfile: Video Profile 2
+2012-11-19 12:46:11,811 - QImport.py -[WARNING]: MakeVideoRendition(): Video Profile exist-> Continue

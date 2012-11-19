@@ -38,11 +38,11 @@ class Customer(models.Model):
 	
 	# notificaciones email
 
-	image_profile_hard = models.ForeignKey('ImageProfile')
-	image_profile_soft = models.ForeignKey('ImageProfile')
+	#image_profile_hard = models.ForeignKey('ImageProfile')
+	#image_profile_soft = models.ForeignKey('ImageProfile')
 	image_type	   = models.CharField(max_length=128)
 	video_profile = models.ForeignKey('VideoProfile')
-	metadata_profile = models.ForeingKey('MetadataProfile')
+	metadata_profile = models.ForeignKey('MetadataProfile')
 	language      = models.CharField(max_length=2, choices=LANGUAGE)
 	
 	
@@ -101,8 +101,7 @@ class Item(models.Model):
 	mam_id = models.CharField(max_length=64)
 
 	def __unicode__(self):
-		
-return self.name
+		return self.name
 
 class ImportQueue(models.Model):
 	IMPORT_QUEUE_STATUS = (
@@ -179,10 +178,10 @@ class Package(models.Model):
 
 class TranscodingServer(models.Model):
 	host_name  = models.CharField(max_length=256)
-	ip_address = models.IPAddressField()
+	ip_address = models.CharField(max_length=15)
 	status     = models.CharField(max_length=1, choices=ACTIVE_STATUS)
 	def __unicode__(self):
-                return self.host_name
+                return self.ip_address
 
 class Path(models.Model):
 	key = models.CharField(max_length=24,unique=True)
