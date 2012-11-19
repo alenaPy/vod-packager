@@ -1,0 +1,84 @@
+2012-11-19 09:41:57,000 - QCheckerD.py -[INFO]: CheckQueue(): Start queue check
+2012-11-19 09:41:57,017 - QCheckerD.py -[DEBUG]: (0.001) SELECT "Packager_app_path"."id", "Packager_app_path"."key", "Packager_app_path"."location", "Packager_app_path"."description" FROM "Packager_app_path" WHERE "Packager_app_path"."key" = video_local_path ; args=('video_local_path',)
+2012-11-19 09:41:57,017 - QCheckerD.py -[DEBUG]: CheckQueue(): video_local_path: /home/VIDEO_PROC
+2012-11-19 09:41:57,019 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_videorendition"."id", "Packager_app_videorendition"."file_name", "Packager_app_videorendition"."video_profile_id", "Packager_app_videorendition"."transcoding_server_id", "Packager_app_videorendition"."transcoding_job_guid", "Packager_app_videorendition"."status", "Packager_app_videorendition"."item_id", "Packager_app_videorendition"."file_size", "Packager_app_videorendition"."checksum" FROM "Packager_app_videorendition" WHERE "Packager_app_videorendition"."status" = Q ; args=('Q',)
+2012-11-19 09:41:57,019 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Check: racing_PV01.ts
+2012-11-19 09:41:57,021 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_item"."id", "Packager_app_item"."name", "Packager_app_item"."creation_date", "Packager_app_item"."modification_date", "Packager_app_item"."kill_date", "Packager_app_item"."format", "Packager_app_item"."status" FROM "Packager_app_item" WHERE "Packager_app_item"."id" = 1 ; args=(1,)
+2012-11-19 09:41:57,021 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Item: Trolita
+2012-11-19 09:41:57,023 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_transcodingserver"."id", "Packager_app_transcodingserver"."host_name", "Packager_app_transcodingserver"."ip_address", "Packager_app_transcodingserver"."status" FROM "Packager_app_transcodingserver" WHERE "Packager_app_transcodingserver"."id" = 1 ; args=(1,)
+2012-11-19 09:41:57,023 - QCheckerD.py -[DEBUG]: CheckQueue(): Transcoding Server: 10.3.3.60
+2012-11-19 09:41:57,023 - QCheckerD.py -[DEBUG]: CheckQueue(): Job GUID: {C2659508-E55F-4A08-B2DE-B97762746891}
+2012-11-19 09:41:57,040 - QCheckerD.py -[DEBUG]: GetJobState(): Job Progress: 0
+2012-11-19 09:41:57,041 - QCheckerD.py -[DEBUG]: GetJobState(): Job State: NEX_JOB_STARTED
+2012-11-19 09:41:57,041 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Check: racing_PV02.ts
+2012-11-19 09:41:57,043 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_item"."id", "Packager_app_item"."name", "Packager_app_item"."creation_date", "Packager_app_item"."modification_date", "Packager_app_item"."kill_date", "Packager_app_item"."format", "Packager_app_item"."status" FROM "Packager_app_item" WHERE "Packager_app_item"."id" = 1 ; args=(1,)
+2012-11-19 09:41:57,043 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Item: Trolita
+2012-11-19 09:41:57,044 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_transcodingserver"."id", "Packager_app_transcodingserver"."host_name", "Packager_app_transcodingserver"."ip_address", "Packager_app_transcodingserver"."status" FROM "Packager_app_transcodingserver" WHERE "Packager_app_transcodingserver"."id" = 1 ; args=(1,)
+2012-11-19 09:41:57,044 - QCheckerD.py -[DEBUG]: CheckQueue(): Transcoding Server: 10.3.3.60
+2012-11-19 09:41:57,045 - QCheckerD.py -[DEBUG]: CheckQueue(): Job GUID: {32117656-3BCD-4564-9817-1C1947BE5962}
+2012-11-19 09:41:57,052 - QCheckerD.py -[DEBUG]: GetJobState(): Job Progress: 0
+2012-11-19 09:41:57,052 - QCheckerD.py -[DEBUG]: GetJobState(): Job State: NEX_JOB_STARTED
+2012-11-19 09:41:57,052 - QCheckerD.py -[INFO]: CheckQueue(): End queue Check
+2012-11-19 09:42:50,602 - QCheckerD.py -[INFO]: CheckQueue(): Start queue check
+2012-11-19 09:42:50,620 - QCheckerD.py -[DEBUG]: (0.001) SELECT "Packager_app_path"."id", "Packager_app_path"."key", "Packager_app_path"."location", "Packager_app_path"."description" FROM "Packager_app_path" WHERE "Packager_app_path"."key" = video_local_path ; args=('video_local_path',)
+2012-11-19 09:42:50,620 - QCheckerD.py -[DEBUG]: CheckQueue(): video_local_path: /home/VIDEO_PROC
+2012-11-19 09:42:50,621 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_videorendition"."id", "Packager_app_videorendition"."file_name", "Packager_app_videorendition"."video_profile_id", "Packager_app_videorendition"."transcoding_server_id", "Packager_app_videorendition"."transcoding_job_guid", "Packager_app_videorendition"."status", "Packager_app_videorendition"."item_id", "Packager_app_videorendition"."file_size", "Packager_app_videorendition"."checksum" FROM "Packager_app_videorendition" WHERE "Packager_app_videorendition"."status" = Q ; args=('Q',)
+2012-11-19 09:42:50,622 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Check: racing_PV01.ts
+2012-11-19 09:42:50,624 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_item"."id", "Packager_app_item"."name", "Packager_app_item"."creation_date", "Packager_app_item"."modification_date", "Packager_app_item"."kill_date", "Packager_app_item"."format", "Packager_app_item"."status" FROM "Packager_app_item" WHERE "Packager_app_item"."id" = 1 ; args=(1,)
+2012-11-19 09:42:50,624 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Item: Trolita
+2012-11-19 09:42:50,626 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_transcodingserver"."id", "Packager_app_transcodingserver"."host_name", "Packager_app_transcodingserver"."ip_address", "Packager_app_transcodingserver"."status" FROM "Packager_app_transcodingserver" WHERE "Packager_app_transcodingserver"."id" = 1 ; args=(1,)
+2012-11-19 09:42:50,626 - QCheckerD.py -[DEBUG]: CheckQueue(): Transcoding Server: 10.3.3.60
+2012-11-19 09:42:50,626 - QCheckerD.py -[DEBUG]: CheckQueue(): Job GUID: {C2659508-E55F-4A08-B2DE-B97762746891}
+2012-11-19 09:42:50,644 - QCheckerD.py -[DEBUG]: GetJobState(): Job Progress: 1
+2012-11-19 09:42:50,644 - QCheckerD.py -[DEBUG]: GetJobState(): Job State: NEX_JOB_STARTED
+2012-11-19 09:42:50,644 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Check: racing_PV02.ts
+2012-11-19 09:42:50,646 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_item"."id", "Packager_app_item"."name", "Packager_app_item"."creation_date", "Packager_app_item"."modification_date", "Packager_app_item"."kill_date", "Packager_app_item"."format", "Packager_app_item"."status" FROM "Packager_app_item" WHERE "Packager_app_item"."id" = 1 ; args=(1,)
+2012-11-19 09:42:50,647 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Item: Trolita
+2012-11-19 09:42:50,648 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_transcodingserver"."id", "Packager_app_transcodingserver"."host_name", "Packager_app_transcodingserver"."ip_address", "Packager_app_transcodingserver"."status" FROM "Packager_app_transcodingserver" WHERE "Packager_app_transcodingserver"."id" = 1 ; args=(1,)
+2012-11-19 09:42:50,648 - QCheckerD.py -[DEBUG]: CheckQueue(): Transcoding Server: 10.3.3.60
+2012-11-19 09:42:50,648 - QCheckerD.py -[DEBUG]: CheckQueue(): Job GUID: {32117656-3BCD-4564-9817-1C1947BE5962}
+2012-11-19 09:42:50,657 - QCheckerD.py -[DEBUG]: GetJobState(): Job Progress: 0
+2012-11-19 09:42:50,657 - QCheckerD.py -[DEBUG]: GetJobState(): Job State: NEX_JOB_STARTED
+2012-11-19 09:42:50,657 - QCheckerD.py -[INFO]: CheckQueue(): End queue Check
+2012-11-19 09:43:03,036 - QCheckerD.py -[INFO]: CheckQueue(): Start queue check
+2012-11-19 09:43:03,053 - QCheckerD.py -[DEBUG]: (0.001) SELECT "Packager_app_path"."id", "Packager_app_path"."key", "Packager_app_path"."location", "Packager_app_path"."description" FROM "Packager_app_path" WHERE "Packager_app_path"."key" = video_local_path ; args=('video_local_path',)
+2012-11-19 09:43:03,053 - QCheckerD.py -[DEBUG]: CheckQueue(): video_local_path: /home/VIDEO_PROC
+2012-11-19 09:43:03,055 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_videorendition"."id", "Packager_app_videorendition"."file_name", "Packager_app_videorendition"."video_profile_id", "Packager_app_videorendition"."transcoding_server_id", "Packager_app_videorendition"."transcoding_job_guid", "Packager_app_videorendition"."status", "Packager_app_videorendition"."item_id", "Packager_app_videorendition"."file_size", "Packager_app_videorendition"."checksum" FROM "Packager_app_videorendition" WHERE "Packager_app_videorendition"."status" = Q ; args=('Q',)
+2012-11-19 09:43:03,055 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Check: racing_PV01.ts
+2012-11-19 09:43:03,057 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_item"."id", "Packager_app_item"."name", "Packager_app_item"."creation_date", "Packager_app_item"."modification_date", "Packager_app_item"."kill_date", "Packager_app_item"."format", "Packager_app_item"."status" FROM "Packager_app_item" WHERE "Packager_app_item"."id" = 1 ; args=(1,)
+2012-11-19 09:43:03,057 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Item: Trolita
+2012-11-19 09:43:03,059 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_transcodingserver"."id", "Packager_app_transcodingserver"."host_name", "Packager_app_transcodingserver"."ip_address", "Packager_app_transcodingserver"."status" FROM "Packager_app_transcodingserver" WHERE "Packager_app_transcodingserver"."id" = 1 ; args=(1,)
+2012-11-19 09:43:03,059 - QCheckerD.py -[DEBUG]: CheckQueue(): Transcoding Server: 10.3.3.60
+2012-11-19 09:43:03,059 - QCheckerD.py -[DEBUG]: CheckQueue(): Job GUID: {C2659508-E55F-4A08-B2DE-B97762746891}
+2012-11-19 09:43:03,077 - QCheckerD.py -[DEBUG]: GetJobState(): Job Progress: 1
+2012-11-19 09:43:03,077 - QCheckerD.py -[DEBUG]: GetJobState(): Job State: NEX_JOB_STARTED
+2012-11-19 09:43:03,077 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Check: racing_PV02.ts
+2012-11-19 09:43:03,079 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_item"."id", "Packager_app_item"."name", "Packager_app_item"."creation_date", "Packager_app_item"."modification_date", "Packager_app_item"."kill_date", "Packager_app_item"."format", "Packager_app_item"."status" FROM "Packager_app_item" WHERE "Packager_app_item"."id" = 1 ; args=(1,)
+2012-11-19 09:43:03,079 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Item: Trolita
+2012-11-19 09:43:03,080 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_transcodingserver"."id", "Packager_app_transcodingserver"."host_name", "Packager_app_transcodingserver"."ip_address", "Packager_app_transcodingserver"."status" FROM "Packager_app_transcodingserver" WHERE "Packager_app_transcodingserver"."id" = 1 ; args=(1,)
+2012-11-19 09:43:03,081 - QCheckerD.py -[DEBUG]: CheckQueue(): Transcoding Server: 10.3.3.60
+2012-11-19 09:43:03,081 - QCheckerD.py -[DEBUG]: CheckQueue(): Job GUID: {32117656-3BCD-4564-9817-1C1947BE5962}
+2012-11-19 09:43:03,090 - QCheckerD.py -[DEBUG]: GetJobState(): Job Progress: 1
+2012-11-19 09:43:03,090 - QCheckerD.py -[DEBUG]: GetJobState(): Job State: NEX_JOB_STARTED
+2012-11-19 09:43:03,090 - QCheckerD.py -[INFO]: CheckQueue(): End queue Check
+2012-11-19 10:04:09,490 - QCheckerD.py -[INFO]: CheckQueue(): Start queue check
+2012-11-19 10:04:09,589 - QCheckerD.py -[DEBUG]: (0.001) SELECT "Packager_app_path"."id", "Packager_app_path"."key", "Packager_app_path"."location", "Packager_app_path"."description" FROM "Packager_app_path" WHERE "Packager_app_path"."key" = video_local_path ; args=('video_local_path',)
+2012-11-19 10:04:09,589 - QCheckerD.py -[DEBUG]: CheckQueue(): video_local_path: /home/VIDEO_PROC
+2012-11-19 10:04:09,591 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_videorendition"."id", "Packager_app_videorendition"."file_name", "Packager_app_videorendition"."video_profile_id", "Packager_app_videorendition"."transcoding_server_id", "Packager_app_videorendition"."transcoding_job_guid", "Packager_app_videorendition"."status", "Packager_app_videorendition"."item_id", "Packager_app_videorendition"."file_size", "Packager_app_videorendition"."checksum" FROM "Packager_app_videorendition" WHERE "Packager_app_videorendition"."status" = Q ; args=('Q',)
+2012-11-19 10:04:09,591 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Check: racing_PV01.ts
+2012-11-19 10:04:09,593 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_item"."id", "Packager_app_item"."name", "Packager_app_item"."creation_date", "Packager_app_item"."modification_date", "Packager_app_item"."kill_date", "Packager_app_item"."format", "Packager_app_item"."status" FROM "Packager_app_item" WHERE "Packager_app_item"."id" = 1 ; args=(1,)
+2012-11-19 10:04:09,593 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Item: Trolita
+2012-11-19 10:04:09,595 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_transcodingserver"."id", "Packager_app_transcodingserver"."host_name", "Packager_app_transcodingserver"."ip_address", "Packager_app_transcodingserver"."status" FROM "Packager_app_transcodingserver" WHERE "Packager_app_transcodingserver"."id" = 1 ; args=(1,)
+2012-11-19 10:04:09,595 - QCheckerD.py -[DEBUG]: CheckQueue(): Transcoding Server: 10.3.3.60
+2012-11-19 10:04:09,595 - QCheckerD.py -[DEBUG]: CheckQueue(): Job GUID: {C2659508-E55F-4A08-B2DE-B97762746891}
+2012-11-19 10:04:09,670 - QCheckerD.py -[DEBUG]: GetJobState(): Job Progress: 22
+2012-11-19 10:04:09,670 - QCheckerD.py -[DEBUG]: GetJobState(): Job State: NEX_JOB_STARTED
+2012-11-19 10:04:09,670 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Check: racing_PV02.ts
+2012-11-19 10:04:09,672 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_item"."id", "Packager_app_item"."name", "Packager_app_item"."creation_date", "Packager_app_item"."modification_date", "Packager_app_item"."kill_date", "Packager_app_item"."format", "Packager_app_item"."status" FROM "Packager_app_item" WHERE "Packager_app_item"."id" = 1 ; args=(1,)
+2012-11-19 10:04:09,672 - QCheckerD.py -[INFO]: CheckQueue(): Video Rendition Item: Trolita
+2012-11-19 10:04:09,673 - QCheckerD.py -[DEBUG]: (0.000) SELECT "Packager_app_transcodingserver"."id", "Packager_app_transcodingserver"."host_name", "Packager_app_transcodingserver"."ip_address", "Packager_app_transcodingserver"."status" FROM "Packager_app_transcodingserver" WHERE "Packager_app_transcodingserver"."id" = 1 ; args=(1,)
+2012-11-19 10:04:09,673 - QCheckerD.py -[DEBUG]: CheckQueue(): Transcoding Server: 10.3.3.60
+2012-11-19 10:04:09,674 - QCheckerD.py -[DEBUG]: CheckQueue(): Job GUID: {32117656-3BCD-4564-9817-1C1947BE5962}
+2012-11-19 10:04:09,682 - QCheckerD.py -[DEBUG]: GetJobState(): Job Progress: 22
+2012-11-19 10:04:09,682 - QCheckerD.py -[DEBUG]: GetJobState(): Job State: NEX_JOB_STARTED
+2012-11-19 10:04:09,682 - QCheckerD.py -[INFO]: CheckQueue(): End queue Check
