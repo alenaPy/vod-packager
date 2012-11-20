@@ -11,7 +11,10 @@ from carbonapi.CarbonSched import *
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 import logging
 import os
+import time
 import md5checksum
+
+from daemon import Daemon
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Stand alone script
@@ -133,7 +136,40 @@ def CheckQueue():
     return True
     	
 
-logging.basicConfig(format='%(asctime)s - QCheckerD.py -[%(levelname)s]: %(message)s', filename='./log/QChecker.log',level=logging.DEBUG) 
-   	
-CheckQueue()	                                                                
+def main():
+
+    logging.basicConfig(format='%(asctime)s - QCheckerD.py -[%(levelname)s]: %(message)s', filename='./log/QChecker.log',level=logging.DEBUG) 
+   
+    while 1:
+	CheckQueue()
+	time.sleep(60)
+
+class main_daemon(Daemon):
+    def run(self):
+        try:
+    	    main()
+	except KeyboardInterrupt:
+	    sys.exit()	    
+
+if __name__ == "__main__":
+	daemon = main_daemon('./pid/QChecker.pid', stdout='./log/QChecker.err', stderr='./log/QChecker.err')
+	if len(sys.argv) == 2:
+		if 'start'     == sys.argv[1]:
+			daemon.start()
+		elif 'stop'    == sys.argv[1]:
+			daemon.stop()
+		elif 'restart' == sys.argv[1]:
+			daemon.restart()
+		elif 'run'     == sys.argv[1]:
+			daemon.run()
+		else:
+			print "Unknown command"
+			sys.exit(2)
+		sys.exit(0)
+	else:
+		print "usage: %s start|stop|restart|run" % sys.argv[0]
+		sys.exit(2)
+
+
+
 
