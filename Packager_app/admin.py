@@ -8,13 +8,13 @@ class ItemAdmin(admin.ModelAdmin):
 	list_display = ('name', 'format', 'status')
 
 class ImportQueueAdmin(admin.ModelAdmin):
-	list_display = ('file_name', 'queue_status')
+	list_display = ('file_name', 'item', 'queue_status')
 
 class VideoRenditionAdmin(admin.ModelAdmin):
 	list_display = ('file_name', 'video_profile', 'transcoding_server', 'status')
 
 class ImageRenditionAdmin(admin.ModelAdmin):
-	list_display = ('file_name', 'image_profile')
+	list_display = ('id', 'file_name', 'image_profile')
 
 class PackageGroupAdmin(admin.ModelAdmin):
 	list_display = ('name',)
@@ -71,7 +71,6 @@ admin.site.register(CustomCategory, CustomCategoryAdmin)
 admin.site.register(CategoryRelation, CategoryRelationAdmin)
 
 '''
-
 admin.site.register(Customer)
 admin.site.register(Item)
 admin.site.register(ImportQueue)
