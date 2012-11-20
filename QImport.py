@@ -244,7 +244,7 @@ def main():
 	    #
 	    # Por cada elemento en la cola de importacion
 	    #
-	    Queue.status = 'D'			# Lo marca como Tomado
+	    Queue.queue_status = 'D'			# Lo marca como Tomado
 	    Queue.save()			
 	    MakeVideoRenditions(Queue,CPool)	# Crea los video renditions
 	    MakeImageRenditions(Queue)		# Crea los imagen renditions

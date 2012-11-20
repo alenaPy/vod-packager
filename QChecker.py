@@ -108,8 +108,8 @@ def CheckQueue():
 	        rendition.checksum = md5checksum.md5_checksum(video_local_path + rendition.file_name)
 		logging.debug("CheckQueue(): Video Rendition Checksum: " + rendition.file_name + "," + rendition.checksum)	
 		
-		rendition.filesize = os.stat(video_local_path + rendition.file_name).st_size
-		logging.debug("CheckQueue(): Video Rendition FileSize: " + rendition.file_name + "," + rendirion.filesize)
+		rendition.file_size = os.stat(video_local_path + rendition.file_name).st_size
+		logging.debug("CheckQueue(): Video Rendition FileSize: " + rendition.file_name + "," + str(rendition.file_size))
 		
 		rendition.status   = 'F'
 		rendition.save()

@@ -156,7 +156,9 @@ class ImageRendition(models.Model):
 	checksum 					= models.CharField(max_length=32)
 	image_profile 				= models.ForeignKey('ImageProfile')
 	item 						= models.ForeignKey('Item')
-
+	#
+	# idiomas
+	#
 	def __unicode__(self):
 		return self.file_name
                 
@@ -219,6 +221,7 @@ class VideoProfile(models.Model):
 	format 						= models.CharField(max_length=2, choices=FORMAT)
 	# xxx review
 	#fps 						= models.DecimalField() #descomentar
+	#standar
 	notes 						= models.CharField(max_length=512)
 	
 	def __unicode__(self):
