@@ -141,6 +141,8 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 	logging.error("MakeVideoRenditions(): ImportTask is None")
 
 	return False
+
+    
     
     Item = ImportTask.item
     
@@ -221,16 +223,36 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 
 
 def main():
+
+    #
+    # Configura el Log 
+    #
+
     logging.basicConfig(format='%(asctime)s - QImport.py -[%(levelname)s]: %(message)s', filename='./log/QImport.log',level=logging.INFO) 
+    
+    #
+    # Inicializa el Carbon Pool 
+    #
     CPool = InitCarbonPool()
 
     while 1:
+	#
+	# En el ciclo principal
+	#
 	QueueList = GetImportQueue()
 	for Queue in QueueList:
-	    MakeVideoRenditions(Queue,CPool)
-	    MakeImageRenditions(Queue)
+	    #
+	    # Por cada elemento en la cola de importacion
+	    #
+	    Queue.status = 'D'			# Lo marca como Tomado
+	    Queue.save()			
+	    MakeVideoRenditions(Queue,CPool)	# Crea los video renditions
+	    MakeImageRenditions(Queue)		# Crea los imagen renditions
 
-	time.sleep(10)
+	#
+	# Duerme 60 Segundos
+	#
+	time.sleep(60)
 
 class main_daemon(Daemon):
     def run(self):
@@ -240,7 +262,7 @@ class main_daemon(Daemon):
 	    sys.exit()	    
 
 if __name__ == "__main__":
-	daemon = main_daemon('./pid/QImport.pid')
+	daemon = main_daemon('./pid/QImport.pid', stdout='./log/QImport.err', stderr='./log/QImport.err')
 	if len(sys.argv) == 2:
 		if 'start'     == sys.argv[1]:
 			daemon.start()
@@ -258,5 +280,3 @@ if __name__ == "__main__":
 		print "usage: %s start|stop|restart|run" % sys.argv[0]
 		sys.exit(2)
 
-
-	 
