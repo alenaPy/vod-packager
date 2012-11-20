@@ -156,6 +156,7 @@ class ImageRendition(models.Model):
 	checksum 					= models.CharField(max_length=32)
 	image_profile 				= models.ForeignKey('ImageProfile')
 	item 						= models.ForeignKey('Item')
+	status						= models.CharField(max_length=2, choices=IMAGE_RENDITION_STATUS)
 	#
 	# idiomas
 	#

@@ -11,25 +11,22 @@ setup_environ(settings)
 from Packager_app import models
 
 
-#
-# Crear 3 video Profiles
-# 
+f = 'trolita_PIS01.jpg'
 
-vp =  models.VideoProfile.objects.all()
-for v in vp:
-    print v.id
-    print v.name 
-    print v.guid 
-    print v.file_extension 
-    print v.status
-    print v.sufix
-    print v.bit_rate
-    print v.format
-    
+# Agregar una expresion Regular    
 
-ts= models.TranscodingServer.objects.all()
-for t in ts:
-    print t.host_name
-    print t.ip_address
-    print t.status
+suf, ext = f.split('_')[len(f.split('_'))-1].split('.')
+
+suf = '_' + suf
+ext = '.' + ext
+
+item = models.Item.objects.all()
+
+irend = models.ImageProfile.objects.filter(sufix=suf, file_extension=ext)
+print irend
+vrend = models.ImageRendition.objects.get(item=item[0], image_profile=irend)
+vrend.file_name = f
+vrend.status = 'F'
+vrend.save()
+
 
