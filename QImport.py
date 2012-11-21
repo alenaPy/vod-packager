@@ -100,6 +100,13 @@ def InitCarbonPool():
     #
     # Se agrega cada transcoder server al pool
     #
+
+    if len(TServerList) == 0:
+	#
+	# No hay transcoding Servers
+	# 
+	return None
+
     for TServer in TServerList:
 	CPool.addCarbon(TServer.ip_address)
 	
@@ -233,8 +240,16 @@ def main():
     #
     # Inicializa el Carbon Pool 
     #
+    logging.info("main(): Init Transcoding server pool")
     CPool = InitCarbonPool()
+    while CPool is None:
+	logging.info("main(): No transcoding server configured in database... Sleep")
+	time.sleep(60)
 
+	CPool = Init_CarbonPool()
+
+
+    logging.info("main(): Enter in main loop")
     while 1:
 	#
 	# En el ciclo principal
@@ -252,6 +267,7 @@ def main():
 	#
 	# Duerme 60 Segundos
 	#
+	logging.info("main(): No more work... Sleep")
 	time.sleep(60)
 
 class main_daemon(Daemon):

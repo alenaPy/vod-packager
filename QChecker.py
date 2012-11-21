@@ -51,8 +51,8 @@ def GetJobState(transcoder_ip, job_guid):
     #
     # DEBUG
     #
-    logging.debug("GetJobState(): Job Progress: " + str(Job.GetProgress()))
-    logging.debug("GetJobState(): Job State: " + Job.GetState())
+    logging.info("GetJobState(): Job Progress: " + str(Job.GetProgress()))
+    logging.info("GetJobState(): Job State: " + Job.GetState())
     
     return Job.GetState()
 
@@ -84,11 +84,11 @@ def CheckQueue():
 	logging.info("CheckQueue(): Video Rendition Check: " + rendition.file_name)
 	logging.info("CheckQueue(): Video Rendition Item: " + rendition.item.name)
 
-	logging.debug("CheckQueue(): Transcoding Server: " + rendition.transcoding_server.ip_address)
-	logging.debug("CheckQueue(): Job GUID: " + rendition.transcoding_job_guid)
+	logging.info("CheckQueue(): Transcoding Server: " + rendition.transcoding_server.ip_address)
+	logging.info("CheckQueue(): Job GUID: " + rendition.transcoding_job_guid)
 	
 	JobState = GetJobState(rendition.transcoding_server.ip_address, rendition.transcoding_job_guid)
-
+	
 	if JobState == 'NEX_JOB_COMPLETED':
 	    #
 	    # Si el Job termino de procesarse correctamente
@@ -138,7 +138,7 @@ def CheckQueue():
 
 def main():
 
-    logging.basicConfig(format='%(asctime)s - QCheckerD.py -[%(levelname)s]: %(message)s', filename='./log/QChecker.log',level=logging.DEBUG) 
+    logging.basicConfig(format='%(asctime)s - QCheckerD.py -[%(levelname)s]: %(message)s', filename='./log/QChecker.log',level=logging.INFO) 
    
     while 1:
 	CheckQueue()
