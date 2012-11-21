@@ -231,14 +231,14 @@ class VideoProfile(models.Model):
 class ImageProfile(models.Model):
 	
 	name 						= models.CharField(max_length=256)
-	description 				= models.CharField(max_length=512)
+	description 					= models.CharField(max_length=512)
 	sufix 						= models.CharField(max_length=32)
 	# xxx review
 	#prefix 					= models.CharField(max_length=32)
-	file_extension 				= models.CharField(max_length=32)
+	file_extension 					= models.CharField(max_length=32)
 	status 						= models.CharField(max_length=1, choices=ACTIVE_STATUS)
 	regex 						= models.CharField(max_length=512)
-	content_aspect 				= models.CharField(max_length=24)
+	content_aspect 					= models.CharField(max_length=24)
 	type 						= models.CharField(max_length=1, choices=IMAGE_TYPE)
 	
 	def __unicode__(self):

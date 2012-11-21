@@ -4,6 +4,7 @@
 from django.core.management import setup_environ
 from Packager import settings
 setup_environ(settings)
+import re
 
 #
 # Modelo de la aplicacion
@@ -11,11 +12,20 @@ setup_environ(settings)
 from Packager_app import models
 
 
-f = 'trolita_PIS01.jpg'
+f = 'trolita_PIH01.png'
 
 # Agregar una expresion Regular    
 
 suf, ext = f.split('_')[len(f.split('_'))-1].split('.')
+
+
+x = re.match("(.+)_(PI[S|H][0-9][0-9]).([a-z][a-z][a-z])",f)
+if x:
+    print x.group(1)
+    print x.group(2)
+    print x.group(3)
+else:
+    print "File Invalido"
 
 suf = '_' + suf
 ext = '.' + ext
