@@ -180,7 +180,7 @@ class Package(models.Model):
 	group 						= models.ForeignKey('PackageGroup')
 	
 	def __unicode__(self):
-		return self.date_published
+		return str(self.date_published)
 
 class TranscodingServer(models.Model):
 	
