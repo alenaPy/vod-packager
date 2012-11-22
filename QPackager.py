@@ -20,6 +20,9 @@ errno  = 0
 errstr = 'OK'
 
 
+
+
+
 def GetVideoRenditions(Package=None):
     if Package is not None:
 	
@@ -187,7 +190,7 @@ def GetVideoRenditions(Package=None):
 			pass
 		except:
 		    #
-		    # No existe un video rendition para ese video
+		    # No existe el video rendition para ese video
 		    #
 		    print "8"
 		    pass
@@ -208,7 +211,7 @@ def GetVideoRenditions(Package=None):
 			pass
 		except:
 		    #
-		    # No existe un video rendition para ese video
+		    # No existe el video rendition para ese video
 		    #
 		    print "9"
 		    pass
