@@ -2,7 +2,7 @@ from django.contrib import admin
 from Packager_app.models import *
 
 class CustomerAdmin(admin.ModelAdmin):
-	list_display = ('name', 'vod_active', 'video_profile')
+	list_display = ('name', 'vod_active')
 
 class ItemAdmin(admin.ModelAdmin):
 	list_display = ('name', 'format', 'status')
@@ -29,7 +29,7 @@ class PathAdmin(admin.ModelAdmin):
 	list_display = ('key', 'location', 'description')
 
 class DaemonAdmin(admin.ModelAdmin):
-	list_display = ('name', 'description', 'status', 'last_run')
+	list_display = ('name', 'description', 'last_run')
 
 class VideoProfileAdmin(admin.ModelAdmin):
 	list_display = ('name', 'file_extension', 'status', 'bit_rate', 'format', 'notes')

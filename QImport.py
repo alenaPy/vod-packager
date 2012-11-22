@@ -108,8 +108,14 @@ def InitCarbonPool():
 	return None
 
     for TServer in TServerList:
-	CPool.addCarbon(TServer.ip_address)
-	
+	ret = CPool.addCarbon(TServer.ip_address)
+	if ret == False:
+	    TServer.status = 'D'
+	    TServer.save()
+
+    if CPool.poolLen() == 0:
+	return None
+    
     return CPool
 
 
