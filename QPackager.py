@@ -20,6 +20,133 @@ errno  = 0
 errstr = 'OK'
 
 
+def GetVideoRenditions(Package=None):
+    if Package is not None:
+	
+
+	Customer         = Package.customer
+	VideoProfileList = Package.customer.video_profile.filter(status='E')
+	Item		 = Package.item
+
+	export_sd = False
+	export_hd = False
+
+	VideoRendition = []
+
+	VPListLen = len(VideoProfileList)
+
+	if VPListLen == 0 or VPListLen > 2:
+	    #
+	    # No tiene correctamente definido los profiles
+	    #
+	    pass
+	
+	else:
+	    #
+	    # Que formatos usa el cliente
+	    #
+	    if Customer.format == 'BOTH':
+	        #
+	        # Ambos formatos
+	        #
+		if VPListLen == 2:
+
+		    if VideoProfileList[0].format != VideoProfileList[1].format:
+			#
+		        # Esta correctamente definido
+		        #
+		        export_sd = True
+		        export_hd = True
+
+		    else:
+			#
+			# Esta mal definido tiene dos profiles pero iguales
+		        #
+		        pass
+		elif VPListLen == 1:
+		    #
+		    # Tiene un solo profile definido
+		    #
+		    if VideoProfileList[0] == 'SD':
+			#
+		        # Exporta solamente SD porque no tiene definido uno HD
+		        #
+			export_sd = True
+		    else:
+			#
+		        # Exporta solamente HD porque no tiene definido uno SD
+			#
+			export_hd = True
+
+
+	    elif Customer.format == 'SD':
+	    
+		if VPListLen == 1:
+		    if VideoProfileList[0].format == 'SD':
+			#
+			# Exporta SD
+			#
+			export_sd = True
+		    else:
+			#
+			# Tiene un solo profile definido pero no es SD
+		        #
+			pass
+		else:
+		    if (VideoProfileList[0].format == 'SD' or VideoProfileList[1].format == 'SD') and (VideoProfileList[0].format != VideoProfileList[1].format):
+			export_sd = True
+		    else:
+			#
+			# Error logico, solamente el cliente exporta SD pero no tiene ningun
+			# Video profile definido SD o tiene los dos profiles definidos como SD
+			#
+			pass
+
+	    elif Customer.format == 'HD':
+	    
+		if VPListLen == 1:
+		    if VideoProfileList[0].format == 'HD'
+			# 
+			# Solamente HD
+			#
+			export_hd = True
+		    else:
+			#
+			# Tiene un solo profile definido pero no es HD
+			#
+			pass
+		else:
+		    if (VideoProfileList[0].format == 'HD' or VideoProfileList[1].format == 'HD') and (VideoProfileList[0].format != VideoProfileList[1].format):
+			export_hd = True
+		    else:
+			#
+			# Error logico, solamente el cliente exporta hd pero no tiene ningun
+			# Video profile definido HD o tiene los dos profiles definidos como HD
+			#
+			pass
+
+
+	if Item.format == 'HD':
+	    #
+	    # El item esta en formato HD
+	    #
+	    if export_hd:
+		
+
+	    if export_sd:
+
+	elif Item.format == 'SD':
+	    #
+	    # El item esta en formato SD
+	    #
+	    if export_sd:
+
+
+
+
+def GetImageRenditions(Package=None):
+
+
 
 def GetExportPathFromPackage(Package=None):
     if Package is not None:
