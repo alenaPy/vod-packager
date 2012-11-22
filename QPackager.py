@@ -31,21 +31,26 @@ def GetVideoRenditions(Package=None):
 	export_sd = False
 	export_hd = False
 
-	VideoRendition = []
+	ProfileHD = None
+	ProfileSD = None
+
+	VRenditionList = []
 
 	VPListLen = len(VideoProfileList)
+
 
 	if VPListLen == 0 or VPListLen > 2:
 	    #
 	    # No tiene correctamente definido los profiles
 	    #
+	    print "1"
 	    pass
 	
 	else:
 	    #
 	    # Que formatos usa el cliente
 	    #
-	    if Customer.format == 'BOTH':
+	    if Customer.export_format == 'BOTH':
 	        #
 	        # Ambos formatos
 	        #
@@ -57,11 +62,19 @@ def GetVideoRenditions(Package=None):
 		        #
 		        export_sd = True
 		        export_hd = True
+	    
+			if VideoProfileList[0].format == 'SD':
+			    ProfileSD = VideoProfileList[0]
+			    ProfileHD = VideoProfileList[1]
+			else:
+			    ProfileSD = VideoProfileList[1]
+			    ProfileHD = VideoProfileList[0]
 
 		    else:
 			#
 			# Esta mal definido tiene dos profiles pero iguales
 		        #
+			print "2"
 		        pass
 		elif VPListLen == 1:
 		    #
@@ -72,14 +85,17 @@ def GetVideoRenditions(Package=None):
 		        # Exporta solamente SD porque no tiene definido uno HD
 		        #
 			export_sd = True
+			ProfileSD = VideoProfileList[0]
+
 		    else:
 			#
 		        # Exporta solamente HD porque no tiene definido uno SD
 			#
+			ProfileHD = VideoProfileList[0]
 			export_hd = True
 
 
-	    elif Customer.format == 'SD':
+	    elif Customer.export_format == 'SD':
 	    
 		if VPListLen == 1:
 		    if VideoProfileList[0].format == 'SD':
@@ -87,42 +103,56 @@ def GetVideoRenditions(Package=None):
 			# Exporta SD
 			#
 			export_sd = True
+			ProfileSD = VideoProfileList[0]
 		    else:
 			#
 			# Tiene un solo profile definido pero no es SD
 		        #
+			print "3"
 			pass
 		else:
 		    if (VideoProfileList[0].format == 'SD' or VideoProfileList[1].format == 'SD') and (VideoProfileList[0].format != VideoProfileList[1].format):
+			if VideoProfileList[0].format == 'SD':
+			    ProfileSD = VideoProfileList[0]
+			else:
+			    ProfileSD = VideoProfileList[1]
 			export_sd = True
 		    else:
 			#
 			# Error logico, solamente el cliente exporta SD pero no tiene ningun
 			# Video profile definido SD o tiene los dos profiles definidos como SD
 			#
+			print "4"
 			pass
 
-	    elif Customer.format == 'HD':
+	    elif Customer.export_format == 'HD':
 	    
 		if VPListLen == 1:
-		    if VideoProfileList[0].format == 'HD'
+		    if VideoProfileList[0].format == 'HD':
 			# 
 			# Solamente HD
 			#
+			ProfileHD = VideoProfileList[0]
 			export_hd = True
 		    else:
 			#
 			# Tiene un solo profile definido pero no es HD
 			#
+			print "5"
 			pass
 		else:
 		    if (VideoProfileList[0].format == 'HD' or VideoProfileList[1].format == 'HD') and (VideoProfileList[0].format != VideoProfileList[1].format):
+			if VideoProfileList[0].format == 'HD':
+			    ProfileHD = VideoProfileList[0]
+			else:
+			    ProfileHD = VideoProfileList[1]
 			export_hd = True
 		    else:
 			#
 			# Error logico, solamente el cliente exporta hd pero no tiene ningun
 			# Video profile definido HD o tiene los dos profiles definidos como HD
 			#
+			print "6"
 			pass
 
 
@@ -131,21 +161,59 @@ def GetVideoRenditions(Package=None):
 	    # El item esta en formato HD
 	    #
 	    if export_hd:
-		
-
+		try:
+		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileHD)
+		    if VRendition.status = 'F':
+			VRenditionList.append(VRendition)
+		    else:
+			#
+			# No esta finalizado el video Rendition
+			#
+		except:
+		    #
+		    # No existe un video rendition para ese video
+		    #
+		    print "7"
+		    pass
 	    if export_sd:
+		try:
+		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD)
+		    if VRendition.status = 'F':
+			VRenditionList.append(VRendition)
+		    else:
+			#
+			# No finalizo el video Rendition
+			#
+			pass
+		except:
+		    #
+		    # No existe un video rendition para ese video
+		    #
+		    print "8"
+		    pass
 
 	elif Item.format == 'SD':
 	    #
 	    # El item esta en formato SD
 	    #
 	    if export_sd:
+	    	try:
+		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD)
+		    if VRendition.status = 'F':
+			VRenditionList.append(VRendition)
+		    else:
+			#
+			# No esta finalizado el Video Rendition
+			#
+			pass
+		except:
+		    #
+		    # No existe un video rendition para ese video
+		    #
+		    print "9"
+		    pass
 
-
-
-
-def GetImageRenditions(Package=None):
-
+	return VRenditionList
 
 
 def GetExportPathFromPackage(Package=None):
@@ -211,3 +279,4 @@ def GetExportPathFromPackage(Package=None):
 
 x = GetPackageQueue()
 print GetExportPathFromPackage(x[0])
+print GetVideoRenditions(x[0])

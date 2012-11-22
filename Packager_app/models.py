@@ -76,7 +76,7 @@ class Customer(models.Model):
 	image_profile 					= models.ManyToManyField('ImageProfile')
 	metadata_profile 				= models.ForeignKey('MetadataProfile')
 	language 					= models.CharField(max_length=2, choices=LANGUAGE)
-	export_formar					= models.CharField(max_length=4, choices=EXPORT_CUSTOMER_FORMAT)
+	export_format					= models.CharField(max_length=4, choices=EXPORT_CUSTOMER_FORMAT)
 	export_folder					= models.CharField(max_length=256)
 	#cost_HD 					= models.IntegerField()
 	#cost_SD 					= models.IntegerField()
