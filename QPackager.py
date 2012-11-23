@@ -17,10 +17,6 @@ def GetPackageQueue():
 
 
 errno  = 0
-errstr = 'OK'
-
-
-
 
 
 def GetVideoRenditions(Package=None):
@@ -53,7 +49,7 @@ def GetVideoRenditions(Package=None):
 	    #
 	    # Que formatos usa el cliente
 	    #
-	    if Customer.export_format == 'BOTH':
+	    if Customer.export_format == 'BOTH' or Customer.export_format == 'HD':
 	        #
 	        # Ambos formatos
 	        #
@@ -98,7 +94,7 @@ def GetVideoRenditions(Package=None):
 			export_hd = True
 
 
-	    elif Customer.export_format == 'SD':
+	    elif Customer.export_format == 'OSD':
 	    
 		if VPListLen == 1:
 		    if VideoProfileList[0].format == 'SD':
@@ -128,7 +124,7 @@ def GetVideoRenditions(Package=None):
 			print "4"
 			pass
 
-	    elif Customer.export_format == 'HD':
+	    elif Customer.export_format == 'OHD':
 	    
 		if VPListLen == 1:
 		    if VideoProfileList[0].format == 'HD':
@@ -157,6 +153,7 @@ def GetVideoRenditions(Package=None):
 			#
 			print "6"
 			pass
+		    
 
 
 	if Item.format == 'HD':
@@ -168,6 +165,13 @@ def GetVideoRenditions(Package=None):
 		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileHD)
 		    if VRendition.status = 'F':
 			VRenditionList.append(VRendition)
+		    
+		    #
+		    # Si el cliente prefiere HD no le exporta la version en SD
+		    #
+		    if Customer.export_format == 'HD':
+			export_sd = False			    
+    
 		    else:
 			#
 			# No esta finalizado el video Rendition

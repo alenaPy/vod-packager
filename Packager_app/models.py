@@ -63,9 +63,10 @@ PACKAGE_STATUS = (
 )
 	
 EXPORT_CUSTOMER_FORMAT = (
-	('SD', 'SD Format'),
-	('HD', 'HD Format'),
+	('OSD', 'Only SD Format'),
+	('OHD', 'Only HD Format'),
 	('BOTH','Both Format'),
+	('HD', 'HD Preferencis'),
 )
 
 class Customer(models.Model):
