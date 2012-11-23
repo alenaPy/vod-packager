@@ -32,7 +32,7 @@ class DaemonAdmin(admin.ModelAdmin):
 	list_display = ('name', 'description', 'last_run')
 
 class VideoProfileAdmin(admin.ModelAdmin):
-	list_display = ('name', 'file_extension', 'status', 'Bit_Rate', 'format', 'notes')
+	list_display = ('name', 'file_extension', 'status', 'bit_rate', 'format', 'notes')
 
 class ImageProfileAdmin(admin.ModelAdmin):
 	list_display = ('name', 'description', 'file_extension', 'content_aspect', 'type')
