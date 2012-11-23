@@ -215,17 +215,6 @@ class Path(models.Model):
 	def __unicode__(self):
 		return self.key
 
-class Daemon(models.Model):
-	
-	name 						= models.CharField(max_length=256)
-	description 				= models.CharField(max_length=256)
-#	status 						= models.ForeignKey('Status')
-	last_run 					= models.DateField()
-	action 						= models.CharField(max_length=512)
-	
-	def __unicode__(self):
-		return self.name
-
 class VideoProfile(models.Model):
 	
 	name 						= models.CharField(unique=True, max_length=256)
@@ -274,15 +263,6 @@ class MetadataProfile(models.Model):
 	status 						= models.CharField(max_length=1, choices=ACTIVE_STATUS)
 	description 				= models.CharField(max_length=512)
 	
-	def __unicode__(self):
-		return self.name
-
-class AppError(models.Model):
-
-	key 						= models.CharField(max_length=32)
-	name 						= models.CharField(max_length=64)
-	description 					= models.CharField(max_length=512)
-
 	def __unicode__(self):
 		return self.name
 

@@ -27,8 +27,10 @@ def GetVideoRenditions(Package=None):
 	VideoProfileList = Package.customer.video_profile.filter(status='E')
 	Item		 = Package.item
 
-	export_sd = False
-	export_hd = False
+
+
+	ExportSD = False
+	ExportHD = False
 
 	ProfileHD = None
 	ProfileSD = None
@@ -39,6 +41,8 @@ def GetVideoRenditions(Package=None):
 
 
 	if VPListLen == 0 or VPListLen > 2:
+	    
+	    
 	    #
 	    # No tiene correctamente definido los profiles
 	    #
@@ -59,8 +63,8 @@ def GetVideoRenditions(Package=None):
 			#
 		        # Esta correctamente definido
 		        #
-		        export_sd = True
-		        export_hd = True
+		        ExportSD = True
+		        ExportHD = True
 	    
 			if VideoProfileList[0].format == 'SD':
 			    ProfileSD = VideoProfileList[0]
@@ -83,7 +87,7 @@ def GetVideoRenditions(Package=None):
 			#
 		        # Exporta solamente SD porque no tiene definido uno HD
 		        #
-			export_sd = True
+			ExportSD = True
 			ProfileSD = VideoProfileList[0]
 
 		    else:
@@ -91,7 +95,7 @@ def GetVideoRenditions(Package=None):
 		        # Exporta solamente HD porque no tiene definido uno SD
 			#
 			ProfileHD = VideoProfileList[0]
-			export_hd = True
+			ExportHD = True
 
 
 	    elif Customer.export_format == 'OSD':
@@ -101,7 +105,7 @@ def GetVideoRenditions(Package=None):
 			#
 			# Exporta SD
 			#
-			export_sd = True
+			ExportSD = True
 			ProfileSD = VideoProfileList[0]
 		    else:
 			#
@@ -115,7 +119,7 @@ def GetVideoRenditions(Package=None):
 			    ProfileSD = VideoProfileList[0]
 			else:
 			    ProfileSD = VideoProfileList[1]
-			export_sd = True
+			ExportSD = True
 		    else:
 			#
 			# Error logico, solamente el cliente exporta SD pero no tiene ningun
@@ -132,7 +136,7 @@ def GetVideoRenditions(Package=None):
 			# Solamente HD
 			#
 			ProfileHD = VideoProfileList[0]
-			export_hd = True
+			ExportHD = True
 		    else:
 			#
 			# Tiene un solo profile definido pero no es HD
@@ -145,7 +149,7 @@ def GetVideoRenditions(Package=None):
 			    ProfileHD = VideoProfileList[0]
 			else:
 			    ProfileHD = VideoProfileList[1]
-			export_hd = True
+			ExportHD = True
 		    else:
 			#
 			# Error logico, solamente el cliente exporta hd pero no tiene ningun
@@ -160,7 +164,7 @@ def GetVideoRenditions(Package=None):
 	    #
 	    # El item esta en formato HD
 	    #
-	    if export_hd:
+	    if ExportHD:
 		try:
 		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileHD)
 		    if VRendition.status = 'F':
@@ -170,7 +174,7 @@ def GetVideoRenditions(Package=None):
 		    # Si el cliente prefiere HD no le exporta la version en SD
 		    #
 		    if Customer.export_format == 'HD':
-			export_sd = False			    
+			ExportSD = False			    
     
 		    else:
 			#
@@ -182,7 +186,7 @@ def GetVideoRenditions(Package=None):
 		    #
 		    print "7"
 		    pass
-	    if export_sd:
+	    if ExportSD:
 		try:
 		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD)
 		    if VRendition.status = 'F':
@@ -203,7 +207,7 @@ def GetVideoRenditions(Package=None):
 	    #
 	    # El item esta en formato SD
 	    #
-	    if export_sd:
+	    if ExportSD:
 	    	try:
 		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD)
 		    if VRendition.status = 'F':
