@@ -3,8 +3,18 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>VOD Packager</title>
-<link rel="stylesheet" type="text/css" href="/css/main.css" />
-<link rel="stylesheet" href="/css/css3-gmail-style.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="css/main.css" />
+<link rel="stylesheet" href="css/css3-gmail-style.css" type="text/css" />
+<script type="text/javascript">
+jQuery(document).ready(function() {
+  jQuery(".content").hide();
+  //toggle the componenet with class msg_body
+  jQuery(".heading").click(function()
+  {
+    jQuery(this).next(".content").slideToggle(500);
+  });
+});
+</script>
 </head>
 
 <body>
@@ -15,7 +25,7 @@
          <!-- Begin Header -->
          <div id="header">
 		 
-		       VOD-Packager
+		       <h1>VOD-Packager</h1>
 			   
 		 </div>
 		 <!-- End Header -->
@@ -31,7 +41,6 @@
 		       <br /><br />
 		       <a href="#" class="bttn blue" style="width: 150px;">Admin<a><br />
 		       <a href="#" class="bttn red" style="width: 150px;">Logout<a><br />
-		       <a href="#" class="bttn icon search">Search<a>
 		       </center>
 		 		
 		 </div>
@@ -39,16 +48,19 @@
 		 
 		 <!-- Begin Right Column -->
 		 <div id="rightcolumn">
-		      			<table class="tableViewTitle">
+		      
+			<table class="tableViewTitle">
 				<tr>
 				<td class="tdViewTitle"><h2>Items</h2></td>
-				<td>Search</td><td><input type="search" name="searchText"></td>
+				<td>
+				<input type="search" name="searchText" style="width: 150px;">
 				</tr>
 			</table>
+		      <a href="#" class="bttn icon search">Search<a>
 		      
 		      <center> 
 	          <table class="tableView">
-	          	<tr><th class="thLeft">Name</th><th class="thCenter">MAM id</th><th class="thCenter">Creation Date</th><th class="thCenter">Kill Date</th></tr>
+	          	<tr class="trViewTitle"><th class="thLeft">Name</th><th class="thCenter">MAM id</th><th class="thCenter">Creation Date</th><th class="thCenter">Kill Date</th></tr>
 	          	<tr><td class="tdLeft">La mas trolita</td><td class="tdCenter">6102332</td><td class="tdCenter">01/12/2012</td><td class="tdCenter">13/12/2012</td></tr>
 	          	<tr><td class="tdLeft">La mas trolita</td><td class="tdCenter">6102332</td><td class="tdCenter">01/12/2012</td><td class="tdCenter">13/12/2012</td></tr>
 	          	<tr><td class="tdLeft">La mas trolita</td><td class="tdCenter">6102332</td><td class="tdCenter">01/12/2012</td><td class="tdCenter">13/12/2012</td></tr>
@@ -60,6 +72,10 @@
 	          	<tr><td class="tdLeft">La mas trolita</td><td class="tdCenter">6102332</td><td class="tdCenter">01/12/2012</td><td class="tdCenter">13/12/2012</td></tr>
 	          </table>
 	          </center>
+	          <div class="grouped">
+				<a href="#" class="bttn prev">Previous<a>
+				<a href="#" class="bttn next">Next<a>
+				</div>
 		 
 		 </div>
 		 <!-- End Right Column -->
