@@ -245,7 +245,7 @@ class VideoProfile(models.Model):
 	resolution					= models.CharField(max_length=5)
 	frame_rate					= models.CharField(max_length=2)
 	codec						= models.CharField(max_length=64)
-	bit_bate					= models.CharField(max_length=64)
+	bit_rate					= models.CharField(max_length=64)
 
 	def __unicode__(self):
 		return self.name
