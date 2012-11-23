@@ -9,6 +9,13 @@ ACTIVE_STATUS = (
 	('D', 'Disabled'),
 )
 
+
+LICENSE_DATE_FORMAT = (
+	('DT', 'Date + Time'),
+	('DO', 'Only Date'),
+)
+
+
 FORMAT = (
 	('SD', 'SD'),
 	('HD', 'HD'),
@@ -81,8 +88,23 @@ class Customer(models.Model):
 	#cost_HD 					= models.IntegerField()
 	#cost_SD 					= models.IntegerField()
 
+	license_date_format				= models.CharField(max_length=2, choices=LICENSE_DATE_FORMAT)
+
 	def __unicode__(self):
 		return self.name
+
+
+class MetadataLanguage(models.Model):
+
+	language					= models.CharField(max_length=32)
+	title_sort_name 				= models.CharField(max_length=22)
+	title_brief 					= models.CharField(max_length=19)
+	title 						= models.CharField(max_length=128)
+	episode_tile					= models.CharField(max_length=256)
+	summary_long 					= models.CharField(max_length=4096)
+	summary_medium 					= models.CharField(max_length=1024)
+	summary_short	 				= models.CharField(max_length=256)
+
 
 class Item(models.Model):
 	    
@@ -93,28 +115,10 @@ class Item(models.Model):
 	format						= models.CharField(max_length=1, choices=FORMAT)
 	status 						= models.CharField(max_length=2, choices=ITEM_STATUS)
 	asset_id 					= models.CharField(max_length=20) # autogenerar
-	title_sort_name_sp 				= models.CharField(max_length=22)
-	title_brief_sp 					= models.CharField(max_length=19)
-	title_sp 					= models.CharField(max_length=128)
-	title_sort_name_en 				= models.CharField(max_length=22)
-	title_brief_en 					= models.CharField(max_length=19)
-	title_en					= models.CharField(max_length=128)
-	title_sort_name_po				= models.CharField(max_length=22)
-	title_brief_po 					= models.CharField(max_length=19)
-	title_po 					= models.CharField(max_length=128)
-	summary_long_sp 				= models.CharField(max_length=4096)
-	summary_medium_sp 				= models.CharField(max_length=1024)
-	summary_short_sp 				= models.CharField(max_length=256)
-	summary_long_en 				= models.CharField(max_length=4096)
-	summary_medium_en 				= models.CharField(max_length=1024)
-	summary_short_en 				= models.CharField(max_length=256)
-	summary_long_po					= models.CharField(max_length=4096)
-	summary_medium_po				= models.CharField(max_length=1024)
-	summary_short_po				= models.CharField(max_length=256)
+
+	metadata_language				= models.ManyToManyField('MetadataLanguage')
+	
 	episode_number					= models.CharField(max_length=256)
-	episode_title_sp				= models.CharField(max_length=256)
-	episode_title_en 				= models.CharField(max_length=256)
-	episode_title_po 				= models.CharField(max_length=256)
 	rating 						= models.CharField(max_length=128)
 	genre 						= models.CharField(max_length=32)
 	actors 						= models.CharField(max_length=512)
@@ -152,6 +156,9 @@ class VideoRendition(models.Model):
 	file_size 				= models.BigIntegerField(default=0)
 	checksum 				= models.CharField(max_length=32)
 	
+
+	Screen_Format				= models.CharField(max_length=64)
+
 	def __unicode__(self):
 		return self.file_name
 
@@ -224,14 +231,22 @@ class VideoProfile(models.Model):
 	guid 						= models.CharField(max_length=256)
 	file_extension 				= models.CharField(max_length=64)
 	status 						= models.CharField(max_length=1, choices=ACTIVE_STATUS)
-	bit_rate 					= models.CharField(max_length=64)
 	sufix 						= models.CharField(max_length=32)
 	format 						= models.CharField(max_length=2, choices=FORMAT)
 	# xxx review
 	#fps 						= models.DecimalField() #descomentar
 	#standar
 	notes 						= models.CharField(max_length=512)
-	
+
+	#
+	# Cablelabs Metadata for Movie Item
+	#
+	Audio_type					= models.CharField(max_length=64)
+	Resolution					= models.CharField(max_length=5)
+	Frame_Rate					= models.CharField(max_length=2)
+	Codec						= models.CharField(max_length=64)
+	Bit_Rate					= models.CharField(max_length=64)
+
 	def __unicode__(self):
 		return self.name
 

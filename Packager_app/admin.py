@@ -32,7 +32,7 @@ class DaemonAdmin(admin.ModelAdmin):
 	list_display = ('name', 'description', 'last_run')
 
 class VideoProfileAdmin(admin.ModelAdmin):
-	list_display = ('name', 'file_extension', 'status', 'bit_rate', 'format', 'notes')
+	list_display = ('name', 'file_extension', 'status', 'Bit_Rate', 'format', 'notes')
 
 class ImageProfileAdmin(admin.ModelAdmin):
 	list_display = ('name', 'description', 'file_extension', 'content_aspect', 'type')
@@ -52,6 +52,9 @@ class CustomCategoryAdmin(admin.ModelAdmin):
 class CategoryRelationAdmin(admin.ModelAdmin):
 	list_display = ('category', 'custom_category', 'customer')
 
+class MetadataLanguageAdmin(admin.ModelAdmin):
+	lsit_display = ('language', 'title_brief')
+
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Item, ItemAdmin)
 admin.site.register(ImportQueue, ImportQueueAdmin)
@@ -69,7 +72,7 @@ admin.site.register(AppError, AppErrorAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(CustomCategory, CustomCategoryAdmin)
 admin.site.register(CategoryRelation, CategoryRelationAdmin)
-
+admin.site.register(MetadataLanguage, MetadataLanguageAdmin)
 '''
 admin.site.register(Customer)
 admin.site.register(Item)
