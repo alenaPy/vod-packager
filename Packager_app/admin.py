@@ -28,9 +28,6 @@ class TranscodingServerAdmin(admin.ModelAdmin):
 class PathAdmin(admin.ModelAdmin):
 	list_display = ('key', 'location', 'description')
 
-class DaemonAdmin(admin.ModelAdmin):
-	list_display = ('name', 'description', 'last_run')
-
 class VideoProfileAdmin(admin.ModelAdmin):
 	list_display = ('name', 'file_extension', 'status', 'bit_rate', 'format', 'notes')
 
@@ -40,8 +37,6 @@ class ImageProfileAdmin(admin.ModelAdmin):
 class MetadataProfileAdmin(admin.ModelAdmin):
 	list_display = ('key', 'name', 'status', 'description')
 
-class AppErrorAdmin(admin.ModelAdmin):
-	list_display = ('key', 'name', 'description')
 
 class CategoryAdmin(admin.ModelAdmin):
 	list_display = ('name',)
@@ -64,11 +59,9 @@ admin.site.register(PackageGroup, PackageGroupAdmin)
 admin.site.register(Package, PackageAdmin)
 admin.site.register(TranscodingServer, TranscodingServerAdmin)
 admin.site.register(Path, PathAdmin)
-admin.site.register(Daemon, DaemonAdmin)
 admin.site.register(VideoProfile, VideoProfileAdmin)
 admin.site.register(ImageProfile, ImageProfileAdmin)
 admin.site.register(MetadataProfile, MetadataProfileAdmin)
-admin.site.register(AppError, AppErrorAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(CustomCategory, CustomCategoryAdmin)
 admin.site.register(CategoryRelation, CategoryRelationAdmin)

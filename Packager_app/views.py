@@ -3,7 +3,7 @@ from django.shortcuts import render
 import models
 
 def index(request):
-	return render(request, 'index.html')
+	return render(request, 'item.html')
 
 def items(request):
 	return HttpResponse("Items index.")

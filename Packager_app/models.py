@@ -142,6 +142,9 @@ class ImportQueue(models.Model):
 	creation_date				= models.DateTimeField(auto_now_add=True)
 	modification_date 			= models.DateTimeField(auto_now=True)
 	
+
+	error					= models.CharField(max_length=512)
+
 	def __unicode__(self):
 		return self.file_name 
 	
@@ -157,8 +160,8 @@ class VideoRendition(models.Model):
 	file_size 				= models.BigIntegerField(default=0)
 	checksum 				= models.CharField(max_length=32)
 	
-
-	Screen_Format				= models.CharField(max_length=64)
+	error					= models.CharField(max_length=512)
+	screen_format				= models.CharField(max_length=64)
 
 	def __unicode__(self):
 		return self.file_name
@@ -189,10 +192,8 @@ class Package(models.Model):
 	item						= models.ForeignKey('Item')
 	date_published 					= models.DateTimeField(auto_now_add=True)
 	status						= models.CharField(max_length=2, choices=PACKAGE_STATUS)
-	
-	# xxx review
-	#user 						= models.ForeignKey('User') # descomenta
 	group 						= models.ForeignKey('PackageGroup')
+	error						= models.CharField(max_length=512)
 	
 	def __unicode__(self):
 		return str(self.date_published)

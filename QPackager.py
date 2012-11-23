@@ -11,15 +11,15 @@ setup_environ(settings)
 from Packager_app import models
 
 import os
+import logging
 
 def GetPackageQueue():
     return models.Package.objects.filter(status='Q')
 
-
-errno  = 0
-
+ErrorString = ''
 
 def GetVideoRenditions(Package=None):
+
     if Package is not None:
 	
 
@@ -27,6 +27,9 @@ def GetVideoRenditions(Package=None):
 	VideoProfileList = Package.customer.video_profile.filter(status='E')
 	Item		 = Package.item
 
+	global ErrorString
+	
+	ErrorString = ''
 
 
 	ExportSD = False
@@ -41,14 +44,12 @@ def GetVideoRenditions(Package=None):
 
 
 	if VPListLen == 0 or VPListLen > 2:
-	    
-	    
 	    #
 	    # No tiene correctamente definido los profiles
 	    #
-	    print "1"
-	    pass
-	
+	    ErrorString = '01: Number of VideoProfile are wrong: ' + VPListLen
+	    return None
+
 	else:
 	    #
 	    # Que formatos usa el cliente
@@ -77,8 +78,10 @@ def GetVideoRenditions(Package=None):
 			#
 			# Esta mal definido tiene dos profiles pero iguales
 		        #
-			print "2"
-		        pass
+			ErrorString = '02: The customer have 2 profiles but both are in same format: ' + VideoProfileList[0].format
+			return None
+
+		        
 		elif VPListLen == 1:
 		    #
 		    # Tiene un solo profile definido
@@ -111,8 +114,9 @@ def GetVideoRenditions(Package=None):
 			#
 			# Tiene un solo profile definido pero no es SD
 		        #
-			print "3"
-			pass
+			ErrorString = '03: The Customer have preferences of SD but does not have a VideoProfile with SD Format'
+			return None
+
 		else:
 		    if (VideoProfileList[0].format == 'SD' or VideoProfileList[1].format == 'SD') and (VideoProfileList[0].format != VideoProfileList[1].format):
 			if VideoProfileList[0].format == 'SD':
@@ -125,8 +129,8 @@ def GetVideoRenditions(Package=None):
 			# Error logico, solamente el cliente exporta SD pero no tiene ningun
 			# Video profile definido SD o tiene los dos profiles definidos como SD
 			#
-			print "4"
-			pass
+			ErrorString = '04: The Customer have preferences of SD but does not have a VideoProfile with SD Format or have 2 SD format defined' 
+			return None
 
 	    elif Customer.export_format == 'OHD':
 	    
@@ -141,8 +145,8 @@ def GetVideoRenditions(Package=None):
 			#
 			# Tiene un solo profile definido pero no es HD
 			#
-			print "5"
-			pass
+			ErrorString = '05: The Customer have preferences of SD but does not have a VideoProfile with HD Format'
+			return None
 		else:
 		    if (VideoProfileList[0].format == 'HD' or VideoProfileList[1].format == 'HD') and (VideoProfileList[0].format != VideoProfileList[1].format):
 			if VideoProfileList[0].format == 'HD':
@@ -155,8 +159,8 @@ def GetVideoRenditions(Package=None):
 			# Error logico, solamente el cliente exporta hd pero no tiene ningun
 			# Video profile definido HD o tiene los dos profiles definidos como HD
 			#
-			print "6"
-			pass
+			ErrorString = '06: The Customer have preferences of HD but does not have a VideoProfile with HD Format or have 2 HD format defined'
+			return None
 		    
 
 
@@ -167,7 +171,7 @@ def GetVideoRenditions(Package=None):
 	    if ExportHD:
 		try:
 		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileHD)
-		    if VRendition.status = 'F':
+		    if VRendition.status == 'F':
 			VRenditionList.append(VRendition)
 		    
 		    #
@@ -180,16 +184,18 @@ def GetVideoRenditions(Package=None):
 			#
 			# No esta finalizado el video Rendition
 			#
+			pass
 		except:
 		    #
 		    # No existe un video rendition para ese video
 		    #
-		    print "7"
-		    pass
+		    ErrorString = '07: Not exist VideoRendition for this VideoProfile in the Item: [ITEM: ' + Item.name + '], [VP: ' + ProfileHD.name + ']'
+		    return None
+
 	    if ExportSD:
 		try:
 		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD)
-		    if VRendition.status = 'F':
+		    if VRendition.status == 'F':
 			VRenditionList.append(VRendition)
 		    else:
 			#
@@ -200,8 +206,8 @@ def GetVideoRenditions(Package=None):
 		    #
 		    # No existe el video rendition para ese video
 		    #
-		    print "8"
-		    pass
+		    ErrorString = '08: Not exist VideoRendition for this VideoProfile in the Item: [ITEM: ' + Item.name + '], [VP: ' + ProfileSD.name + ']'
+		    return None
 
 	elif Item.format == 'SD':
 	    #
@@ -210,7 +216,7 @@ def GetVideoRenditions(Package=None):
 	    if ExportSD:
 	    	try:
 		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD)
-		    if VRendition.status = 'F':
+		    if VRendition.status == 'F':
 			VRenditionList.append(VRendition)
 		    else:
 			#
@@ -221,13 +227,19 @@ def GetVideoRenditions(Package=None):
 		    #
 		    # No existe el video rendition para ese video
 		    #
-		    print "9"
-		    pass
+		    ErrorString = '09: Not exist VideoRendition for this VideoProfile in the Item: [ITEM: ' + Item.name + '], [VP: ' + ProfileSD.name + ']'
+		    return None
 
+	ErrorString = 'OK'
 	return VRenditionList
 
 
 def GetExportPathFromPackage(Package=None):
+
+    global ErrorString
+
+    ErrorString = 'OK'
+
     if Package is not None:
 	try:
 	    export_path = models.Path.objects.get(key='package_export_path').location
@@ -235,6 +247,7 @@ def GetExportPathFromPackage(Package=None):
 	    #
 	    # No esta el export path definido en la base o tiene un nombre incorrecto
 	    #
+	    ErrorString = '10: Export Path (package_export_path) is not defined' 
 	    return None
 	
 	if export_path is not None:
@@ -263,31 +276,54 @@ def GetExportPathFromPackage(Package=None):
 			#
 			# No puede crear el directorio
 			#
+			ErrorString = '11: Can not create dir -> ' + basepath + group_path
 			return None
 		return_path = basepath + group_path
+	    
 	    else:
 		#
 		# No existe en el filesystem el export_path + el customer_path
 		#
+		ErrorString = '12: Customer export path not exist -> ' + basepath
 		return None
 
 	else:
 	    #
 	    # No tiene valor asignado el export_path
 	    #
+	    ErrorString = '13: In value package_export_path'
 	    return None
     else:
 	#
 	# Argumento Package falta
 	#
+	ErrorString = '14: Argument Package is None'
 	return None
     #
     # Termina correctamente
     # 
+    ErrorString = 'OK'
     return return_path
 
 
+logging.basicConfig(format='%(asctime)s - QIPackager.py -[%(levelname)s]: %(message)s', filename='./log/QPackager.log',level=logging.DEBUG)
+
 
 x = GetPackageQueue()
-print GetExportPathFromPackage(x[0])
-print GetVideoRenditions(x[0])
+j = x[0]
+j.status = 'P'
+j.error  = 'Trolo'
+j.save()
+
+GetExportPathFromPackage(j)
+j.error = ErrorString
+j.status = 'P'
+j.save()
+
+#print dir(x[0])
+#print type((x[0]).save())
+#print x[0].status
+#print ErrorString
+print GetVideoRenditions(j)
+j.error = ErrorString
+j.save()

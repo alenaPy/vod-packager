@@ -22,6 +22,7 @@ import logging
 import sys, time
 from daemon import Daemon
 
+ErrorString = ''
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Funciones - Utileria
@@ -87,7 +88,6 @@ def GetImportQueue():
 # Procedimientos
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++    
 
-
 def InitCarbonPool():
     #
     # Se crea el pool de Carbon
@@ -120,7 +120,11 @@ def InitCarbonPool():
 
 
 def MakeImageRenditions(ImportTask=None):
-
+#
+#
+# REVISAR, CREA LAS IMAGEN RENDITION AUNQUE YA EXISTAN!!!!!!
+#
+#
     if ImportTask is None:
 	return False
 
@@ -149,13 +153,16 @@ def CheckVideoRendition(Item=None, VProfile=None):
 
 def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 
+    global ErrorString
+
+    ErrorString = ''
+
     if ImportTask is None:
 	
 	logging.error("MakeVideoRenditions(): ImportTask is None")
 
 	return False
 
-    
     
     Item = ImportTask.item
     
@@ -189,7 +196,7 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 	# no lo procesa y continua con el siguiente profile
 	#
 	if not CheckVideoRendition(Item,VProfile):
-	    logging.warning("MakeVideoRendition(): Video Profile exist-> Continue")
+	    logging.warning("MakeVideoRendition(): Video Profile exist-> Continue. [VP: %s]" % VProfile.name )
 	    continue
 	    
 	#
@@ -211,7 +218,16 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 	# Envia el Job a transcodificar
 	#
 	XmlJob    = CreateCarbonXMLJob(Source,File,[],[TranscodeInfo],None,None)
+	if XmlJob is None:
+	    logging.error = "MakeVideoRendition(): 01: Error making Carbon XML Job"
+	    ErrorString = '01: Error making Carbon XML Job'
+	    return False
+
 	Job       = StartJobCarbonPool(CPool,XmlJob)
+	if Job is None:
+	    ErrorString = '02: Error sending Job'
+	    logging.error = "MakeVideoRendition(): 02: Error sending Job"
+	    return False
 	
 	#
 	# Crea el Video Rendition en el modelo
@@ -223,6 +239,14 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 	VRendition.status               = 'Q'	# Queued
 	VRendition.item		 	= Item
 	
+	if Item.format == 'HD':
+	    if VProfile.format == 'HD':
+		VRendition.screen_format = 'Widescreen'
+	    else:
+		VRendition.screen_format = 'Letterbox'
+	elif Item.format == 'SD':
+	    VRendition.screen_format = 'Standard'
+
 
 	for TServer in GetTranscodingServer():
 	    if Job.GetCarbonHostname() == TServer.ip_address:
@@ -237,6 +261,9 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 
 def main():
 
+    global ErrorString
+    ErrorString = ''
+
     #
     # Configura el Log 
     #
@@ -250,9 +277,9 @@ def main():
     CPool = InitCarbonPool()
     while CPool is None:
 	logging.info("main(): No transcoding server configured in database... Sleep")
-	time.sleep(60)
+	time.sleep(2)
 
-	CPool = Init_CarbonPool()
+	CPool = InitCarbonPool()
 
 
     logging.info("main(): Enter in main loop")
@@ -267,14 +294,22 @@ def main():
 	    #
 	    Queue.queue_status = 'D'			# Lo marca como Tomado
 	    Queue.save()			
-	    MakeVideoRenditions(Queue,CPool)	# Crea los video renditions
-	    MakeImageRenditions(Queue)		# Crea los imagen renditions
+
+	    # Creo los video renditions
+	    if not MakeVideoRenditions(Queue,CPool):
+		Queue.error = ErrorString
+		Queue.save()
+
+	    # Creo los imagen rendition
+	    if not MakeImageRenditions(Queue):
+		Queue.error = ErrorString
+		Queue.save()
 
 	#
 	# Duerme 60 Segundos
 	#
 	logging.info("main(): No more work... Sleep")
-	time.sleep(60)
+	time.sleep(10)
 
 class main_daemon(Daemon):
     def run(self):
