@@ -241,11 +241,11 @@ class VideoProfile(models.Model):
 	#
 	# Cablelabs Metadata for Movie Item
 	#
-	Audio_type					= models.CharField(max_length=64)
-	Resolution					= models.CharField(max_length=5)
-	Frame_Rate					= models.CharField(max_length=2)
-	Codec						= models.CharField(max_length=64)
-	Bit_Rate					= models.CharField(max_length=64)
+	audio_type					= models.CharField(max_length=64)
+	resolution					= models.CharField(max_length=5)
+	frame_rate					= models.CharField(max_length=2)
+	codec						= models.CharField(max_length=64)
+	bit_bate					= models.CharField(max_length=64)
 
 	def __unicode__(self):
 		return self.name
