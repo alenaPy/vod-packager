@@ -120,11 +120,7 @@ def InitCarbonPool():
 
 
 def MakeImageRenditions(ImportTask=None):
-#
-#
-# REVISAR, CREA LAS IMAGEN RENDITION AUNQUE YA EXISTAN!!!!!!
-#
-#
+
     if ImportTask is None:
 	return False
 
@@ -139,17 +135,34 @@ def MakeImageRenditions(ImportTask=None):
     # Por cada image profile debe crear el image rendition
     #
     for IProfile in IProfileList:
+	
+	if not CheckImagenProfile(Item, IProfile):
+	    logging.warning("MakeImagenRendition(): Video Profile exist-> Continue. [IP: %s]" % IProfile.name )
+	    continue
+
 	IRendition               = models.ImageRendition()
 	IRendition.image_profile = IProfile
 	IRendition.item          = Item
 	IRendition.status        = 'E'
 	IRendition.save()
 
+    return True
+
 def CheckVideoRendition(Item=None, VProfile=None):
     list = models.VideoRendition.objects.filter(item=Item, video_profile=VProfile)
     if len(list) > 0:
 	return False
     return True	
+
+
+def CheckImagenRendition(Item=None, IProfile=None):
+    list = models.ImagenRendition.objects.filter(item=Item, image_profile=IProfile)
+    if len(list) > 0:
+	return False
+    return True
+
+
+
 
 def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 
@@ -203,8 +216,17 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 	# Arma el destination filename y el basename
 	#
 	DstFilename = RenditionFileName(File, VProfile.sufix, VProfile.file_extension)
-	DstBasename = SplitExtension(DstFilename)
+	if DstFilename is None:
+	    logging.error = "MakeVideoRenditions(): 03: Unable stablish DstFileName"
+	    ErrorString   = "03: Unable stablish DstFileName"
+	    return False
 	
+
+	DstBasename = SplitExtension(DstFilename)
+	if DstBasename is None:
+	    logging.error = "MakeVideoRenditions(): 04: Unable to stablish DstBasename"
+	    ErrorString   = "04: Unable stablish DstBasename"
+	    return False
 	#
 	# Arma los parametros de transcodificacion
 	#	
