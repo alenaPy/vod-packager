@@ -218,7 +218,7 @@ class Path(models.Model):
 
 class VideoProfile(models.Model):
 	
-	name 						= models.CharField(unique=True, max_length=256)
+	name 						= models.CharField(unique=True, max_length=32)
 	guid 						= models.CharField(max_length=256)
 	file_extension 				= models.CharField(max_length=64)
 	status 						= models.CharField(max_length=1, choices=ACTIVE_STATUS)
