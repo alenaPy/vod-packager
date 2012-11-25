@@ -327,11 +327,15 @@ def main():
 		Queue.error = ErrorString
 		Queue.save()
 
+
+	Queue.item.status = 'P'
+	Queue.item.save()
+
 	#
 	# Duerme 60 Segundos
 	#
 	logging.info("main(): No more work... Sleep")
-	time.sleep(10)
+	time.sleep(60)
 
 class main_daemon(Daemon):
     def run(self):

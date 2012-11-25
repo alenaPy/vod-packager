@@ -66,7 +66,19 @@ EXPORT_CUSTOMER_FORMAT = (
 	('OSD', 'Only SD Format'),
 	('OHD', 'Only HD Format'),
 	('BOTH','Both Format'),
-	('HD', 'HD Preferencis'),
+	('HD', 'HD Preferably'),
+)
+
+RUNTIME_DISPLAY = (
+	('T', 'Time Format: HH:MM:SS'),
+	('S', 'Number of seconds'),
+)
+
+RATING_DISPLAY = (
+	('X',  'X'),
+	('XXX','XXX'),
+	('18', '18'),
+	('R',  'R'),
 )
 
 class Customer(models.Model):
@@ -89,7 +101,9 @@ class Customer(models.Model):
 	#cost_HD 					= models.IntegerField()
 	#cost_SD 					= models.IntegerField()
 
+	runtype_display					= models.CharField(max_length=1, choices=RUNTIME_DISPLAY)
 	license_date_format				= models.CharField(max_length=2, choices=LICENSE_DATE_FORMAT)
+	rating_display					= models.CharField(max_length=3, choices=RATING_DISPLAY)
 
 	def __unicode__(self):
 		return self.name
@@ -119,7 +133,6 @@ class Item(models.Model):
 
 	metadata_language				= models.ManyToManyField('MetadataLanguage')
 	
-	episode_number					= models.CharField(max_length=256)
 	rating 						= models.CharField(max_length=128)
 	genre 						= models.CharField(max_length=32)
 	actors 						= models.CharField(max_length=512)
