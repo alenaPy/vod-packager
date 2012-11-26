@@ -1,6 +1,6 @@
 #!/bin/bash
-rm db/packager.db
+#rm db/packager.db
 python manage.py syncdb
 python create_test.py
-python create_item.py
-python create_path.py
+#python create_item.py
+#python create_path.py

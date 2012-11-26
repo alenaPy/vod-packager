@@ -15,7 +15,6 @@ LICENSE_DATE_FORMAT = (
 	('DO', 'Only Date'),
 )
 
-
 FORMAT = (
 	('SD', 'SD'),
 	('HD', 'HD'),
@@ -305,3 +304,41 @@ class CategoryRelation(models.Model):
 
 	def __unicode__(self):
 		return self.customer
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Funciones - GET
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+def GetVideoProfiles(format='ALL'):
+    if format == 'ALL':
+	vp_list = VideoProfile.objects.filter(status='E')
+    elif format == 'SD':
+	vp_list = VideoProfile.objects.filter(status='E',format='SD')
+    elif format == 'HD':
+	vp_list = VideoProfile.objects.filter(status='E',format='HD')
+    return vp_list
+    
+def GetImageProfile():
+    return ImageProfile.objects.filter(status='E')
+    
+
+def GetTranscodingServer():
+    return TranscodingServer.objects.filter(status='E')
+
+
+def GetImportQueue():
+    return ImportQueue.objects.filter(queue_status='Q')
+
+def GetVideoRenditionQueue():
+    return VideoRendition.objects.filter(status='Q')
+    
+def GetPath(path=None):
+    if path is not None:
+	return Path.objects.get(key=path).location
+    return None
+
+def GetPackageQueue():
+    return Package.objects.filter(status='Q')
+
+
+

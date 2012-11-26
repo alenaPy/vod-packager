@@ -60,30 +60,6 @@ def RenditionFileName(original_filename = None, sufix = None, ext = None):
 	return basename
     return None
 
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Funciones - GET
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-def GetVideoProfiles(format='ALL'):
-    if format == 'ALL':
-	vp_list = models.VideoProfile.objects.filter(status='E')
-    elif format == 'SD':
-	vp_list = models.VideoProfile.objects.filter(status='E',format='SD')
-    elif format == 'HD':
-	vp_list = models.VideoProfile.objects.filter(status='E',format='HD')
-    return vp_list
-    
-def GetImageProfile():
-    return models.ImageProfile.objects.filter(status='E')
-    
-
-def GetTranscodingServer():
-    return models.TranscodingServer.objects.filter(status='E')
-    
-
-def GetImportQueue():
-    return models.ImportQueue.objects.filter(queue_status='Q')
-    
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++    
 # Procedimientos
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++    
@@ -129,7 +105,7 @@ def MakeImageRenditions(ImportTask=None):
     #
     # Trae la lista de profiles activos
     #
-    IProfileList = GetImageProfile()
+    IProfileList = models.GetImageProfile()
     
     #
     # Por cada image profile debe crear el image rendition
@@ -185,9 +161,9 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
     # SD o HD
     #
     if Item.format == 'HD':
-	VProfileList = GetVideoProfiles()
+	VProfileList = models.GetVideoProfiles()
     elif Item.format == 'SD':
-	VProfileList = GetVideoProfiles('SD')
+	VProfileList = models.GetVideoProfiles('SD')
         
         
     Source = ImportTask.svc_path
@@ -232,7 +208,8 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 	#	
 	TranscodeInfo = { 'd_guid'    : TranscodeGuid, 
 	                  'd_basename': DstBasename, 
-	                  'd_path'    : models.Path.objects.get(key="video_smb_path").location }		
+	                  #'d_path'    : models.Path.objects.get(key="video_smb_path").location }		
+			  'd_path'    : models.GetPath("video_smb_path") }
 
 	logging.debug("MakeVideoRenditions(): Transcode Info: " +  str(TranscodeInfo))
 	
@@ -270,7 +247,7 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 	    VRendition.screen_format = 'Standard'
 
 
-	for TServer in GetTranscodingServer():
+	for TServer in models.GetTranscodingServer():
 	    if Job.GetCarbonHostname() == TServer.ip_address:
 		VRendition.transcoding_server = TServer
 		break
@@ -309,7 +286,7 @@ def main():
 	#
 	# En el ciclo principal
 	#
-	QueueList = GetImportQueue()
+	QueueList = models.GetImportQueue()
 	for Queue in QueueList:
 	    #
 	    # Por cada elemento en la cola de importacion

@@ -13,11 +13,6 @@ from Packager_app import models
 import os
 import logging
 
-
-
-def GetPackageQueue():
-    return models.Package.objects.filter(status='Q')
-
 ErrorString = ''
 
 def GetVideoRenditions(Package=None):

@@ -29,15 +29,6 @@ setup_environ(settings)
 from Packager_app import models
 
 
-def GetVideoRenditionQueue():
-    return models.VideoRendition.objects.filter(status='Q')
-    
-def GetPath(path=None):
-    if path is not None:
-	return models.Path.objects.get(key=path).location
-    return None
-
-    
 def FileExist(path, file):
     if os.path.isfile(path+file):
 	return True
@@ -62,7 +53,7 @@ def CheckQueue():
     
     logging.info("CheckQueue(): Start queue check")
         
-    video_local_path = GetPath("video_local_path")
+    video_local_path = models.GetPath("video_local_path")
 
     logging.debug("CheckQueue(): video_local_path: " + video_local_path)
     
@@ -79,7 +70,7 @@ def CheckQueue():
     #
     # Trae todos los video rendition cuyo Status = Q
     #
-    for rendition in GetVideoRenditionQueue():
+    for rendition in models.GetVideoRenditionQueue():
 	
 	logging.info("CheckQueue(): Video Rendition Check: " + rendition.file_name)
 	logging.info("CheckQueue(): Video Rendition Item: " + rendition.item.name)
