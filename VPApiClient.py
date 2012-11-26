@@ -25,6 +25,15 @@ def ItemMetadataLanguage():
 		 ('summary_short', '')])
 
 
-def VpAddItem():
-    s = xmlrpclib.ServerProxy('http://localhost:8000')
-    print s.system.listMethods()
+def VodPackagerAddItem(SmbPath = None, FileName = None, IMetadata = None, IMetadataLanguage = []):
+    if FileName is not None and SmbPath is not None and IMetadata is not None:
+	s = xmlrpclib.ServerProxy('http://localhost:8000')
+	return s.VPAddItem(SmbPath, FileName, IMetadata, IMetadataLanguage)
+
+
+I = ItemMetadata()
+I['name'] = 'Putin'
+
+L = ItemMetadataLanguage()
+L['language'] = 'esp'
+VodPackagerAddItem('\\\\aca\\', 'Gran Trolo.mov', I, [L] )

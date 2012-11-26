@@ -82,7 +82,7 @@ def GetVideoRenditions(Package=None):
 			# Esta mal definido tiene dos profiles pero iguales
 		        #
 			ErrorString = '02: The customer have 2 profiles but both are in same format: ' + VideoProfileList[0].format
-			logging.error("GetVideoRenditions():" + ErrorString)
+			logging.error("GetVideoRenditions(): " + ErrorString)
 			return None
     
 
@@ -120,7 +120,7 @@ def GetVideoRenditions(Package=None):
 			# Tiene un solo profile definido pero no es SD
 		        #
 			ErrorString = '03: The Customer have preferences of SD but does not have a VideoProfile with SD Format'
-			logging.error("GetVideoRenditions():" + ErrorString)
+			logging.error("GetVideoRenditions(): " + ErrorString)
 			return None
 
 		else:
@@ -136,7 +136,7 @@ def GetVideoRenditions(Package=None):
 			# Video profile definido SD o tiene los dos profiles definidos como SD
 			#
 			ErrorString = '04: The Customer have preferences of SD but does not have a VideoProfile with SD Format or have 2 SD format defined' 
-			logging.error("GetVideoRenditions():" + ErrorString)
+			logging.error("GetVideoRenditions(): " + ErrorString)
 			return None
 
 	    elif Customer.export_format == 'OHD':
@@ -153,7 +153,7 @@ def GetVideoRenditions(Package=None):
 			# Tiene un solo profile definido pero no es HD
 			#
 			ErrorString = '05: The Customer have preferences of SD but does not have a VideoProfile with HD Format'
-			logging.error("GetVideoRenditions():" + ErrorString)
+			logging.error("GetVideoRenditions(): " + ErrorString)
 			return None
 		else:
 		    if (VideoProfileList[0].format == 'HD' or VideoProfileList[1].format == 'HD') and (VideoProfileList[0].format != VideoProfileList[1].format):
@@ -168,7 +168,7 @@ def GetVideoRenditions(Package=None):
 			# Video profile definido HD o tiene los dos profiles definidos como HD
 			#
 			ErrorString = '06: The Customer have preferences of HD but does not have a VideoProfile with HD Format or have 2 HD format defined'
-			logging.error("GetVideoRenditions():" + ErrorString)
+			logging.error("GetVideoRenditions(): " + ErrorString)
 			return None
 		    
 
@@ -192,7 +192,7 @@ def GetVideoRenditions(Package=None):
 		    # No existe un video rendition para ese video
 		    #
 		    ErrorString = '07: Not exist VideoRendition for this VideoProfile in the Item: [ITEM: ' + Item.name + '], [VP: ' + ProfileHD.name + ']'
-		    logging.error("GetVideoRenditions():" + ErrorString)
+		    logging.error("GetVideoRenditions(): " + ErrorString)
 		    return None
 
 	    if ExportSD:
@@ -205,7 +205,7 @@ def GetVideoRenditions(Package=None):
 		    # No existe el video rendition para ese video
 		    #
 		    ErrorString = '08: Not exist VideoRendition for this VideoProfile in the Item: [ITEM: ' + Item.name + '], [VP: ' + ProfileSD.name + ']'
-		    logging.error("GetVideoRenditions():" + ErrorString)
+		    logging.error("GetVideoRenditions(): " + ErrorString)
 		    return None
 
 	elif Item.format == 'SD':
@@ -222,7 +222,7 @@ def GetVideoRenditions(Package=None):
 		    # No existe el video rendition para ese video
 		    #
 		    ErrorString = '09: Not exist VideoRendition for this VideoProfile in the Item: [ITEM: ' + Item.name + '], [VP: ' + ProfileSD.name + ']'
-		    logging.error("GetVideoRenditions():" + ErrorString)
+		    logging.error("GetVideoRenditions(): " + ErrorString)
 		    return None
 
 	ErrorString = 'OK'

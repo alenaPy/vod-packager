@@ -6,7 +6,6 @@ import sys
 
 
 if __name__ == "__main__":
-	#daemon = main_daemon('./pid/QImport.pid', stdout='./log/QImport.err', stderr='./log/QImport.err')
 	if len(sys.argv) == 2:
 		if 'start'     == sys.argv[1]:
 		    pass
@@ -16,10 +15,11 @@ if __name__ == "__main__":
 		    pass
 		elif 'test'    == sys.argv[1]:
 		    pass
+		
 		else:
 			print "Unknown command"
 			sys.exit(2)
 		sys.exit(0)
 	else:
-		print "usage: %s start|stop|restart|test" % sys.argv[0]
+		print "usage: %s start|stop|restart|test|install" % sys.argv[0]
 		sys.exit(2)
