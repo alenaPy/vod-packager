@@ -86,9 +86,10 @@ def InitCarbonPool():
     for TServer in TServerList:
 	ret = CPool.addCarbon(TServer.ip_address)
 	if ret == False:
+
 	    TServer.status = 'D'
 	    TServer.save()
-
+	    logging.warning("InitCarbonPool(): Carbon server [%s] fail to init -> Set Disable" % TServer.ip_address)
     if CPool.poolLen() == 0:
 	return None
     
@@ -276,7 +277,7 @@ def main():
     CPool = InitCarbonPool()
     while CPool is None:
 	logging.info("main(): No transcoding server configured in database... Sleep")
-	time.sleep(2)
+	time.sleep(10)
 
 	CPool = InitCarbonPool()
 
