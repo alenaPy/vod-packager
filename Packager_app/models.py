@@ -186,7 +186,7 @@ class ImageRendition(models.Model):
 	file_name 					= models.CharField(max_length=256)
 	file_size 					= models.BigIntegerField(default=0)
 	checksum 					= models.CharField(max_length=32)
-	image_profile 				= models.ForeignKey('ImageProfile')
+	image_profile 					= models.ForeignKey('ImageProfile')
 	item 						= models.ForeignKey('Item')
 	status						= models.CharField(max_length=2, choices=IMAGE_RENDITION_STATUS)
 	#
@@ -194,7 +194,9 @@ class ImageRendition(models.Model):
 	#
 	def __unicode__(self):
 		return self.file_name
-                
+
+
+
 class PackageGroup(models.Model):
 	name 						= models.CharField(max_length=32)
 	
@@ -317,14 +319,16 @@ def GetVideoProfiles(format='ALL'):
     elif format == 'HD':
 	vp_list = VideoProfile.objects.filter(status='E',format='HD')
     return vp_list
+
+
+def GetProcessingItems():
+    return Item.objects.filter(status='P')
     
 def GetImageProfile():
     return ImageProfile.objects.filter(status='E')
-    
 
 def GetTranscodingServer():
     return TranscodingServer.objects.filter(status='E')
-
 
 def GetImportQueue():
     return ImportQueue.objects.filter(queue_status='Q')

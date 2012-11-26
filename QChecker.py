@@ -49,16 +49,63 @@ def GetJobState(transcoder_ip, job_guid):
 
 
 
-def CheckQueue():
+def CheckItemStatus():
+
+    logging.info("CheckItemStatus(): Start Item check")
     
-    logging.info("CheckQueue(): Start queue check")
+    for Item in models.GetProcessingItems():
+
+	logging.info("CheckItemStatus(): Checking item: %s" % Item.name)
+
+	VRenditionList = models.VideoRenditions.objects.filter(item=Item)
+
+	vr_total    = len(VRenditionList)
+	vr_queued   = 0
+	vr_finished = 0
+	vr_error    = 0
+	for VRendition in VRenditionList:
+	    if VRendition.status   == 'Q':
+		vr_queued   = queued + 1
+	    elif VRendition.status == 'F':
+		vr_finished = finished + 1
+	    elif VRendition.status == 'E':
+		vr_error    = error +1
+
+	IRenditionList = models.ImageRenditions.objects.filter(item=Item)
+
+	ir_total   = len(IRenditionList)
+	ir_empty   = 0
+	ir_filled  = 0
+
+	for IRendition in IRenditionList:
+	    if IRendition.status   == 'E':
+		ir_empty  = ir_empty  + 1
+	    elif IRendition.status == 'F':
+		ir_filled = ir_filled + 1
+
+	if vr_total == vr_queued and ir_total == ir_filled:
+	    #
+	    # Termino de procesarse todo
+	    #
+	    Item.status = 'D'
+	    Item.save()
+	else:
+	    if vr_error > 0:
+		Item.status = 'W'
+		Item.save()
+    logging.info("CheckItemStatus(): End Item Check")
+
+
+def CheckVideoRenditionStatus():
+    
+    logging.info("CheckVideoRenditionStatus(): Start Check Video Rendition Status")
         
     video_local_path = models.GetPath("video_local_path")
 
-    logging.debug("CheckQueue(): video_local_path: " + video_local_path)
+    logging.debug("CheckVideoRenditionStatus(): video_local_path: " + video_local_path)
     
     if video_local_path is None:
-	logging.error("CheckQueue(): Config Error, video_local_path not defined")
+	logging.error("CheckVideoRenditionStatus(): Config Error, video_local_path not defined")
 	return False
 
     #
@@ -70,15 +117,15 @@ def CheckQueue():
     #
     # Trae todos los video rendition cuyo Status = Q
     #
-    for rendition in models.GetVideoRenditionQueue():
+    for VRendition in models.GetVideoRenditionQueue():
 	
-	logging.info("CheckQueue(): Video Rendition Check: " + rendition.file_name)
-	logging.info("CheckQueue(): Video Rendition Item: " + rendition.item.name)
+	logging.info("CheckVideoRenditionStatus(): Video Rendition Check: " + VRendition.file_name)
+	logging.info("CheckVideoRenditionStatus(): Video Rendition Item: " + VRendition.item.name)
 
-	logging.info("CheckQueue(): Transcoding Server: " + rendition.transcoding_server.ip_address)
-	logging.info("CheckQueue(): Job GUID: " + rendition.transcoding_job_guid)
+	logging.info("CheckVideoRenditionStatus(): Transcoding Server: " + VRendition.transcoding_server.ip_address)
+	logging.info("CheckVideoRenditionStatus(): Job GUID: " + VRendition.transcoding_job_guid)
 	
-	JobState = GetJobState(rendition.transcoding_server.ip_address, rendition.transcoding_job_guid)
+	JobState = GetJobState(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 	
 	if JobState == 'NEX_JOB_COMPLETED':
 	    #
@@ -86,9 +133,9 @@ def CheckQueue():
 	    # 
 	    # Comprueba la existencia del File
 	    #
-	    logging.info("CheckQueue(): Video Rendition finish transcoding: " + rendition.file_name)
+	    logging.info("CheckVideoRenditionStatus(): Video Rendition finish transcoding: " + VRendition.file_name)
 	    
-	    if FileExist(video_local_path, rendition.file_name):
+	    if FileExist(video_local_path, VRendition.file_name):
 		#
 		# Si el archivo existe
 		#
@@ -96,23 +143,23 @@ def CheckQueue():
 		# - Calcula su filesize
 		# - Establece su Status en F -> Finished
 	    
-	        rendition.checksum = md5checksum.md5_checksum(video_local_path + rendition.file_name)
-		logging.debug("CheckQueue(): Video Rendition Checksum: " + rendition.file_name + "," + rendition.checksum)	
+	        VRendition.checksum = md5checksum.md5_checksum(video_local_path + VRendition.file_name)
+		logging.debug("CheckVideoRenditionStatus(): Video Rendition Checksum: " + VRendition.file_name + "," + VRendition.checksum)	
 		
-		rendition.file_size = os.stat(video_local_path + rendition.file_name).st_size
-		logging.debug("CheckQueue(): Video Rendition FileSize: " + rendition.file_name + "," + str(rendition.file_size))
+		VRendition.file_size = os.stat(video_local_path + VRendition.file_name).st_size
+		logging.debug("CheckVideoRenditionStatus(): Video Rendition FileSize: " + VRendition.file_name + "," + str(VRendition.file_size))
 		
-		rendition.status   = 'F'
-		rendition.save()
+		VRendition.status   = 'F'
+		VRendition.save()
 		
-		logging.info("CheckQueue(): Video Rendition finish all procesing: " + rendition.file_name)
+		logging.info("CheckVideoRenditionStatus(): Video Rendition finish all procesing: " + VRendition.file_name)
 	    else:
 		#
 		# Si el archivo no existe es porque se produjo un error
 		#
-		logging.error("CheckQueue(): Video Rendition not exist: [FILE]-> " + rendition.file_name + ", [PATH]-> " + video_local_path)
-		rendition.status   = 'E'
-		rendition.save()    
+		logging.error("CheckVideoRenditionStatus(): Video Rendition not exist: [FILE]-> " + VRendition.file_name + ", [PATH]-> " + video_local_path)
+		VRendition.status   = 'E'
+		VRendition.save()    
 	    
         else:
     	    if JobState == 'NEX_JOB_ERROR':
@@ -120,10 +167,10 @@ def CheckQueue():
     		# Si el job termino con errores
     		#
     		
-    		rendition.status = 'E'
-    		rendition.save()
+    		VRendition.status = 'E'
+    		VRendition.save()
     	
-    logging.info("CheckQueue(): End queue Check")
+    logging.info("CheckVideoRenditionStatus(): End Check Video Rendition Status")
     return True
     	
 
@@ -132,7 +179,8 @@ def main():
     logging.basicConfig(format='%(asctime)s - QCheckerD.py -[%(levelname)s]: %(message)s', filename='./log/QChecker.log',level=logging.INFO) 
    
     while 1:
-	CheckQueue()
+	CheckVideoRenditionStatus()
+	CheckItemStatus()
 	time.sleep(60)
 
 class main_daemon(Daemon):
