@@ -120,6 +120,9 @@ class MetadataLanguage(models.Model):
 	summary_medium 					= models.CharField(max_length=1024)
 	summary_short	 				= models.CharField(max_length=256)
 
+	def __unicode__(self):
+		return self.language
+
 
 class Item(models.Model):
 	    

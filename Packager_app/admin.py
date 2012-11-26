@@ -66,6 +66,7 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(CustomCategory, CustomCategoryAdmin)
 admin.site.register(CategoryRelation, CategoryRelationAdmin)
 admin.site.register(MetadataLanguage, MetadataLanguageAdmin)
+
 '''
 admin.site.register(Customer)
 admin.site.register(Item)
@@ -84,5 +85,4 @@ admin.site.register(AppError)
 admin.site.register(Category)
 admin.site.register(CustomCategory)
 admin.site.register(CategoryRelation)
-
 '''
