@@ -32,28 +32,28 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	return False
 
     Item 			= models.Item()
-    Item.name 		= ItemMetadata["name"]
+    Item.name 			= ItemMetadata["name"]
     Item.format 		= ItemMetadata["format"]
     Item.episode_number 	= ItemMetadata["episode_number"]
     Item.rating 		= ItemMetadata["rating"]
-    Item.genre 		= ItemMetadata["genre"]
+    Item.genre 			= ItemMetadata["genre"]
     Item.actors 		= ItemMetadata["actors"]
     Item.origin_country 	= ItemMetadata["origin_country"]
-    Item.year 		= ItemMetadata["year"]
+    Item.year 			= ItemMetadata["year"]
     Item.director		= ItemMetadata["director"]
-    Item.studio_name 	= ItemMetadata["studio_name"]
+    Item.studio_name 		= ItemMetadata["studio_name"]
     Item.mam_id 		= ItemMetadata["mam_id"]
     Item.save()
 
     for ItemMetadataLan in ItemMetadataLanList:
-    	MetadataLanguage 				= models.MetadataLanguage()
-    	MetadataLanguage.language = ItemMetadataLan["language"]
-	MetadataLanguage.title_sort_name 		= ItemMetadataLan["title_sort_name"]
+    	MetadataLanguage 			= models.MetadataLanguage()
+    	MetadataLanguage.language 		= ItemMetadataLan["language"]
+	MetadataLanguage.title_sort_name 	= ItemMetadataLan["title_sort_name"]
 	MetadataLanguage.title_brief 		= ItemMetadataLan["title_brief"]
 	MetadataLanguage.title 			= ItemMetadataLan["title"]
 	MetadataLanguage.episode_tile 		= ItemMetadataLan["episode_tile"]
 	MetadataLanguage.summary_long 		= ItemMetadataLan["summary_long"]
-	MetadataLanguage.summary_medium 		= ItemMetadataLan["summary_medium"]
+	MetadataLanguage.summary_medium 	= ItemMetadataLan["summary_medium"]
 	MetadataLanguage.summary_short 		= ItemMetadataLan["summary_short"]
 	    
 	MetadataLanguage.save()
@@ -106,8 +106,4 @@ if __name__ == "__main__":
 	else:
 		print "usage: %s start|stop|restart|run" % sys.argv[0]
 		sys.exit(2)    
-
-
-
-
 
