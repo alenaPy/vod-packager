@@ -134,8 +134,8 @@ class Item(models.Model):
 	asset_id 					= models.CharField(max_length=20) # autogenerar
 
 	metadata_language				= models.ManyToManyField('MetadataLanguage')
-	
-	rating 						= models.CharField(max_length=128)
+	category					= models.CharField(max_length=32)
+	rating 						= models.CharField(max_length=32)
 	genre 						= models.CharField(max_length=32)
 	actors 						= models.CharField(max_length=512)
 	origin_country 					= models.CharField(max_length=2)
