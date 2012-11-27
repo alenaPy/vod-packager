@@ -9,100 +9,82 @@ ACTIVE_STATUS = (
 	('D', 'Disabled'),
 )
 
-
-LICENSE_DATE_FORMAT = (
-	('DT', 'Date + Time'),
-	('DO', 'Only Date'),
-)
-
 FORMAT = (
 	('SD', 'SD'),
 	('HD', 'HD'),
 	('3D', '3D'),
 )	
 
-LANGUAGE = (
-	('SP', 'Spanish'),
-	('EN', 'English'),
-	('PO', 'Portuguesse'),
-)
-
 IMAGE_TYPE = (
 	('S', 'Soft'),
 	('H', 'Hard'),
 )
 
-ITEM_STATUS = (
-	('N', 'New'),
-	('P', 'Processing'),
-	('D', 'Done'),
-	('W', 'Warning'),
-)
 
-IMPORT_QUEUE_STATUS = (
-	('Q', 'Queued'),
-	('D', 'Dequeued'),
-)
 
-IMAGE_RENDITION_STATUS = (
-	('E', 'Empty'),
-	('F', 'Filled'),
-)
 
-VIDEO_RENDITION_STATUS = (
-	('Q', 'Queued'),
-	('F', 'Finished'),
-	('E', 'Error'),
-)
 
-PACKAGE_STATUS = (
-	('Q', 'Queued'),
-	('P', 'Packaged'),
-	('E', 'Error'),
-)
-	
-EXPORT_CUSTOMER_FORMAT = (
-	('OSD', 'Only SD Format'),
-	('OHD', 'Only HD Format'),
-	('BOTH','Both Format'),
-	('HD', 'HD Preferably'),
-)
 
-RUNTIME_DISPLAY = (
-	('T', 'Time Format: HH:MM:SS'),
-	('S', 'Number of seconds'),
-)
 
-RATING_DISPLAY = (
-	('X',  'X'),
-	('XXX','XXX'),
-	('18', '18'),
-	('R',  'R'),
-)
+
+
+
+class Language(models.Model):
+	code 						= models.CharField(max_length=2)
+        name 						= models.CharField(max_length=20)
+
+	def __unicode__(self):
+	    return name
+
 
 class Customer(models.Model):
 
+	PRODUCT_TYPE = (
+		('VOD', 'Video On Demand'),
+		('MOD', 'Movie On Demand'),
+	)
+
+	RATING_DISPLAY = (
+		('X',  'X'),
+		('XXX','XXX'),
+		('18', '18'),
+		('R',  'R'),
+	)
+
+	RUNTIME_DISPLAY = (
+		('T', 'Time Format: HH:MM:SS'),
+		('S', 'Number of seconds'),
+	)
+	
+	EXPORT_CUSTOMER_FORMAT = (
+		('OSD', 'Only SD Format'),
+		('OHD', 'Only HD Format'),
+		('BOTH','Both Format'),
+		('HD', 'HD Preferably'),
+	)
+
+	LICENSE_DATE_FORMAT = (
+		('DT', 'Date + Time'),
+		('DO', 'Only Date'),
+	)
+
+
 	name 						= models.CharField(max_length=256)
 	vod_active 					= models.BooleanField(default=True)
-	# xxx review
-	#rental_period_start_date 	= models.DateField()
-	#rental_period_end_date 		= models.DateField()
-	
-	# notificaciones email
-
 	image_type 					= models.CharField(max_length=128)
 	video_profile 					= models.ManyToManyField('VideoProfile')
 	image_profile 					= models.ManyToManyField('ImageProfile')
 	metadata_profile 				= models.ForeignKey('MetadataProfile')
-	language 					= models.CharField(max_length=2, choices=LANGUAGE)
+	export_language					= models.ForeignKey('Language')
 	export_format					= models.CharField(max_length=4, choices=EXPORT_CUSTOMER_FORMAT)
 	export_folder					= models.CharField(max_length=256)
-	#cost_HD 					= models.IntegerField()
-	#cost_SD 					= models.IntegerField()
-
 	runtype_display					= models.CharField(max_length=1, choices=RUNTIME_DISPLAY)
 	license_date_format				= models.CharField(max_length=2, choices=LICENSE_DATE_FORMAT)
 	rating_display					= models.CharField(max_length=3, choices=RATING_DISPLAY)
+	product_type					= models.CharField(max_length=3, choices=PRODUCT_TYPE)
+	sugested_price_sd				= models.CharField(max_length=10)
+	sugested_price_hd				= models.CharField(max_length=10)
+
 
 	def __unicode__(self):
 		return self.name
@@ -110,46 +92,56 @@ class Customer(models.Model):
 
 class MetadataLanguage(models.Model):
 
-	language					= models.CharField(max_length=32)
+	language					= models.ForeignKey('Language')
 	title_sort_name 				= models.CharField(max_length=22)
 	title_brief 					= models.CharField(max_length=19)
 	title 						= models.CharField(max_length=128)
-	episode_tile					= models.CharField(max_length=256)
+	episode_name					= models.CharField(max_length=256)
 	summary_long 					= models.CharField(max_length=4096)
 	summary_medium 					= models.CharField(max_length=1024)
 	summary_short	 				= models.CharField(max_length=256)
 
 	def __unicode__(self):
-		return self.language
+		return self.language.name
 
 
 class Item(models.Model):
-	    
+	ITEM_STATUS = (
+		('N', 'New'),
+		('P', 'Processing'),
+		('D', 'Done'),
+		('W', 'Warning'),
+	)
 	name						= models.CharField(max_length=256)
 	creation_date 					= models.DateTimeField(auto_now_add=True)
 	modification_date 				= models.DateTimeField(auto_now=True)	
 	kill_date 					= models.DateTimeField(default=datetime.now()+timedelta(days=45))
 	format						= models.CharField(max_length=1, choices=FORMAT)
 	status 						= models.CharField(max_length=2, choices=ITEM_STATUS)
-	asset_id 					= models.CharField(max_length=20) # autogenerar
-
+	#asset_id 					= models.CharField(max_length=20) # autogenerar
+    
+	content_language				= models.ForeignKey('Language')
 	metadata_language				= models.ManyToManyField('MetadataLanguage')
+	episode_id					= models.CharField(max_length=10)
 	category					= models.CharField(max_length=32)
 	rating 						= models.CharField(max_length=32)
-	genre 						= models.CharField(max_length=32)
+	genres 						= models.CharField(max_length=32)
 	actors 						= models.CharField(max_length=512)
-	origin_country 					= models.CharField(max_length=2)
+	country_of_origin				= models.CharField(max_length=2)
 	year 						= models.CharField(max_length=4)
 	director 					= models.CharField(max_length=128)
 	studio_name 					= models.CharField(max_length=128)
-	format 						= models.CharField(max_length=2, choices=FORMAT)
 	mam_id 						= models.CharField(max_length=64)
+
 
 	def __unicode__(self):
 		return self.name
 
 class ImportQueue(models.Model):
-	
+	IMPORT_QUEUE_STATUS = (
+		('Q', 'Queued'),
+		('D', 'Dequeued'),
+	)
 	item	          			= models.ForeignKey('Item')
 	file_name         			= models.CharField(max_length=256)
 	svc_path          			= models.CharField(max_length=256)
@@ -164,13 +156,16 @@ class ImportQueue(models.Model):
 		return self.file_name 
 	
 class VideoRendition(models.Model):
-	
+	VIDEO_RENDITION_STATUS = (
+		('Q', 'Queued'),
+		('F', 'Finished'),
+		('E', 'Error'),
+	)
 	file_name				= models.CharField(max_length=256)
 	video_profile				= models.ForeignKey('VideoProfile')
 	transcoding_server			= models.ForeignKey('TranscodingServer')
 	transcoding_job_guid			= models.CharField(max_length=256)
 	status 					= models.CharField(max_length=1, choices=VIDEO_RENDITION_STATUS)
-	#error_id				= models.ForeignKey('AppError')
 	item 					= models.ForeignKey('Item')
 	file_size 				= models.BigIntegerField(default=0)
 	checksum 				= models.CharField(max_length=32)
@@ -182,7 +177,10 @@ class VideoRendition(models.Model):
 		return self.file_name
 
 class ImageRendition(models.Model):
-	
+	IMAGE_RENDITION_STATUS = (
+		('E', 'Empty'),
+		('F', 'Filled'),
+	)
 	file_name 					= models.CharField(max_length=256)
 	file_size 					= models.BigIntegerField(default=0)
 	checksum 					= models.CharField(max_length=32)
@@ -204,7 +202,12 @@ class PackageGroup(models.Model):
 		return self.name
 
 class Package(models.Model):
-	
+	PACKAGE_STATUS = (
+		('Q', 'Queued'),
+		('P', 'Packaged'),
+		('E', 'Error'),
+	)
+
 	customer					= models.ForeignKey('Customer')
 	item						= models.ForeignKey('Item')
 	date_published 					= models.DateTimeField(auto_now_add=True)
@@ -237,13 +240,10 @@ class VideoProfile(models.Model):
 	
 	name 						= models.CharField(unique=True, max_length=32)
 	guid 						= models.CharField(max_length=256)
-	file_extension 				= models.CharField(max_length=64)
+	file_extension 					= models.CharField(max_length=64)
 	status 						= models.CharField(max_length=1, choices=ACTIVE_STATUS)
 	sufix 						= models.CharField(max_length=32)
 	format 						= models.CharField(max_length=2, choices=FORMAT)
-	# xxx review
-	#fps 						= models.DecimalField() #descomentar
-	#standar
 	notes 						= models.CharField(max_length=512)
 
 	#
@@ -263,12 +263,10 @@ class ImageProfile(models.Model):
 	name 						= models.CharField(max_length=256)
 	description 					= models.CharField(max_length=512)
 	sufix 						= models.CharField(max_length=32)
-	# xxx review
-	#prefix 					= models.CharField(max_length=32)
 	file_extension 					= models.CharField(max_length=32)
 	status 						= models.CharField(max_length=1, choices=ACTIVE_STATUS)
 	regex 						= models.CharField(max_length=512)
-	content_aspect 					= models.CharField(max_length=24)
+	image_aspect_ratio				= models.CharField(max_length=24)
 	type 						= models.CharField(max_length=1, choices=IMAGE_TYPE)
 	
 	def __unicode__(self):
@@ -279,7 +277,7 @@ class MetadataProfile(models.Model):
 	key 						= models.CharField(max_length=32)
 	name 						= models.CharField(max_length=64)
 	status 						= models.CharField(max_length=1, choices=ACTIVE_STATUS)
-	description 				= models.CharField(max_length=512)
+	description 					= models.CharField(max_length=512)
 	
 	def __unicode__(self):
 		return self.name
@@ -287,14 +285,12 @@ class MetadataProfile(models.Model):
 class Category(models.Model):
 	
 	name 						= models.CharField(max_length=256)
-	
 	def __unicode__(self):
 		return self.name
 
 class CustomCategory(models.Model):
 	
 	name 						= models.CharField(max_length=256)
-
 	def __unicode__(self):
 		return self.name
 
