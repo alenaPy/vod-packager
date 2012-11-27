@@ -57,7 +57,7 @@ def CheckItemStatus():
 
 	logging.info("CheckItemStatus(): Checking item: %s" % Item.name)
 
-	VRenditionList = models.VideoRenditions.objects.filter(item=Item)
+	VRenditionList = models.VideoRendition.objects.filter(item=Item)
 
 	vr_total    = len(VRenditionList)
 	vr_queued   = 0
@@ -65,13 +65,13 @@ def CheckItemStatus():
 	vr_error    = 0
 	for VRendition in VRenditionList:
 	    if VRendition.status   == 'Q':
-		vr_queued   = queued + 1
+		vr_queued   = vr_queued + 1
 	    elif VRendition.status == 'F':
-		vr_finished = finished + 1
+		vr_finished = vr_finished + 1
 	    elif VRendition.status == 'E':
-		vr_error    = error +1
+		vr_error    = vr_error +1
 
-	IRenditionList = models.ImageRenditions.objects.filter(item=Item)
+	IRenditionList = models.ImageRendition.objects.filter(item=Item)
 
 	ir_total   = len(IRenditionList)
 	ir_empty   = 0

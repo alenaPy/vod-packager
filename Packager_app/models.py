@@ -321,9 +321,6 @@ def GetVideoProfiles(format='ALL'):
     return vp_list
 
 
-def GetProcessingItems():
-    return Item.objects.filter(status='P')
-    
 def GetImageProfile():
     return ImageProfile.objects.filter(status='E')
 
@@ -333,13 +330,20 @@ def GetTranscodingServer():
 def GetImportQueue():
     return ImportQueue.objects.filter(queue_status='Q')
 
-def GetVideoRenditionQueue():
-    return VideoRendition.objects.filter(status='Q')
-    
+
 def GetPath(path=None):
     if path is not None:
 	return Path.objects.get(key=path).location
     return None
+
+
+def GetVideoRenditionQueue():
+    return VideoRendition.objects.filter(status='Q')
+    
+
+def GetProcessingItems():
+    return Item.objects.filter(status='P')
+    
 
 def GetPackageQueue():
     return Package.objects.filter(status='Q')

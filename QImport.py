@@ -72,7 +72,7 @@ def InitCarbonPool():
     #
     # Se traen todos los transcoder server que estan Enabled
     #
-    TServerList = GetTranscodingServer()
+    TServerList = models.GetTranscodingServer()
     #
     # Se agrega cada transcoder server al pool
     #
@@ -288,6 +288,7 @@ def main():
 	# En el ciclo principal
 	#
 	QueueList = models.GetImportQueue()
+	logging.debug("main(): QueueLen = " + str(len(QueueList)))
 	for Queue in QueueList:
 	    #
 	    # Por cada elemento en la cola de importacion
@@ -306,8 +307,8 @@ def main():
 		Queue.save()
 
 
-	Queue.item.status = 'P'
-	Queue.item.save()
+	    Queue.item.status = 'P'
+	    Queue.item.save()
 
 	#
 	# Duerme 60 Segundos
