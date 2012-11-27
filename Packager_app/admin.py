@@ -32,7 +32,7 @@ class VideoProfileAdmin(admin.ModelAdmin):
 	list_display = ('name', 'file_extension', 'status', 'bit_rate', 'format', 'notes')
 
 class ImageProfileAdmin(admin.ModelAdmin):
-	list_display = ('name', 'description', 'file_extension', 'content_aspect', 'type')
+	list_display = ('name', 'description', 'file_extension', 'image_aspect_ratio', 'type')
 
 class MetadataProfileAdmin(admin.ModelAdmin):
 	list_display = ('key', 'name', 'status', 'description')
@@ -48,7 +48,11 @@ class CategoryRelationAdmin(admin.ModelAdmin):
 	list_display = ('category', 'custom_category', 'customer')
 
 class MetadataLanguageAdmin(admin.ModelAdmin):
-	lsit_display = ('language', 'title_brief')
+	list_display = ('title_brief',)
+
+class LanguageAdmin(admin.ModelAdmin):
+	list_display = ('name', 'code') 
+
 
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Item, ItemAdmin)
@@ -66,6 +70,7 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(CustomCategory, CustomCategoryAdmin)
 admin.site.register(CategoryRelation, CategoryRelationAdmin)
 admin.site.register(MetadataLanguage, MetadataLanguageAdmin)
+admin.site.register(Language, LanguageAdmin)
 
 '''
 admin.site.register(Customer)

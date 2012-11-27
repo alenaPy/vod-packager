@@ -5,12 +5,25 @@ from django.core.management import setup_environ
 from Packager import settings
 setup_environ(settings)
 
+from django.core.management import execute_from_command_line
+
+    
 #
 # Modelo de la aplicacion
 #
 from Packager_app import models
 
+import ISO639_1
 import os
+
+
+def LoadLanguages():
+    for lan in ISO639_1.LANGUAGES:
+	Language = models.Language()
+	Language.code = lan['Code']
+	Language.name = lan['Name']
+	Language.save()
+
 
 
 def Header():
@@ -75,5 +88,5 @@ Header()
 ConfigPaths("video_local_path", "Video Local Path")
 ConfigPaths("imagen_local_path", "Imagen Local Path")
 ConfigPaths("package_export_path", "Export Package Path")
-
+LoadLanguages()
 

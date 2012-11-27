@@ -22,19 +22,12 @@ IMAGE_TYPE = (
 
 
 
-
-
-
-
-
-
-
 class Language(models.Model):
 	code 						= models.CharField(max_length=2)
         name 						= models.CharField(max_length=20)
 
 	def __unicode__(self):
-	    return name
+	    return self.name
 
 
 class Customer(models.Model):

@@ -1,4 +1,4 @@
-Languages = [ {"Code": "aa", "Name": "Afar"},
+LANGUAGES = [ {"Code": "aa", "Name": "Afar"},
 {"Code": "ab", "Name": "Abkhazian"},
 {"Code": "ae", "Name": "Avestan"},
 {"Code": "af", "Name": "Afrikaans"},
