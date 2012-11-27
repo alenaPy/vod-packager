@@ -12,6 +12,25 @@ import re
 from Packager_app import models
 
 
+def GetImageRendition(Item=None, FileName=''):
+    Splited = re.match("(.+)_(PI[S|H][0-9][0-9]).([a-z][a-z][a-z])",FileName)
+
+    if Splited:
+	Sufix = '_' + Splited.group(2)
+	Ext   = '.' + Splited.group(3)
+
+    try:
+	IProfile = models.ImageProfile.objects.get(sufix=Sufix, file_extension=Ext)
+    
+	try:
+	    IRendition = models.ImageRendition.objects.get(item=Item, image_profile=IProfile)
+	    return IRendition
+	except:
+	    return None
+    except:
+	return None
+
+
 f = 'trolita_PIH01.png'
 
 # Agregar una expresion Regular    
@@ -19,7 +38,7 @@ f = 'trolita_PIH01.png'
 suf, ext = f.split('_')[len(f.split('_'))-1].split('.')
 
 
-x = re.match("(.+)_(PI[S|H][0-9][0-9]).([a-z][a-z][a-z])",f)
+x = 
 if x:
     print x.group(1)
     print x.group(2)
