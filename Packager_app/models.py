@@ -75,9 +75,13 @@ class Customer(models.Model):
 	license_date_format				= models.CharField(max_length=2, choices=LICENSE_DATE_FORMAT)
 	rating_display					= models.CharField(max_length=3, choices=RATING_DISPLAY)
 	product_type					= models.CharField(max_length=3, choices=PRODUCT_TYPE)
-	sugested_price_sd				= models.CharField(max_length=10)
-	sugested_price_hd				= models.CharField(max_length=10)
-
+	sugested_price_longform_sd			= models.CharField(max_length=10)
+	sugested_price_longform_hd			= models.CharField(max_length=10)
+	sugested_price_shortform_sd			= models.CharField(max_length=10)
+	sugested_price_shortform_hd			= models.CharField(max_length=10)
+	rental_period_shortform				= models.CharField(max_length=10)
+	rental_period_longform				= models.CharField(max_length=10)
+	licency_window					= models.CharField(max_length=3)
 
 	def __unicode__(self):
 		return self.name
@@ -114,6 +118,7 @@ class Item(models.Model):
 	#asset_id 					= models.CharField(max_length=20) # autogenerar
     
 	content_language				= models.ForeignKey('Language')
+	content_duration				= models.CharField(max_length=10)
 	metadata_language				= models.ManyToManyField('MetadataLanguage')
 	episode_id					= models.CharField(max_length=10)
 	category					= models.CharField(max_length=32)
