@@ -192,10 +192,15 @@ class ImageRendition(models.Model):
 		return self.file_name
 
 
+class Provider(models.Model):
+	provider					= models.CharField(max_length=20)
+	provider_id					= models.CharField(max_length=20)
+	provider_content_tier				= models.CharField(max_length=20)
+
 
 class PackageGroup(models.Model):
 	name 						= models.CharField(max_length=32)
-	
+	description					= models.CharField(max_length=128)
 	def __unicode__(self):
 		return self.name
 
@@ -208,7 +213,7 @@ class Package(models.Model):
 
 	customer					= models.ForeignKey('Customer')
 	item						= models.ForeignKey('Item')
-	date_published 					= models.DateTimeField(auto_now_add=True)
+	date_published 					= models.DateField(auto_now_add=True)
 	status						= models.CharField(max_length=2, choices=PACKAGE_STATUS)
 	group 						= models.ForeignKey('PackageGroup')
 	error						= models.CharField(max_length=512)

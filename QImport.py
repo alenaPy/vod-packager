@@ -139,6 +139,15 @@ def CheckImagenRendition(Item=None, IProfile=None):
     return True
 
 
+def PrefixStrId(itemid=0):
+    str = str(itemid)
+    id = ''
+    i = len(str)
+    while i <= 5:
+        id = id + '0'
+        i = i + 1
+
+    return 'PB' + id + str
 
 
 def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
@@ -204,6 +213,8 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 	    logging.error = "MakeVideoRenditions(): 04: Unable to stablish DstBasename"
 	    ErrorString   = "04: Unable stablish DstBasename"
 	    return False
+	
+	DstBasename = PrefixStrId(Item._id)
 	#
 	# Arma los parametros de transcodificacion
 	#	

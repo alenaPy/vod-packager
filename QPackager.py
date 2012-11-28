@@ -15,6 +15,30 @@ import logging
 
 ErrorString = ''
 
+
+def MakeAssetId(asset_type='package', asset_id = 0):
+
+    first = '4'
+
+    if asset_type == 'package':
+	first = '0'
+    elif asset_type == 'title':
+	first = '1'
+    elif asset_type == 'movie':
+	first = '2'
+    elif asset_type == 'image':
+	first = '3'
+
+    str_id = str(asset_id)
+    zero = ''
+    i = len(str_id)
+    while i < 15:
+        zero = zero + '0'
+        i = i + 1
+
+    return 'PBLA' + first + zero + str_id
+
+
 def GetVideoRenditions(Package=None):
 
     if Package is not None:
@@ -301,24 +325,65 @@ def GetExportPathFromPackage(Package=None):
     return return_path
 
 
+
+def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
+
+
+
+    MetadataXml = ADIXml.Package(Provider      = 'PBTVLA',
+                		 Product       = 'First-Run',
+                		 Asset_Name    = u'',
+                		 Description   = u'',
+                		 Creation_Date = Package.date_published,
+                		 Provider_ID   = 'playboytvla.com',
+                		 Asset_ID      = MakeAssetId('package', Package._id)
+                		 App_Data_App  = Package.customer.product_type
+
+
+    MetadataXml.addTitle()
+    MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', Package.item._id)
+    
+    MetadataXml.Title.Rating       	= Package.customer.rating_display
+    MetadataXml.Title.Closed_Captioning = 'N'
+    MetadataXml.Title.Year		= Package.item.year
+    MetadataXml.Title.Actors		= Package.item.actors
+    MetadataXml.Title.Actors_Display	= Package.item.actors
+    MetadataXml.Title.Director		= Package.item.director
+    MetadataXml.Title.Box_Office	= '0'
+    MetadataXml.Title.Billing_ID	= '00001'
+
+
+
+
+    MetadataXml.AddMovie()
+    MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition._id)
+    
+
+
+
+    
+
 logging.basicConfig(format='%(asctime)s - QIPackager.py -[%(levelname)s]: %(message)s', filename='./log/QPackager.log',level=logging.DEBUG)
 
 
-x = GetPackageQueue()
-j = x[0]
-j.status = 'P'
-j.error  = 'Trolo'
-j.save()
 
-GetExportPathFromPackage(j)
-j.error = ErrorString
-j.status = 'P'
-j.save()
+print len(MakeAssetId('package',12))
+
+#x = models.GetPackageQueue()
+#j = x[0]
+#j.status = 'P'
+#j.error  = 'Trolo'
+#j.save()
+
+#GetExportPathFromPackage(j)
+#j.error = ErrorString
+#j.status = 'P'
+#j.save()
 
 #print dir(x[0])
 #print type((x[0]).save())
 #print x[0].status
 #print ErrorString
-print GetVideoRenditions(j)
-j.error = ErrorString
-j.save()
+#print GetVideoRenditions(j)
+#j.error = ErrorString
+#j.save()
