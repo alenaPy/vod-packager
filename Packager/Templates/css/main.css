@@ -1,94 +1,118 @@
-/*
-      Created by Keith Donegan of Code-Sucks.com
-	  
-	  E-Mail: Keithdonegan@gmail.com
-	  
-	  You can do whatever you want with these layouts,
-	  but it would be greatly appreciated if you gave a link
-	  back to http://www.code-sucks.com
-	  
-*/
-
-* { padding: 0; margin: 0; }
-
 body {
- font-family: Helvetica, Arial, sans-serif;
- font-size: 13px;
+  background: #282A30;
+  color: #333;
+  /* font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; */
+  font-family: 'Anaheim', sans-serif;
+  font-size: 17px;
+  height: auto;
+  padding-bottom: 20px;
 }
-#wrapper { 
- margin: 0 auto;
- width: 922px;
 
-}
-#header {
- color: #333;
- width: 900px;
- float: left;
- padding: 10px;
- border: 1px solid #ccc;
- height: 100px;
- margin: 10px 0px 5px 0px;
- background: #545763;
-}
-#leftcolumn { 
- color: #333;
- border: 1px solid #ccc;
- background: #414349;
- margin: 0px 5px 5px 0px;
- padding: 10px;
- height: 560px;
- width: 195px;
- float: left;
-}
-#rightcolumn { 
- float: right;
- color: #333;
- border: 1px solid #ccc;
- background: #D5D7DF;
- margin: 0px 0px 5px 0px;
- padding: 10px;
- height: 560px;
- width: 678px;
- display: inline;
-}
-#footer { 
- width: 900px;
- clear: both;
- color: #FFF;
- border: 1px solid #ccc;
- background: #19213E;
- margin: 0px 0px 10px 0px;
- padding: 10px;
-}
 a {
- 
+  color: #fff;
+  text-decoration: none;
 }
-.tableView {
- width: 100%;
- border: 1px solid black;
+
+a:hover {
+  text-decoration: underline;
 }
-.tableViewTitle {
+
+h1 {
+  font-weight: normal;
+  padding-top: 20px;
+  text-align: center;
+}
+
+h2 {
+  padding-top: 20px;
+  text-align: center;
+}
+
+p {
+  overflow: hidden;
+  padding: 10px 0;
+  text-align: center;
+}
+
+.container_12,
+.container_16,
+.container_24 {
+  /* background-color: #fff; */
+  background-repeat: repeat-y;
+  margin-bottom: 20px;
+}
+
+.container_12 {
+  /* background-image: url(../img/12_col.gif); */
+}
+
+.container_16 {
+  background-image: url(../img/16_col.gif);
+}
+
+.container_24 {
+  background-image: url(../img/24_col.gif);
+}
+
+:invalid { 
+  border-color: #e88;
+  -webkit-box-shadow: 0 0 5px rgba(255, 0, 0, .8);
+  -moz-box-shadow: 0 0 5px rbba(255, 0, 0, .8);
+  -o-box-shadow: 0 0 5px rbba(255, 0, 0, .8);
+  -ms-box-shadow: 0 0 5px rbba(255, 0, 0, .8);
+  box-shadow:0 0 5px rgba(255, 0, 0, .8);
+}
+
+:required {
+  border-color: #88a;
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 255, .5);
+  -moz-box-shadow: 0 0 5px rgba(0, 0, 255, .5);
+  -o-box-shadow: 0 0 5px rgba(0, 0, 255, .5);
+  -ms-box-shadow: 0 0 5px rgba(0, 0, 255, .5);
+  box-shadow: 0 0 5px rgba(0, 0, 255, .5);
+}
+
+form {
+  width:300px;
+  margin: 20px auto;
+}
+
+input[type=submit] {
+  background:none;
+  padding:10px;
+  color: #fff;
+}
+
+.tblViewTitle {
  width: 100%;
- border: 1px solid black;
+ border: 0px solid white;
+ margin-bottom: 0px;
 }
 .tdViewTitle {
  width: 100%;
+ font-size: 27px;
+ padding-top: 5px;
+ color: #fff;
 }
-.thLeft {
- text-align: left;
+.th {
+ background-color: #fff;
 }
-.thCenter {
+input[type=search] { 	
+ width: 200px;
+}
+.center {
  text-align: center;
 }
-.thRight {
+.right {
  text-align: right;
 }
-.tdLeft {
- text-align: left;
-}
-.tdCenter {
+div#navbar {  
+ height: 500px;
  text-align: center;
 }
-.tdRight {
- text-align: right;
+div#video_rendition {
+ 
+}
+div#image_rendition {
+ 
 }

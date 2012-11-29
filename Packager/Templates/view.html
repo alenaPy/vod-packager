@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table id="hor-zebra">
+	<thead>
+		<tr>
+			<th scope="col" width="20px"><!-- <input type="checkbox" name="your-group" value="unit-in-group" /> --></th>
+			<th scope="col">Name</th>
+			<th scope="col">MAM id</th>
+			<th scope="col" class="center">Creation date</th>
+			<th scope="col" class="center">Kill date</th>
+		</tr>
+	</thead>
+	<tbody>
+
+{% for item in items %}
+		<tr class="odd">
+			<td><input type="checkbox" name="xxx" value="xxx"/></td>
+			<td>{{ item.name }}</td>
+			<td>{{ item.mam_id }}</td>
+			<td class="center">{{ item.creation_date }}</td>
+			<td class="center">{{ item.kill_date }}</td>
+		</tr>
+{% endfor %}
+	</tbody>
+</table>
+<input type="checkbox" name="xxx" value="xxx"/>
+{% endblock %}
