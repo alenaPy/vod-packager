@@ -77,12 +77,12 @@ def item(request, item_id):
 
 def customer(request, customer_id):
 	
-	try:
+#	try:
 		customer = models.Customer.objects.get(id=customer_id)
 		return render_to_response('customer.html', {'customer': customer}) 
-	except:
-		resp = 'No ta!'
-		return HttpResponse("You're looking at customer %s." % resp)
+#	except:
+#		resp = 'No ta!'
+#		return HttpResponse("You're looking at customer %s." % resp)
 
 def package(request, package_id):
 	
