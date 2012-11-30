@@ -1,11 +1,24 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import models
 
 def index(request):
-	items = models.Item.objects.order_by('name')
-	return render_to_response('view.html', {'items': items}, context_instance=RequestContext(request))
+	items_list = models.Item.objects.all()
+	paginator = Paginator(items_list, 2)
+	
+	page = request.GET.get('page')
+	try:
+		contacts = paginator.page(page)
+	except PageNotAnInteger:
+		# If page is not an integer, deliver first page.
+		items = paginator.page(1)
+	except EmptyPage:
+		# If page is out of range (e.g. 9999), deliver last page of results.
+		items = paginator.page(paginator.num_pages)
+	
+	return render_to_response('view_items.html', {'items': items}, context_instance=RequestContext(request))
 
 def items(request):
 	return HttpResponse("Items index.")

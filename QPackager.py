@@ -439,7 +439,6 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=""):
     try:
         CategoryRelation = models.CategoryRelation.objects.get(category=Package.item.category,customer=Package.customer)
         CustomCategory = CategoryRelation.custom_category
-        print "Why?"
     except:
         CustomCategory = Package.item.category
 
@@ -454,7 +453,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=""):
     MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id)
 
     MetadataXml.Movie.Content_FileSize 	= str(VideoRendition.file_size)
-    MetadataXml.Movie.Content_Checksum 	= VideoRendition.checksum
+    MetadataXml.Movie.Content_CheckSum 	= VideoRendition.checksum
     MetadataXml.Movie.Audio_Type	= VideoRendition.video_profile.audio_type
     MetadataXml.Movie.Resolution	= VideoRendition.video_profile.resolution
     MetadataXml.Movie.Frame_Rate	= VideoRendition.video_profile.frame_rate
@@ -512,9 +511,21 @@ def main():
 		    PackagePath = PackagePath + '/'
 
 		print PackagePath
-
+    
+		#
+		# Exporta el XML en la carpeta
+		#
 		ADIXml.Package_toADIFile(MetadataXml, PackagePath + MetadataXml.AMS.Asset_Name + '.xml')
 		print "Estoy aca"
+
+		video_local_path = models.Path.objects.get(key='video_local_path').location
+
+		print video_local_path + VideoRendition.file_name
+
+		os.link(video_local_path + '/' + VideoRendition.file_name, PackagePath + VideoRendition.file_name )
+		
+		
+
 	x = False
 
 #print len(MakeAssetId('package',12))

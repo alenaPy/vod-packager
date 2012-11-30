@@ -334,7 +334,7 @@ def GetVideoProfiles(format='ALL'):
 
 
 def GetImageProfile():
-    return ImageProfile.objects.filter(status='E')
+    return ImageProfile.objects.all()
 
 def GetTranscodingServer():
     return TranscodingServer.objects.filter(status='E')

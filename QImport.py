@@ -56,7 +56,7 @@ def RenditionFileName(original_filename = None, sufix = None, ext = None):
 	if not ext.startswith('.'):
 	    ext = '.' + ext
 	    
-	basename = basename + sufix + ext
+	basename = basename.upper() + sufix.upper() + ext
 	return basename
     return None
 
@@ -113,7 +113,7 @@ def MakeImageRenditions(ImportTask=None):
     #
     for IProfile in IProfileList:
 	
-	if not CheckImagenProfile(Item, IProfile):
+	if not CheckImagenRendition(Item, IProfile):
 	    logging.warning("MakeImagenRendition(): Video Profile exist-> Continue. [IP: %s]" % IProfile.name )
 	    continue
 
@@ -133,21 +133,21 @@ def CheckVideoRendition(Item=None, VProfile=None):
 
 
 def CheckImagenRendition(Item=None, IProfile=None):
-    IRlist = models.ImagenRendition.objects.filter(item=Item, image_profile=IProfile)
+    IRlist = models.ImageRendition.objects.filter(item=Item, image_profile=IProfile)
     if len(IRlist) > 0:
 	return False
     return True
 
 
 def PrefixStrId(itemid=0):
-    str = str(itemid)
-    id = ''
-    i = len(str)
+    StrId = str(itemid)
+    Zero = ''
+    i = len(StrId)
     while i <= 5:
-        id = id + '0'
+        Zero = Zero + '0'
         i = i + 1
 
-    return 'PB' + id + str
+    return 'PB' + Zero + StrId
 
 
 def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
@@ -208,14 +208,16 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 	    return False
 	
 
+	DstFilename = DstFilename.replace(' ', '')
+	DstFilename = PrefixStrId(Item.id) + '-' + DstFilename
+
 	DstBasename = SplitExtension(DstFilename)
 	if DstBasename is None:
 	    logging.error = "MakeVideoRenditions(): 04: Unable to stablish DstBasename"
 	    ErrorString   = "04: Unable stablish DstBasename"
 	    return False
 	
-	DstBasename = DstBasename.replace(' ', '')
-	DstBasename = PrefixStrId(Item.id) + '-' + DstBasename.upper()
+
 	#
 	# Arma los parametros de transcodificacion
 	#	
@@ -326,7 +328,7 @@ def main():
 	# Duerme 60 Segundos
 	#
 	logging.info("main(): No more work... Sleep")
-	time.sleep(60)
+	time.sleep(10)
 
 class main_daemon(Daemon):
     def run(self):

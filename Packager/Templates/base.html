@@ -10,10 +10,18 @@
 	<link rel="stylesheet" href="/css/css3-gmail-style.css" />
 	<link rel="stylesheet" href="/css/tables.css" />
 	<link href='http://fonts.googleapis.com/css?family=Inder|BenchNine|Anaheim|Strait|Cinzel' rel='stylesheet' type='text/css'>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/jquery.accordion.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('.accordion').accordion({defaultOpen: ''});
+		});
+	</script>
 </head>
 <body>
 	<h1>
-		<a href="#">VOD Claxson</a>
+		<a href="#">VOD Claxsonxx</a>
 	</h1>
 	<div class="container_12">
 		<div class="grid_12" style="background: #6B6E80">
@@ -22,32 +30,15 @@
 		<div class="clear"></div>
 		<div class="grid_3" id="navbar">
 			<br />
-			<a href="#" class="bttn" style="width: 150px;">Items</a><br />
+			<a href="/vod" class="bttn" style="width: 150px;">Items</a><br />
 			<a href="#" class="bttn" style="width: 150px;">Customers</a><br />
 			<a href="#" class="bttn" style="width: 150px;">Packages</a><br />
 			<br /><br />
-			<a href="/admin" class="bttn" style="width: 150px;">Admin</a><br />
-			<a href="#" class="bttn" style="width: 150px;">Logout</a>
+			<a href="#" class="bttn blue" style="width: 150px;">Admin</a><br />
+			<a href="#" class="bttn red" style="width: 150px;">Logout</a><br />
+			<br />
 		</div>
-		<div class="grid_9">
-			<table class="tblViewTitle">
-				<tr>
-					<td class="tdViewTitle">Item's view</td>
-					<td><input type="search" name="search" results="5" placeholder="Search..."><td>
-				</tr>
-			</table>
-			<center>
-				{% block content %}{% endblock %}
-			</center>
-			<div class="grouped">
-				<a href="#" class="bttn prev">Previous</a>
-				<a href="#" class="bttn icon view">View</a>
-				<a href="#" class="bttn icon refresh">Refresh<a>
-				<a href="#" class="bttn icon new-window">New Window<a>
-				<a href="#" class="bttn icon delete">Delete</a>
-				<a href="#" class="bttn next">Next</a>
-			</div>
-		</div>
+		{% block content %}{% endblock %}
 		<div class="clear"></div>
 		<div class="grid_12" style="background: #6B6E80;">
 			<p>Footer</p>

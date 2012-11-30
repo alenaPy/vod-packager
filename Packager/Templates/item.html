@@ -1,152 +1,108 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8" />
-	<title>VOD Claxson</title>
-	<link rel="stylesheet" href="/css/reset.css" />
-	<link rel="stylesheet" href="/css/text.css" />
-	<link rel="stylesheet" href="/css/960.css" />
-	<link rel="stylesheet" href="/css/main.css" />
-	<link rel="stylesheet" href="/css/css3-gmail-style.css" />
-	<link rel="stylesheet" href="/css/tables.css" />
-	<link href='http://fonts.googleapis.com/css?family=Inder|BenchNine|Anaheim|Strait|Cinzel' rel='stylesheet' type='text/css'>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<script type="text/javascript" src="/js/jquery.cookie.js"></script>
-	<script type="text/javascript" src="/js/jquery.accordion.js"></script>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$('.accordion').accordion({defaultOpen: ''});
-		});
-	</script>
-</head>
-<body>
-	<h1>
-		<a href="#">VOD Claxson</a>
-	</h1>
-	<div class="container_12">
-		<div class="grid_12" style="background: #6B6E80">
-			<p>Header</p>
-		</div>
-		<div class="clear"></div>
-		<div class="grid_3" id="navbar">
-			<br />
-			<a href="#" class="bttn" style="width: 150px;">Items</a><br />
-			<a href="#" class="bttn" style="width: 150px;">Customers</a><br />
-			<a href="#" class="bttn" style="width: 150px;">Packages</a><br />
-			<br /><br />
-			<a href="#" class="bttn blue" style="width: 150px;">Admin</a><br />
-			<a href="#" class="bttn red" style="width: 150px;">Logout</a><br />
-			<br />
-		</div>
-		<div class="grid_6" style="color: #fff; padding-top: 5px;">
-			<table>
-				<tr>
-					<td width="150px">Name</td>
-					<td>{{ item.name }}</td>
-				</tr>
-				<tr>
-					<td>Kill date</td>
-					<td>{{ item.creation_date }}</td>
-				</tr>
-				<tr>
-					<td>Status</td>
-					<td>{{ item.status }}</td>
-				</tr>
-				<tr>
-					<td>Asset id</td>
-					<td>{{ item.asset_id }}</td>
-				</tr>
-				<tr>
-					<td>Metadata language</td>
-					<td>{{ item.metadata_language }}</td>
-				</tr>
-				<tr>
-					<td>Episode number</td>
-					<td>{{ item.episode_number }}</td>
-				</tr>
-				<tr>
-					<td>Rating</td>
-					<td>4.5</td>
-				</tr>
-				<tr>
-					<td>Genre</td>
-					<td>Hardcore</td>
-				</tr>
-				<tr>
-					<td>Actors</td>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="grid_6" style="color: #fff; padding-top: 5px;">
+	<table>
+		<tr>
+			<td width="150px">Name</td>
+			<td>{{ item.name }}</td>
+		</tr>
+		<tr>
+			<td>Kill date</td>
+			<td>{{ item.creation_date }}</td>
+		</tr>
+		<tr>
+			<td>Status</td>
+			<td>{{ item.status }}</td>
+		</tr>
+		<tr>
+			<td>Asset id</td>
+			<td>{{ item.asset_id }}</td>
+		</tr>
+		<tr>
+			<td>Metadata language</td>
+			<td>{{ item.metadata_language }}</td>
+		</tr>
+		<tr>
+			<td>Episode number</td>
+			<td>{{ item.episode_number }}</td>
+		</tr>
+		<tr>
+			<td>Rating</td>
+			<td>4.5</td>
+		</tr>
+		<tr>
+			<td>Genre</td>
+			<td>Hardcore</td>
+		</tr>
+		<tr>
+			<td>Actors</td>
 					<td>Robert de Niro</td>
-				</tr>
-				<tr>
-					<td>Origin country</td>
-					<td>USA</td>
-				</tr>
-				<tr>
-					<td>Year</td>
-					<td>2012</td>
-				</tr>
-				<tr>
-					<td>Director</td>
-					<td>Tim Burton</td>
-				</tr>
-				<tr>
-					<td>Studio name</td>
-					<td>Disney</td>
-				</tr>
-				<tr>
-					<td>Format</td>
-					<td>SD</td>
-				</tr>
-				<tr>
-					<td>MAM id</td>
-					<td>81723981723981</td>
-				</tr>
-			</table>
+		</tr>
+		<tr>
+			<td>Origin country</td>
+			<td>USA</td>
+		</tr>
+		<tr>
+			<td>Year</td>
+			<td>2012</td>
+		</tr>
+		<tr>
+			<td>Director</td>
+			<td>Tim Burton</td>
+		</tr>
+		<tr>
+			<td>Studio name</td>
+			<td>Disney</td>
+		</tr>
+		<tr>
+			<td>Format</td>
+			<td>SD</td>
+		</tr>
+		<tr>
+			<td>MAM id</td>
+			<td>81723981723981</td>
+		</tr>
+	</table>
+</div>
+<div class="grid_3" style="padding-top: 5px;">
+	<table width="100%" style="color: #fff;">
+		<tr><td>Export to:</td></tr>
+		<tr>
+			<td>
+				<select multiple="multiple" style="width: 100%">
+					<option value="all">Todos</option>
+					<option value="cablevision">Cablevision</option>
+					<option value="cablemas">CableMas</option>
+					<option value="pepito">Pepito</option>
+				</select>
+			</td>
+		</tr>
+		<tr><td colspan="2">Package group:</td></tr>
+		<tr>
+			<td>
+				<select style="width: 100%">
+					<option value="07">Agosto</option>
+					<option value="08">Septiembre</option>
+					<option value="10">Octubre</option>
+					<option value="11">Noviembre</option>
+				</select>
+			</td>
+		</tr>
+	</table>
+</div>
+<div class="grid_9" id="renditions" style="color: #fff;">
+	<h3 class="accordion" id="section1" style="background: #f00;">Video Rendition<span></span><h3>
+	<div class="container">
+		<div class="content">
+			<p>Content here....</p>
 		</div>
-		<div class="grid_3" style="padding-top: 5px;">
-			<table width="100%" style="color: #fff;">
-				<tr><td>Export to:</td></tr>
-				<tr>
-					<td>
-						<select multiple="multiple" style="width: 100%">
-							<option value="all">Todos</option>
-							<option value="cablevision">Cablevision</option>
-							<option value="cablemas">CableMas</option>
-							<option value="pepito">Pepito</option>
-						</select>
-					</td>
-				</tr>
-				<tr><td colspan="2">Package group:</td></tr>
-				<tr>
-					<td>
-						<select style="width: 100%">
-							<option value="07">Agosto</option>
-							<option value="08">Septiembre</option>
-							<option value="10">Octubre</option>
-							<option value="11">Noviembre</option>
-						</select>
-					</td>
-				</tr>
-			</table>
-		</div>
-		<div class="grid_9" id="renditions" style="color: #fff;">
-			<h3 class="accordion" id="section1" style="background: #f00;">Video Rendition<span></span><h3>
-			<div class="container">
-				<div class="content">
-					<p>Content here....</p>
-				</div>
-			</div>
-			<h3 class="accordion" id="section2" style="background: #0f0;">Image Rendition<span></span><h3>
-			<div class="container">
-				<div class="content">
-					<p>Content here....</p>
-				</div>
-			</div>
-		</div>
-		<div class="clear"></div>
-		<div class="grid_12" style="background: #6B6E80;">
-			<p>Footer</p>
-		</div>
-		<div class="clear"></div>
 	</div>
-</body>
-</html>
+	<h3 class="accordion" id="section2" style="background: #0f0;">Image Rendition<span></span><h3>
+	<div class="container">
+		<div class="content">
+			<p>Content here....</p>
+		</div>
+	</div>
+</div>
+{% endblock %}
