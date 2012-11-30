@@ -13,6 +13,8 @@ from Packager_app import models
 from cablelabsadi import ADIXml
 from datetime import datetime, timedelta
 
+import xml.etree.ElementTree as ET
+
 import os
 import logging
 
@@ -336,8 +338,9 @@ def GetMetadataLanguage(Item, Language):
     except:
 	return None
 
-def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=""):
 
+
+def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=""):
 
     if Package is None or VideoRendition is None or ImageRendition is None:
 	#
@@ -446,25 +449,81 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=""):
     MetadataXml.Title.Category	= CategoryPath.replace(' ', '')
     MetadataXml.Title.Genre 	= CustomCategory.name
 
+
+    MetadataXml.AddMovie()
+    MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id)
+
+    MetadataXml.Movie.Content_FileSize 	= str(VideoRendition.file_size)
+    MetadataXml.Movie.Content_Checksum 	= VideoRendition.checksum
+    MetadataXml.Movie.Audio_Type	= VideoRendition.video_profile.audio_type
+    MetadataXml.Movie.Resolution	= VideoRendition.video_profile.resolution
+    MetadataXml.Movie.Frame_Rate	= VideoRendition.video_profile.frame_rate
+    MetadataXml.Movie.Codec		= VideoRendition.video_profile.codec
+    MetadataXml.Movie.Bit_Rate		= VideoRendition.video_profile.bit_rate
+    MetadataXml.Movie.Screen_Format	= VideoRendition.screen_format
+    MetadataXml.Movie.Languages		= Package.item.content_language.code
+    MetadataXml.Movie.Content_Value	= VideoRendition.file_name
+
+    #
+    # Defaults values
+    #
+    MetadataXml.Movie.Viewing_Can_Be_Resumed 	= 'N'
+    MetadataXml.Movie.Copy_Protection		= 'N'
+    MetadataXml.Movie.Watermarking		= 'N'
+
+
+    return MetadataXml
+
+
+
+
+def main():
     
-
-#    MetadataXml.AddMovie()
-#    MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id)
+    logging.basicConfig(format='%(asctime)s - QIPackager.py -[%(levelname)s]: %(message)s', filename='./log/QPackager.log',level=logging.DEBUG)
 
 
+    x = True
+    while x:
+	
 
-    ADIXml.Package_toADIFile(MetadataXml, 'test.xml')
+	for Package in models.GetPackageQueue():
 
+	    ExportPath 		= GetExportPathFromPackage(Package)
+	    
+	    VideoRenditionList 	= GetVideoRenditions(Package)
 
-logging.basicConfig(format='%(asctime)s - QIPackager.py -[%(levelname)s]: %(message)s', filename='./log/QPackager.log',level=logging.DEBUG)
+	    for VideoRendition in VideoRenditionList:
 
+		MetadataXml 	= MakeAdiXmlCablelabs(Package, VideoRendition)
 
+		PackagePath 	= ExportPath + MetadataXml.Title.Category + MetadataXml.AMS.Asset_Name
 
-print len(MakeAssetId('package',12))
+		if not os.path.exists(PackagePath):
+		    try:
+			os.makedirs(PackagePath)
+		    except:
+			#
+			print "El error"
+			# Error
+			#
+			continue
+    
+		if not PackagePath.endswith('/'):
+		    PackagePath = PackagePath + '/'
 
-x = models.GetPackageQueue()
-j = x[0]
-MakeAdiXmlCablelabs(x[0], models.VideoRendition.objects.get(id=1))
+		print PackagePath
+
+		ADIXml.Package_toADIFile(MetadataXml, PackagePath + MetadataXml.AMS.Asset_Name + '.xml')
+		print "Estoy aca"
+	x = False
+
+#print len(MakeAssetId('package',12))
+
+#x = models.GetPackageQueue()
+#j = x[0]
+#MakeAdiXmlCablelabs(x[0], models.VideoRendition.objects.get(id=1))
+
+main()
 
 #j.status = 'P'
 #j.error  = 'Trolo'

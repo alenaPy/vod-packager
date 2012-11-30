@@ -295,7 +295,7 @@ def main():
 
 
     logging.info("main(): Enter in main loop")
-    while 1:
+    while True:
 	#
 	# En el ciclo principal
 	#

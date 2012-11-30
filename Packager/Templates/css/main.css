@@ -106,6 +106,10 @@ input[type=search] {
 .right {
  text-align: right;
 }
+.display_icon {
+ text-align: center;
+ vertical-align: middle;
+}
 div#navbar {  
  height: 500px;
  text-align: center;
@@ -115,4 +119,32 @@ div#video_rendition {
 }
 div#image_rendition {
  
+}
+span.status_N {
+ display: block;
+ background-image: url(/images/icons/new.png);
+ background-repeat:no-repeat;
+ width: 16px;
+ height: 16px;
+}
+span.status_P {
+ display: block;
+ background-image: url(/images/icons/time.png);
+ background-repeat:no-repeat;
+ width: 16px;
+ height: 16px;
+}
+span.status_D {
+ display: block;
+ background-image: url(/images/icons/tick.png);
+ background-repeat:no-repeat;
+ width: 16px;
+ height: 16px;
+}
+span.status_D {
+ display: block;
+ background-image: url(/images/icons/exclamation.png);
+ background-repeat:no-repeat;
+ width: 16px;
+ height: 16px;
 }

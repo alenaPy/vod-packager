@@ -83,7 +83,7 @@ class Customer(models.Model):
 	runtype_display					= models.CharField(max_length=1, choices=RUNTIME_DISPLAY)
 	license_date_format				= models.CharField(max_length=2, choices=LICENSE_DATE_FORMAT)
 	rating_display					= models.CharField(max_length=3, choices=RATING_DISPLAY)
-	product_type					= models.CharField(max_length=3, choices=PRODUCT_TYPE)
+	product_type					= models.CharField(max_length=4, choices=PRODUCT_TYPE)
 	sugested_price_longform_sd			= models.CharField(max_length=10)
 	sugested_price_longform_hd			= models.CharField(max_length=10)
 	sugested_price_shortform_sd			= models.CharField(max_length=10)
