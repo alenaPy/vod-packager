@@ -1,9 +1,11 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render, render_to_response, get_object_or_404
+from django.template import RequestContext
 import models
 
 def index(request):
-	return render(request, 'item.html')
+	items = models.Item.objects.order_by('name')
+	return render_to_response('view.html', {'items': items}, context_instance=RequestContext(request))
 
 def items(request):
 	return HttpResponse("Items index.")
@@ -21,10 +23,10 @@ def item(request, item_id):
 	try:
 		item = models.Item.objects.get(id=item_id)
 		resp = item.name
+		return render_to_response('item.html', {'item': item}, context_instance=RequestContext(request)) 
 	except:
 		resp = 'No ta!'
-	
-	return HttpResponse("You're looking at item %s." % resp)
+		return HttpResponse("You're looking at item %s." % resp)
 
 def package(request, package_id):
 	try:

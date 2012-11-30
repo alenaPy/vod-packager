@@ -10,6 +10,9 @@ setup_environ(settings)
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 from Packager_app import models
 
+from cablelabsadi import ADIXml
+from datetime import datetime, timedelta
+
 import os
 import logging
 
@@ -235,6 +238,8 @@ def GetVideoRenditions(Package=None):
 	    	try:
 		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD, status='F')
 		    VRenditionList.append(VRendition)
+
+
 		
 		except:
 		    #
@@ -325,43 +330,131 @@ def GetExportPathFromPackage(Package=None):
     return return_path
 
 
+def GetMetadataLanguage(Item, Language):
+    try:
+	return models.MetadataLanguage.objects.get(item=Item, language=Language)
+    except:
+	return None
 
-def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
+def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=""):
 
 
+    if Package is None or VideoRendition is None or ImageRendition is None:
+	#
+	# Error
+	#
+	return None
+
+
+    #
+    # Busca la Metadata segun el lenguaje de exportacion del cliente
+    #
+    MetadataLanguage = GetMetadataLanguage(Package.item, Package.customer.export_language)
+    if MetadataLanguage is None:
+	#
+	# No hay metadata asociada al item
+	#
+	return None
+
+    print dir(Package)
 
     MetadataXml = ADIXml.Package(Provider      = 'PBTVLA',
                 		 Product       = 'First-Run',
-                		 Asset_Name    = u'',
-                		 Description   = u'',
-                		 Creation_Date = Package.date_published,
+                		 Asset_Name    = MetadataLanguage.title_brief.replace(' ', '_').upper(),
+                		 Description   = MetadataLanguage.title_brief,
+                		 Creation_Date = str(Package.date_published),
                 		 Provider_ID   = 'playboytvla.com',
-                		 Asset_ID      = MakeAssetId('package', Package._id)
-                		 App_Data_App  = Package.customer.product_type
+                		 Asset_ID      = MakeAssetId('package', Package.id),
+                		 App_Data_App  = Package.customer.product_type)
 
 
-    MetadataXml.addTitle()
-    MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', Package.item._id)
+    #
+    # Agrega el titulo
+    #
+    print dir(MetadataXml)
+
+    MetadataXml.AddTitle()
+    MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', Package.item.id)
+
     
-    MetadataXml.Title.Rating       	= Package.customer.rating_display
     MetadataXml.Title.Closed_Captioning = 'N'
     MetadataXml.Title.Year		= Package.item.year
     MetadataXml.Title.Actors		= Package.item.actors
     MetadataXml.Title.Actors_Display	= Package.item.actors
     MetadataXml.Title.Director		= Package.item.director
+    MetadataXml.Title.Director_Display	= Package.item.director
     MetadataXml.Title.Box_Office	= '0'
     MetadataXml.Title.Billing_ID	= '00001'
+    MetadataXml.Title.Episode_ID	= Package.item.episode_id
+    MetadataXml.Title.Country_of_Origin = Package.item.country_of_origin.code
+    MetadataXml.Title.Studio		= (Package.item.studio_name.split(' '))[0]
+    MetadataXml.Title.Studio_Name	= Package.item.studio_name
+
+
+    MetadataXml.Title.Provider_QA_Contact = 'www.claxson.com'
+
+    print MetadataLanguage.title_brief
+
+    #
+    # Metadata especifica del lenguage
+    # 
+
+    MetadataXml.Title.Title_Brief	= MetadataLanguage.title_brief
+    MetadataXml.Title.Title_Sort_Name	= MetadataLanguage.title_sort_name
+    MetadataXml.Title.Title		= MetadataLanguage.title
+    MetadataXml.Title.Episode_Name	= MetadataLanguage.episode_name
+    MetadataXml.Title.Summary_Long	= MetadataLanguage.summary_long
+    MetadataXml.Title.Summary_Short	= MetadataLanguage.summary_short
+    MetadataXml.Title.Summary_Medium	= MetadataLanguage.summary_medium
+    
+    #
+    # Metadata Variable por Cliente
+    #
+    
+    MetadataXml.Title.Preview_Period		= Package.customer.preview_period
+    MetadataXml.Title.Rating       		= Package.customer.rating_display
+    MetadataXml.Title.Maximum_Viewing_Length 	= Package.customer.maximum_viewing_length
+    #
+    # Licencia de Visualizacion
+    # 
+    try:
+	License_Days = int(Package.customer.license_window)
+    except:
+	License_Days = 90
+
+    
+    MetadataXml.Title.Licensing_Window_Start = str(Package.date_published + timedelta(days=15))
+    MetadataXml.Title.Licensing_Window_End   = str(Package.date_published + timedelta(days=15) + timedelta(days=License_Days))
+
+    
+    if Package.customer.license_date_format == 'DT':
+	MetadataXml.Title.Licensing_Window_Start = MetadataXml.Title.Licensing_Window_Start + 'T23:59:59'
+	MetadataXml.Title.Licensing_Window_End   = MetadataXml.Title.Licensing_Window_End   + 'T23:59:59'
 
 
 
+    try:
+        CategoryRelation = models.CategoryRelation.objects.get(category=Package.item.category,customer=Package.customer)
+        CustomCategory = CategoryRelation.custom_category
+        print "Why?"
+    except:
+        CustomCategory = Package.item.category
 
-    MetadataXml.AddMovie()
-    MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition._id)
+
+    CategoryPath = 'Adults' + MetadataXml.Title.Studio + VideoRendition.video_profile.format + '/' + CustomCategory.name + '/'
+
+    MetadataXml.Title.Category	= CategoryPath.replace(' ', '')
+    MetadataXml.Title.Genre 	= CustomCategory.name
+
     
 
+#    MetadataXml.AddMovie()
+#    MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id)
 
 
-    
+
+    ADIXml.Package_toADIFile(MetadataXml, 'test.xml')
+
 
 logging.basicConfig(format='%(asctime)s - QIPackager.py -[%(levelname)s]: %(message)s', filename='./log/QPackager.log',level=logging.DEBUG)
 
@@ -369,8 +462,10 @@ logging.basicConfig(format='%(asctime)s - QIPackager.py -[%(levelname)s]: %(mess
 
 print len(MakeAssetId('package',12))
 
-#x = models.GetPackageQueue()
-#j = x[0]
+x = models.GetPackageQueue()
+j = x[0]
+MakeAdiXmlCablelabs(x[0], models.VideoRendition.objects.get(id=1))
+
 #j.status = 'P'
 #j.error  = 'Trolo'
 #j.save()

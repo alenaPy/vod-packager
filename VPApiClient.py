@@ -31,9 +31,9 @@ def VodPackagerAddItem(SmbPath = None, FileName = None, IMetadata = None, IMetad
 	return s.VPAddItem(SmbPath, FileName, IMetadata, IMetadataLanguage)
 
 
-I = ItemMetadata()
-I['name'] = 'Putin'
+#I = ItemMetadata()
+#I['name'] = 'Putin'
 
-L = ItemMetadataLanguage()
-L['language'] = 'esp'
-VodPackagerAddItem('\\\\aca\\', 'Gran Trolo.mov', I, [L] )
+#L = ItemMetadataLanguage()
+#L['language'] = 'esp'
+#VodPackagerAddItem('\\\\aca\\', 'Gran Trolo.mov', I, [L] )

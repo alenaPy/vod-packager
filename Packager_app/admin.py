@@ -48,7 +48,7 @@ class CategoryRelationAdmin(admin.ModelAdmin):
 	list_display = ('category', 'custom_category', 'customer')
 
 class MetadataLanguageAdmin(admin.ModelAdmin):
-	list_display = ('title_brief',)
+	list_display = ('item', 'title_brief', 'language')
 
 class LanguageAdmin(admin.ModelAdmin):
 	list_display = ('name', 'code') 

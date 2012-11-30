@@ -13,17 +13,24 @@ from django.core.management import execute_from_command_line
 #
 from Packager_app import models
 
-import ISO639_1
+import ISO
 import os
 
 
 def LoadLanguages():
-    for lan in ISO639_1.LANGUAGES:
+    for lan in ISO.LANGUAGES_ISO639_1:
 	Language = models.Language()
 	Language.code = lan['Code']
 	Language.name = lan['Name']
 	Language.save()
 
+
+def LoadCountries():
+    for cou in ISO.COUNTRIES_ISO3166_1:
+	Country	= models.Country()
+	Country.code = cou['Code']
+	Country.country = cou['Country']
+	Country.save()
 
 
 def Header():
@@ -85,6 +92,7 @@ def ConfigPaths(Path, Description = ""):
 
 
 Header()
+LoadCountries()
 ConfigPaths("video_local_path", "Video Local Path")
 ConfigPaths("imagen_local_path", "Imagen Local Path")
 ConfigPaths("package_export_path", "Export Package Path")

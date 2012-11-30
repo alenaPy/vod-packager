@@ -22,6 +22,15 @@ IMAGE_TYPE = (
 
 
 
+
+class Country(models.Model):
+	code						= models.CharField(max_length=2)
+	country						= models.CharField(max_length=255)
+
+	def __unicode__(self):
+	    return self.country
+
+
 class Language(models.Model):
 	code 						= models.CharField(max_length=2)
         name 						= models.CharField(max_length=20)
@@ -33,7 +42,7 @@ class Language(models.Model):
 class Customer(models.Model):
 
 	PRODUCT_TYPE = (
-		('VOD', 'Video On Demand'),
+		('SVOD', 'Subscription Video On Demand'),
 		('MOD', 'Movie On Demand'),
 	)
 
@@ -81,7 +90,10 @@ class Customer(models.Model):
 	sugested_price_shortform_hd			= models.CharField(max_length=10)
 	rental_period_shortform				= models.CharField(max_length=10)
 	rental_period_longform				= models.CharField(max_length=10)
-	licency_window					= models.CharField(max_length=3)
+	licence_window					= models.CharField(max_length=3, default='90')
+	preview_period					= models.CharField(max_length=4, default='0', blank=True)
+	maximum_viewing_length				= models.CharField(max_length=8, default='00:24:00', blank=True)
+
 
 	def __unicode__(self):
 		return self.name
@@ -90,6 +102,7 @@ class Customer(models.Model):
 class MetadataLanguage(models.Model):
 
 	language					= models.ForeignKey('Language')
+	item						= models.ForeignKey('Item')
 	title_sort_name 				= models.CharField(max_length=22)
 	title_brief 					= models.CharField(max_length=19)
 	title 						= models.CharField(max_length=128)
@@ -113,19 +126,19 @@ class Item(models.Model):
 	creation_date 					= models.DateTimeField(auto_now_add=True)
 	modification_date 				= models.DateTimeField(auto_now=True)	
 	kill_date 					= models.DateTimeField(default=datetime.now()+timedelta(days=45))
-	format						= models.CharField(max_length=1, choices=FORMAT)
+	format						= models.CharField(max_length=2, choices=FORMAT)
 	status 						= models.CharField(max_length=2, choices=ITEM_STATUS)
 	#asset_id 					= models.CharField(max_length=20) # autogenerar
     
 	content_language				= models.ForeignKey('Language')
 	content_duration				= models.CharField(max_length=10)
-	metadata_language				= models.ManyToManyField('MetadataLanguage')
+	#metadata_language				= models.ManyToManyField('MetadataLanguage')
 	episode_id					= models.CharField(max_length=10)
-	category					= models.CharField(max_length=32)
+	category					= models.ForeignKey('Category')
 	rating 						= models.CharField(max_length=32)
 	genres 						= models.CharField(max_length=32)
 	actors 						= models.CharField(max_length=512)
-	country_of_origin				= models.CharField(max_length=2)
+	country_of_origin				= models.ForeignKey('Country')
 	year 						= models.CharField(max_length=4)
 	director 					= models.CharField(max_length=128)
 	studio_name 					= models.CharField(max_length=128)
@@ -148,7 +161,7 @@ class ImportQueue(models.Model):
 	modification_date 			= models.DateTimeField(auto_now=True)
 	
 
-	error					= models.CharField(max_length=512)
+	error					= models.CharField(max_length=512, blank=True)
 
 	def __unicode__(self):
 		return self.file_name 
@@ -216,7 +229,7 @@ class Package(models.Model):
 	date_published 					= models.DateField(auto_now_add=True)
 	status						= models.CharField(max_length=2, choices=PACKAGE_STATUS)
 	group 						= models.ForeignKey('PackageGroup')
-	error						= models.CharField(max_length=512)
+	error						= models.CharField(max_length=512, blank=True)
 	
 	def __unicode__(self):
 		return str(self.date_published)
@@ -304,7 +317,7 @@ class CategoryRelation(models.Model):
 	customer 					= models.ForeignKey('Customer')
 
 	def __unicode__(self):
-		return self.customer
+		return self.customer.name
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

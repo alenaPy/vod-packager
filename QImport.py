@@ -126,15 +126,15 @@ def MakeImageRenditions(ImportTask=None):
     return True
 
 def CheckVideoRendition(Item=None, VProfile=None):
-    list = models.VideoRendition.objects.filter(item=Item, video_profile=VProfile)
-    if len(list) > 0:
+    VRlist = models.VideoRendition.objects.filter(item=Item, video_profile=VProfile)
+    if len(VRlist) > 0:
 	return False
     return True	
 
 
 def CheckImagenRendition(Item=None, IProfile=None):
-    list = models.ImagenRendition.objects.filter(item=Item, image_profile=IProfile)
-    if len(list) > 0:
+    IRlist = models.ImagenRendition.objects.filter(item=Item, image_profile=IProfile)
+    if len(IRlist) > 0:
 	return False
     return True
 
@@ -214,7 +214,8 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 	    ErrorString   = "04: Unable stablish DstBasename"
 	    return False
 	
-	DstBasename = PrefixStrId(Item._id)
+	DstBasename = DstBasename.replace(' ', '')
+	DstBasename = PrefixStrId(Item.id) + '-' + DstBasename.upper()
 	#
 	# Arma los parametros de transcodificacion
 	#	
