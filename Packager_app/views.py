@@ -1,16 +1,16 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, render_to_response, get_object_or_404
-from django.template import RequestContext
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import models
 
 def index(request):
+	
 	items_list = models.Item.objects.all()
-	paginator = Paginator(items_list, 2)
+	paginator = Paginator(items_list, 7)
 	
 	page = request.GET.get('page')
 	try:
-		contacts = paginator.page(page)
+		items = paginator.page(page)
 	except PageNotAnInteger:
 		# If page is not an integer, deliver first page.
 		items = paginator.page(1)
@@ -18,34 +18,77 @@ def index(request):
 		# If page is out of range (e.g. 9999), deliver last page of results.
 		items = paginator.page(paginator.num_pages)
 	
-	return render_to_response('view_items.html', {'items': items}, context_instance=RequestContext(request))
+	return render_to_response('view_items.html', {'items': items})
 
 def items(request):
-	return HttpResponse("Items index.")
-
-def customer(request, customer_id):
-	try:
-		customer = models.Customer.objects.get(id=customer_id)
-		resp = customer.name
-	except:
-		resp = 'No ta!'
 	
-	return HttpResponse("You're looking at customer %s." % resp)
+	items_list = models.Item.objects.all()
+	paginator = Paginator(items_list, 7)
+	
+	page = request.GET.get('page')
+	try:
+		items = paginator.page(page)
+	except PageNotAnInteger:
+		items = paginator.page(1)
+	except EmptyPage:
+		items = paginator.page(paginator.num_pages)
+	
+	return render_to_response('view_items.html', {'items': items})
+
+def customers(request):
+	
+	customer_list = models.Customer.objects.all()
+	paginator = Paginator(customer_list, 7)
+	
+	page = request.GET.get('page')
+	try:
+		customers = paginator.page(page)
+	except PageNotAnInteger:
+		customers = paginator.page(1)
+	except EmptyPage:
+		customers = paginator.page(paginator.num_pages)
+	
+	return render_to_response('view_customers.html', {'customers': customers})
+
+def packages(request):
+	
+	packages_list = models.Package.objects.all()
+	paginator = Paginator(packages_list, 7)
+	
+	page = request.GET.get('page')
+	try:
+		packages = paginator.page(page)
+	except PageNotAnInteger:
+		packages = paginator.page(1)
+	except EmptyPage:
+		packages = paginator.page(paginator.num_pages)
+	
+	return render_to_response('view_packages.html', {'packages': packages})
 
 def item(request, item_id):
+	
 	try:
 		item = models.Item.objects.get(id=item_id)
 		resp = item.name
-		return render_to_response('item.html', {'item': item}, context_instance=RequestContext(request)) 
+		return render_to_response('item.html', {'item': item}) 
 	except:
 		resp = 'No ta!'
 		return HttpResponse("You're looking at item %s." % resp)
 
-def package(request, package_id):
+def customer(request, customer_id):
+	
 	try:
-		package = models.Package.objects.get(id=package_id)
-		resp = package.item
+		customer = models.Customer.objects.get(id=customer_id)
+		return render_to_response('customer.html', {'customer': customer}) 
 	except:
 		resp = 'No ta!'
+		return HttpResponse("You're looking at customer %s." % resp)
+
+def package(request, package_id):
 	
-	return HttpResponse("You're looking at package %s." % resp)
+	try:
+		package = models.Package.objects.get(id=package_id)
+		return render_to_response('package.html', {'package': package}) 
+	except:
+		resp = 'No ta!'
+		return HttpResponse("You're looking at package %s." % resp)

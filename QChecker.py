@@ -75,25 +75,89 @@ def CheckItemStatus():
 
 	ir_total   = len(IRenditionList)
 	ir_empty   = 0
-	ir_filled  = 0
+	ir_done	   = 0
+	ir_error   = 0
 
 	for IRendition in IRenditionList:
 	    if IRendition.status   == 'E':
 		ir_empty  = ir_empty  + 1
-	    elif IRendition.status == 'F':
+	    elif IRendition.status == 'D':
 		ir_filled = ir_filled + 1
+	    elif IRendition.status == 'X':
+		ir_error  = ir_error  + 1
 
-	if vr_total == vr_queued and ir_total == ir_filled:
+	if vr_total == vr_finished and ir_total == ir_done:
 	    #
 	    # Termino de procesarse todo
 	    #
 	    Item.status = 'D'
 	    Item.save()
 	else:
-	    if vr_error > 0:
+	    if vr_error > 0 or ir_error > 0:
 		Item.status = 'W'
 		Item.save()
+
     logging.info("CheckItemStatus(): End Item Check")
+
+
+def CheckImageRenditionStatus():
+
+    logging.info("CheckImageRenditionStatus(): Start Check Imagen Rendition Status")
+        
+    image_local_path = models.GetPath("image_local_path")
+
+    logging.debug("CheckImageRenditionStatus(): image_local_path: " + image_local_path)
+    
+    if image_local_path is None:
+	logging.error("CheckImageRenditionStatus(): Config Error, image_local_path not defined")
+	return False
+
+    #
+    # Agrega / si no es que exite al final
+    #
+    if not image_local_path.endswith('/'):
+	image_local_path = image_local_path + '/'
+    
+
+    #
+    # Trae todos los video rendition cuyo Status = F
+    #
+
+
+    for IRendition in models.GetImageRenditionQueue():
+
+	logging.info("CheckImageRenditionStatus(): Image Rendition Check: " + IRendition.file_name)
+	logging.info("CheckImageRenditionStatus(): Image Rendition Item: " +  IRendition.item.name)
+
+	if FileExist(image_local_path, IRendition.file_name):
+	    #
+	    # Si el archivo existe
+	    #
+	    # - Calcula su checksum
+	    # - Calcula su filesize
+	    # - Establece su Status en F -> Finished
+	    
+	    IRendition.checksum = md5checksum.md5_checksum(image_local_path + IRendition.file_name)
+	    logging.debug("CheckImageoRenditionStatus(): Image Rendition Checksum: " + IRendition.file_name + "," + IRendition.checksum)	
+	    
+	    IRendition.file_size = os.stat(image_local_path + IRendition.file_name).st_size
+	    logging.debug("CheckImageRenditionStatus(): Image Rendition FileSize: " + IRendition.file_name + "," + str(IRendition.file_size))
+	    
+	    IRendition.status   = 'D'
+	    IRendition.save()
+	    
+	    logging.info("CheckImageRenditionStatus(): Image Rendition finish all procesing: " + IRendition.file_name)
+	else:
+	    #
+	    # Si el archivo no existe es porque se produjo un error
+	    #
+    	    logging.error("CheckImageRenditionStatus(): Image Rendition not exist: [FILE]-> " + IRendition.file_name + ", [PATH]-> " + image_local_path)
+	    IRendition.status   = 'E'
+	    IRendition.save()    
+
+
+    logging.info("CheckImageRenditionStatus(): End Check Image Rendition Status")
+    return True
 
 
 def CheckVideoRenditionStatus():
@@ -180,6 +244,7 @@ def main():
    
     while 1:
 	CheckVideoRenditionStatus()
+	CheckImageRenditionStatus()
 	CheckItemStatus()
 	time.sleep(60)
 

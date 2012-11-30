@@ -191,6 +191,8 @@ class ImageRendition(models.Model):
 	IMAGE_RENDITION_STATUS = (
 		('E', 'Empty'),
 		('F', 'Filled'),
+		('D', 'Done'),
+		('X', 'Error'),
 	)
 	file_name 					= models.CharField(max_length=256)
 	file_size 					= models.BigIntegerField(default=0)
@@ -198,6 +200,8 @@ class ImageRendition(models.Model):
 	image_profile 					= models.ForeignKey('ImageProfile')
 	item 						= models.ForeignKey('Item')
 	status						= models.CharField(max_length=2, choices=IMAGE_RENDITION_STATUS)
+	
+#	error						= models.CharField(max_length=512, black=True)
 	#
 	# idiomas
 	#
@@ -351,7 +355,9 @@ def GetPath(path=None):
 
 def GetVideoRenditionQueue():
     return VideoRendition.objects.filter(status='Q')
-    
+
+def GetImageRenditionQueue():
+    return ImageRendition.objects.filter(status='F') 
 
 def GetProcessingItems():
     return Item.objects.filter(status='P')

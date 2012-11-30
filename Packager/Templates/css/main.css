@@ -148,3 +148,17 @@ span.status_D {
  width: 16px;
  height: 16px;
 }
+span.vod_active_True {
+ display: block;
+ background-image: url(/images/icons/accept.png);
+ background-repeat:no-repeat;
+ width: 16px;
+ height: 16px;
+}
+span.vod_active_False {
+ display: block;
+ background-image: url(/images/icons/cancel.png);
+ background-repeat:no-repeat;
+ width: 16px;
+ height: 16px;
+}

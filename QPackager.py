@@ -363,7 +363,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=""):
 
     MetadataXml = ADIXml.Package(Provider      = 'PBTVLA',
                 		 Product       = 'First-Run',
-                		 Asset_Name    = MetadataLanguage.title_brief.replace(' ', '_').upper(),
+                		 Asset_Name    = MetadataLanguage.title_brief.replace(' ', '_'),
                 		 Description   = MetadataLanguage.title_brief,
                 		 Creation_Date = str(Package.date_published),
                 		 Provider_ID   = 'playboytvla.com',
@@ -523,8 +523,7 @@ def main():
 		print video_local_path + VideoRendition.file_name
 
 		os.link(video_local_path + '/' + VideoRendition.file_name, PackagePath + VideoRendition.file_name )
-		
-		
+
 
 	x = False
 
