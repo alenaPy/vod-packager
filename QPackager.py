@@ -415,7 +415,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=""):
     #
     
     MetadataXml.Title.Preview_Period		= Package.customer.preview_period
-    MetadataXml.Title.Rating       		= Package.customer.rating_display
+    MetadataXml.Title.Rating       		= Package.customer.rating_display.name
     MetadataXml.Title.Maximum_Viewing_Length 	= Package.customer.maximum_viewing_length
     #
     # Licencia de Visualizacion
@@ -518,7 +518,7 @@ def main():
 		ADIXml.Package_toADIFile(MetadataXml, PackagePath + MetadataXml.AMS.Asset_Name + '.xml')
 		print "Estoy aca"
 
-		video_local_path = models.Path.objects.get(key='video_local_path').location
+		video_local_path = models.GetPath('video_local_path')
 
 		print video_local_path + VideoRendition.file_name
 

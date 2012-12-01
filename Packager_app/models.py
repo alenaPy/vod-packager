@@ -39,18 +39,18 @@ class Language(models.Model):
 	    return self.name
 
 
+class Rating(models.Model):
+	name						= models.CharField(max_length=6)
+
+	def __unicode__(self):
+	    return self.name
+
+
 class Customer(models.Model):
 
 	PRODUCT_TYPE = (
 		('SVOD', 'Subscription Video On Demand'),
 		('MOD', 'Movie On Demand'),
-	)
-
-	RATING_DISPLAY = (
-		('X',  'X'),
-		('XXX','XXX'),
-		('18', '18'),
-		('R',  'R'),
 	)
 
 	RUNTIME_DISPLAY = (
@@ -82,7 +82,7 @@ class Customer(models.Model):
 	export_folder					= models.CharField(max_length=256)
 	runtype_display					= models.CharField(max_length=1, choices=RUNTIME_DISPLAY)
 	license_date_format				= models.CharField(max_length=2, choices=LICENSE_DATE_FORMAT)
-	rating_display					= models.CharField(max_length=3, choices=RATING_DISPLAY)
+	rating_display					= models.ForeignKey('Rating')
 	product_type					= models.CharField(max_length=4, choices=PRODUCT_TYPE)
 	sugested_price_longform_sd			= models.CharField(max_length=10)
 	sugested_price_longform_hd			= models.CharField(max_length=10)
@@ -148,15 +148,16 @@ class Item(models.Model):
 	def __unicode__(self):
 		return self.name
 
-class ImportQueue(models.Model):
-	IMPORT_QUEUE_STATUS = (
+class RenditionQueue(models.Model):
+	RENDITION_QUEUE_STATUS = (
 		('Q', 'Queued'),
 		('D', 'Dequeued'),
+		('E', 'Error'),
 	)
 	item	          			= models.ForeignKey('Item')
 	file_name         			= models.CharField(max_length=256)
 	svc_path          			= models.CharField(max_length=256)
-	queue_status				= models.CharField(max_length=1,choices=IMPORT_QUEUE_STATUS)
+	queue_status				= models.CharField(max_length=1,choices=RENDITION_QUEUE_STATUS)
 	creation_date				= models.DateTimeField(auto_now_add=True)
 	modification_date 			= models.DateTimeField(auto_now=True)
 	
@@ -189,10 +190,10 @@ class VideoRendition(models.Model):
 
 class ImageRendition(models.Model):
 	IMAGE_RENDITION_STATUS = (
-		('E', 'Empty'),
+		('U', 'Unfilled'),
 		('F', 'Filled'),
 		('D', 'Done'),
-		('X', 'Error'),
+		('E', 'Error'),
 	)
 	file_name 					= models.CharField(max_length=256)
 	file_size 					= models.BigIntegerField(default=0)
@@ -343,15 +344,16 @@ def GetImageProfile():
 def GetTranscodingServer():
     return TranscodingServer.objects.filter(status='E')
 
-def GetImportQueue():
-    return ImportQueue.objects.filter(queue_status='Q')
-
+def GetRenditionQueue():
+    return RenditionQueue.objects.filter(queue_status='Q')
 
 def GetPath(path=None):
     if path is not None:
-	return Path.objects.get(key=path).location
+	try:
+	    return Path.objects.get(key=path).location
+	except:
+	    return None
     return None
-
 
 def GetVideoRenditionQueue():
     return VideoRendition.objects.filter(status='Q')
@@ -361,7 +363,6 @@ def GetImageRenditionQueue():
 
 def GetProcessingItems():
     return Item.objects.filter(status='P')
-    
 
 def GetPackageQueue():
     return Package.objects.filter(status='Q')

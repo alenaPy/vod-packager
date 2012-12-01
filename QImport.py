@@ -96,12 +96,12 @@ def InitCarbonPool():
     return CPool
 
 
-def MakeImageRenditions(ImportTask=None):
+def MakeImageRenditions(RenditionTask=None):
 
-    if ImportTask is None:
+    if RenditionTask is None:
 	return False
 
-    Item = ImportTask.item
+    Item = RenditionTask.item
     
     #
     # Trae la lista de profiles activos
@@ -114,13 +114,13 @@ def MakeImageRenditions(ImportTask=None):
     for IProfile in IProfileList:
 	
 	if not CheckImagenRendition(Item, IProfile):
-	    logging.warning("MakeImagenRendition(): Video Profile exist-> Continue. [IP: %s]" % IProfile.name )
+	    logging.warning("MakeImagenRendition(): Image Profile exist-> Continue. [IP: %s]" % IProfile.name )
 	    continue
 
 	IRendition               = models.ImageRendition()
 	IRendition.image_profile = IProfile
 	IRendition.item          = Item
-	IRendition.status        = 'E'
+	IRendition.status        = 'U'
 	IRendition.save()
 
     return True
@@ -150,21 +150,24 @@ def PrefixStrId(itemid=0):
     return 'PB' + Zero + StrId
 
 
-def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
+def MakeVideoRenditions(RenditionTask=None, CPool=None):   # CPool = CarbonPool()
 
     global ErrorString
 
     ErrorString = ''
 
-    if ImportTask is None:
+    if RenditionTask is None:
 	
 	logging.error("MakeVideoRenditions(): ImportTask is None")
-
 	return False
 
-    
-    Item = ImportTask.item
-    
+    try:
+	Item = RenditionTask.item
+    except:
+	logging.error("MakeVideoRenditions(): ImportTask not have an Item")
+	ErrorString = "ImportTask not have an Item"
+	return False
+
     logging.info("MakeVideoRenditions(): Creating video rendition for item: " + Item.name )
     #
     # Define que tipos de Video Profiles debe usar
@@ -176,11 +179,11 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 	VProfileList = models.GetVideoProfiles('SD')
         
         
-    Source = ImportTask.svc_path
-    File   = ImportTask.file_name
+    Source = RenditionTask.svc_path
+    File   = RenditionTask.file_name
     
     logging.debug("MakeVideoRenditions(): Source-> " + Source + " File-> " + File)    
-    
+    logging.debug("MakeVideoRenditions(): VProfileList len: " + str(len(VProfileList)))
     #
     # Por cada video profile crea un video rendition
     #
@@ -203,8 +206,8 @@ def MakeVideoRenditions(ImportTask=None, CPool=None):   # CPool = CarbonPool()
 	#
 	DstFilename = RenditionFileName(File, VProfile.sufix, VProfile.file_extension)
 	if DstFilename is None:
-	    logging.error = "MakeVideoRenditions(): 03: Unable stablish DstFileName"
-	    ErrorString   = "03: Unable stablish DstFileName"
+	    logging.error = "MakeVideoRenditions(): 03: Unable stablish DstFileName, [FILE]-> " + File + " ,[SUFIX]-> " + VProfile.sufix 
+	    ErrorString   = "03: Unable stablish DstFileName, [FILE]-> " + File + " ,[SUFIX]-> " + VProfile.sufix
 	    return False
 	
 
@@ -301,7 +304,7 @@ def main():
 	#
 	# En el ciclo principal
 	#
-	QueueList = models.GetImportQueue()
+	QueueList = models.GetRenditionQueue()
 	logging.debug("main(): QueueLen = " + str(len(QueueList)))
 	for Queue in QueueList:
 	    #
@@ -312,14 +315,17 @@ def main():
 
 	    # Creo los video renditions
 	    if not MakeVideoRenditions(Queue,CPool):
-		Queue.error = ErrorString
+		Queue.error  = ErrorString
+		Queue.status = 'E'
 		Queue.save()
+		continue
 
 	    # Creo los imagen rendition
 	    if not MakeImageRenditions(Queue):
-		Queue.error = ErrorString
+		Queue.error  = ErrorString
+		Queue.status = 'E'
 		Queue.save()
-
+		continue
 
 	    Queue.item.status = 'P'
 	    Queue.item.save()
@@ -340,7 +346,8 @@ class main_daemon(Daemon):
 if __name__ == "__main__":
 	daemon = main_daemon('./pid/QImport.pid', stdout='./log/QImport.err', stderr='./log/QImport.err')
 	if len(sys.argv) == 2:
-		if 'start'     == sys.argv[1]:
+		if 'start'     == sys.argv[1]:a
+
 			daemon.start()
 		elif 'stop'    == sys.argv[1]:
 			daemon.stop()

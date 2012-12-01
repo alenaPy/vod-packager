@@ -65,26 +65,28 @@ def CheckItemStatus():
 	vr_error    = 0
 	for VRendition in VRenditionList:
 	    if VRendition.status   == 'Q':
-		vr_queued   = vr_queued + 1
+		vr_queued   = vr_queued   + 1
 	    elif VRendition.status == 'F':
 		vr_finished = vr_finished + 1
 	    elif VRendition.status == 'E':
-		vr_error    = vr_error +1
+		vr_error    = vr_error    + 1
 
 	IRenditionList = models.ImageRendition.objects.filter(item=Item)
 
-	ir_total   = len(IRenditionList)
-	ir_empty   = 0
-	ir_done	   = 0
-	ir_error   = 0
+	ir_total   	= len(IRenditionList)
+	ir_unfilled 	= 0
+	ir_done	   	= 0
+	ir_error   	= 0
 
 	for IRendition in IRenditionList:
-	    if IRendition.status   == 'E':
-		ir_empty  = ir_empty  + 1
+	    if IRendition.status   == 'U':
+		ir_unfilled	= ir_unfilled  + 1
+	    elif IRendition.status == 'F':
+		ir_filled 	= ir_filled + 1
 	    elif IRendition.status == 'D':
-		ir_filled = ir_filled + 1
-	    elif IRendition.status == 'X':
-		ir_error  = ir_error  + 1
+		ir_done		= ir_done   + 1
+	    elif IRendition.status == 'E':
+		ir_error  	= ir_error  + 1
 
 	if vr_total == vr_finished and ir_total == ir_done:
 	    #
@@ -120,7 +122,7 @@ def CheckImageRenditionStatus():
     
 
     #
-    # Trae todos los video rendition cuyo Status = F
+    # Trae todos los image rendition cuyo Status = F
     #
 
 
@@ -153,6 +155,7 @@ def CheckImageRenditionStatus():
 	    #
     	    logging.error("CheckImageRenditionStatus(): Image Rendition not exist: [FILE]-> " + IRendition.file_name + ", [PATH]-> " + image_local_path)
 	    IRendition.status   = 'E'
+	    IRendition.error	= "Image Rendition not exist: [FILE]-> " + IRendition.file_name + ", [PATH]-> " + image_local_path
 	    IRendition.save()    
 
 
@@ -223,6 +226,7 @@ def CheckVideoRenditionStatus():
 		#
 		logging.error("CheckVideoRenditionStatus(): Video Rendition not exist: [FILE]-> " + VRendition.file_name + ", [PATH]-> " + video_local_path)
 		VRendition.status   = 'E'
+		VRendition.error    = "Video Rendition not exist: [FILE]-> " + VRendition.file_name + ", [PATH]-> " + video_local_path
 		VRendition.save()    
 	    
         else:
@@ -232,6 +236,7 @@ def CheckVideoRenditionStatus():
     		#
     		
     		VRendition.status = 'E'
+		VRendition.error  = "Rhozet Error"
     		VRendition.save()
     	
     logging.info("CheckVideoRenditionStatus(): End Check Video Rendition Status")
@@ -242,9 +247,18 @@ def main():
 
     logging.basicConfig(format='%(asctime)s - QCheckerD.py -[%(levelname)s]: %(message)s', filename='./log/QChecker.log',level=logging.INFO) 
    
-    while 1:
-	CheckVideoRenditionStatus()
-	CheckImageRenditionStatus()
+    end = False
+
+    while not end:
+	if not CheckVideoRenditionStatus():
+	    logging.error("main(): Critical error, please check your config [SHUTDOWN]")
+	    end = True
+	    continue
+	if not CheckImageRenditionStatus():
+	    logging.error("main(): Critical error, please check your config [SHUTDOWN]")
+	    end = True
+	    continue
+
 	CheckItemStatus()
 	time.sleep(60)
 
