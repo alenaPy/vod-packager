@@ -7,7 +7,7 @@ class CustomerAdmin(admin.ModelAdmin):
 class ItemAdmin(admin.ModelAdmin):
 	list_display = ('name', 'format', 'status')
 
-class ImportQueueAdmin(admin.ModelAdmin):
+class RenditionQueueAdmin(admin.ModelAdmin):
 	list_display = ('file_name', 'item', 'queue_status')
 
 class VideoRenditionAdmin(admin.ModelAdmin):
@@ -53,10 +53,13 @@ class MetadataLanguageAdmin(admin.ModelAdmin):
 class LanguageAdmin(admin.ModelAdmin):
 	list_display = ('name', 'code') 
 
+class RatingAdmin(admin.ModelAdmin):
+	list_display = ('name',)
+
 
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Item, ItemAdmin)
-admin.site.register(ImportQueue, ImportQueueAdmin)
+admin.site.register(RenditionQueue, RenditionQueueAdmin)
 admin.site.register(VideoRendition, VideoRenditionAdmin)
 admin.site.register(ImageRendition, ImageRenditionAdmin)
 admin.site.register(PackageGroup, PackageGroupAdmin)
@@ -71,6 +74,7 @@ admin.site.register(CustomCategory, CustomCategoryAdmin)
 admin.site.register(CategoryRelation, CategoryRelationAdmin)
 admin.site.register(MetadataLanguage, MetadataLanguageAdmin)
 admin.site.register(Language, LanguageAdmin)
+admin.site.register(Rating, RatingAdmin)
 
 '''
 admin.site.register(Customer)

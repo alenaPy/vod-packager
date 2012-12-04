@@ -90,11 +90,10 @@ class Customer(models.Model):
 	sugested_price_shortform_hd			= models.CharField(max_length=10)
 	rental_period_shortform				= models.CharField(max_length=10)
 	rental_period_longform				= models.CharField(max_length=10)
-	licence_window					= models.CharField(max_length=3, default='90')
+	license_window					= models.CharField(max_length=3, default='90')
 	preview_period					= models.CharField(max_length=4, default='0', blank=True)
 	maximum_viewing_length				= models.CharField(max_length=8, default='00:24:00', blank=True)
-
-
+	
 	def __unicode__(self):
 		return self.name
 
@@ -143,8 +142,9 @@ class Item(models.Model):
 	director 					= models.CharField(max_length=128)
 	studio_name 					= models.CharField(max_length=128)
 	mam_id 						= models.CharField(max_length=64)
-
-
+	#video_rendition					= models.ManyToManyField('VideoRendition')
+	#image_rendition					= models.ManyToManyField('ImageRendition')
+	
 	def __unicode__(self):
 		return self.name
 
@@ -202,13 +202,14 @@ class ImageRendition(models.Model):
 	item 						= models.ForeignKey('Item')
 	status						= models.CharField(max_length=2, choices=IMAGE_RENDITION_STATUS)
 	
-#	error						= models.CharField(max_length=512, black=True)
+	error						= models.CharField(max_length=512, blank=True)
 	#
 	# idiomas
 	#
 	def __unicode__(self):
 		return self.file_name
-
+	def filteredItems(self, item):
+		return self.objects.filter(item=item)
 
 class Provider(models.Model):
 	provider					= models.CharField(max_length=20)

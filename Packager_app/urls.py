@@ -10,4 +10,6 @@ urlpatterns = patterns('',
 	url(r'^item/(?P<item_id>\d+)/$', views.item, name='item'),
 	url(r'^packages$', views.packages, name='packages'),
 	url(r'^package/(?P<package_id>\d+)/$', views.package, name='package'),
+	url(r'^image_rendition/(?P<image_rendition_id>\d+)/$', views.image_rendition, name='image_rendition'),
+	url(r'^image_renditions/upload/$', views.image_renditions_upload, name='image_renditions_upload'),
 )
