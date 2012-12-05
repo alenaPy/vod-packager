@@ -108,11 +108,13 @@ def CheckImageRenditionStatus():
         
     image_local_path = models.GetPath("image_local_path")
 
-    logging.debug("CheckImageRenditionStatus(): image_local_path: " + image_local_path)
+
     
     if image_local_path is None:
 	logging.error("CheckImageRenditionStatus(): Config Error, image_local_path not defined")
 	return False
+
+    logging.debug("CheckImageRenditionStatus(): image_local_path: " + image_local_path)
 
     #
     # Agrega / si no es que exite al final
@@ -169,11 +171,13 @@ def CheckVideoRenditionStatus():
         
     video_local_path = models.GetPath("video_local_path")
 
-    logging.debug("CheckVideoRenditionStatus(): video_local_path: " + video_local_path)
+
     
     if video_local_path is None:
 	logging.error("CheckVideoRenditionStatus(): Config Error, video_local_path not defined")
 	return False
+
+    logging.debug("CheckVideoRenditionStatus(): video_local_path: " + video_local_path)
 
     #
     # Agrega / si no es que exite al final

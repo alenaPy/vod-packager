@@ -12,6 +12,28 @@ import re
 from Packager_app import models
 
 
+
+from django.template import RequestContext
+from django.shortcuts import render_to_response
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+ 
+@csrf_exempt
+def upload_file(request):
+    if request.method == "POST":
+	upload = request.FILES['Filedata']
+	try:
+	    dest = open(upload.name, "wb+")
+	    for block in upload.chunks():
+		dest.write(block)
+	    dest.close()
+	except IOError:
+	    pass # ignore failed uploads for now
+ 
+    response = HttpResponse()
+    response.write("%s\r\n" % upload.name)
+    return response
+
 def GetImageRendition(Item=None, FileName=''):
     Splited = re.match("(.+)_(PI[S|H][0-9][0-9]).([a-z][a-z][a-z])",FileName)
 

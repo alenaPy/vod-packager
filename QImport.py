@@ -164,8 +164,9 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None):   # CPool = CarbonPool(
     try:
 	Item = RenditionTask.item
     except:
-	logging.error("MakeVideoRenditions(): ImportTask not have an Item")
-	ErrorString = "ImportTask not have an Item"
+	e = sys.exc_info()[0]
+	logging.error("MakeVideoRenditions(): ImportTask not have an Item. Catch: %s" % e)
+	ErrorString = "ImportTask not have an Item. Catch: %s" % e
 	return False
 
     logging.info("MakeVideoRenditions(): Creating video rendition for item: " + Item.name )
@@ -234,16 +235,22 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None):   # CPool = CarbonPool(
 	#
 	# Envia el Job a transcodificar
 	#
-	XmlJob    = CreateCarbonXMLJob(Source,File,[],[TranscodeInfo],None,None)
+	try:
+	    XmlJob    = CreateCarbonXMLJob(Source,File,[],[TranscodeInfo],None,None)
+	except:
+	    e = sys.exc_info()[0]
+	    logging.error("MakeVideoRendition(): 01: Exception making Carbon XML Job. Catch: " + e)
+	    ErrorString = '01: Exception making Carbon XML Job. Catch: ' + e 
+	
 	if XmlJob is None:
-	    logging.error = "MakeVideoRendition(): 01: Error making Carbon XML Job"
+	    logging.error("MakeVideoRendition(): 01: Error making Carbon XML Job")
 	    ErrorString = '01: Error making Carbon XML Job'
 	    return False
 
 	Job       = StartJobCarbonPool(CPool,XmlJob)
 	if Job is None:
 	    ErrorString = '02: Error sending Job'
-	    logging.error = "MakeVideoRendition(): 02: Error sending Job"
+	    logging.error("MakeVideoRendition(): 02: Error sending Job")
 	    return False
 	
 	#
@@ -346,8 +353,7 @@ class main_daemon(Daemon):
 if __name__ == "__main__":
 	daemon = main_daemon('./pid/QImport.pid', stdout='./log/QImport.err', stderr='./log/QImport.err')
 	if len(sys.argv) == 2:
-		if 'start'     == sys.argv[1]:a
-
+		if 'start'     == sys.argv[1]:
 			daemon.start()
 		elif 'stop'    == sys.argv[1]:
 			daemon.stop()

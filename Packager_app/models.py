@@ -93,6 +93,7 @@ class Customer(models.Model):
 	license_window					= models.CharField(max_length=3, default='90')
 	preview_period					= models.CharField(max_length=4, default='0', blank=True)
 	maximum_viewing_length				= models.CharField(max_length=8, default='00:24:00', blank=True)
+	extended_video_information			= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')))
 	
 	def __unicode__(self):
 		return self.name
@@ -127,24 +128,24 @@ class Item(models.Model):
 	kill_date 					= models.DateTimeField(default=datetime.now()+timedelta(days=45))
 	format						= models.CharField(max_length=2, choices=FORMAT)
 	status 						= models.CharField(max_length=2, choices=ITEM_STATUS)
-	#asset_id 					= models.CharField(max_length=20) # autogenerar
-    
 	content_language				= models.ForeignKey('Language')
 	content_duration				= models.CharField(max_length=10)
-	#metadata_language				= models.ManyToManyField('MetadataLanguage')
-	episode_id					= models.CharField(max_length=10)
+	episode_name					= models.CharField(max_length=255, blank=True)
+	episode_id					= models.CharField(max_length=60, blank=True)
 	category					= models.ForeignKey('Category')
+	audience					= models.CharField(max_length=32, blank=True, default='Adult')
+	show_type					= models.CharField(max_length=32, default='Movie')
 	rating 						= models.CharField(max_length=32)
 	genres 						= models.CharField(max_length=32)
 	actors 						= models.CharField(max_length=512)
 	country_of_origin				= models.ForeignKey('Country')
 	year 						= models.CharField(max_length=4)
 	director 					= models.CharField(max_length=128)
+	studio						= models.CharField(max_length=64)
 	studio_name 					= models.CharField(max_length=128)
 	mam_id 						= models.CharField(max_length=64)
-	#video_rendition					= models.ManyToManyField('VideoRendition')
-	#image_rendition					= models.ManyToManyField('ImageRendition')
-	
+
+
 	def __unicode__(self):
 		return self.name
 

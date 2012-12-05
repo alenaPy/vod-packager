@@ -92,16 +92,46 @@
 	</table>
 </div>
 <div class="grid_9" id="renditions" style="color: #fff;">
-	<h3 class="accordion" id="section1" style="background: #f00;">Video Rendition<span></span><h3>
+	<h3 class="accordion" id="section1" style="background: #6b6e80; padding-left: 3px;">
+		<a href="#">Video renditions</a><span></span>
+	<h3>
 	<div class="container">
 		<div class="content">
-			<p>Content here....</p>
+			<table>
+				<thead>
+					<th>Name</th><th>Video profile</th><th>Status</th>
+				</thead>
+				<tbody>
+			{% for vr in video_renditions %}
+			<tr>
+				<td>{{vr.file_name}}</td>
+				<td>{{vr.video_profile}}</td>
+				<td>{{vr.status}}</td>
+			</tr>
+			{% endfor %}
+			<tbody>
+			</table>
 		</div>
 	</div>
-	<h3 class="accordion" id="section2" style="background: #0f0;">Image Rendition<span></span><h3>
+	<h3 class="accordion" id="section2" style="background: #6b6e80; padding-left: 3px;">
+		<a href="#">Image renditions</a><span></span>
+	<h3>
 	<div class="container">
 		<div class="content">
-			<p>Content here....</p>
+			<table>
+				<thead>
+					<th>Name</th><th>Image profile</th><th>Status</th>
+				</thead>
+				<tbody>
+			{% for ir in image_renditions %}
+			<tr>
+				<td>{{ir.file_name}}</td>
+				<td>{{ir.image_profile}}</td>
+				<td>{{ir.status}}</td>
+			</tr>
+			{% endfor %}
+			<tbody>
+			</table>
 		</div>
 	</div>
 </div>

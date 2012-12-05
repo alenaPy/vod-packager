@@ -12,11 +12,13 @@ from Packager_app import models
 
 from cablelabsadi import ADIXml
 from datetime import datetime, timedelta
+from daemon import Daemon
 
 import xml.etree.ElementTree as ET
 
-import os
+import os, time, sys
 import logging
+
 
 ErrorString = ''
 
@@ -44,6 +46,34 @@ def MakeAssetId(asset_type='package', asset_id = 0):
     return 'PBLA' + first + zero + str_id
 
 
+
+def GetImageRenditions(Package=None):
+
+    global ErrorString
+    ErrorString  = ''
+
+    if Package is None:
+	ErrorString = 'Package is None'
+	logging.error('GetImageRenditions(): %s' % ErrorString)
+	return None
+
+    ImageProfileList   = Package.customer.image_profile.filter(status='E')
+    ImageRenditionList = []
+
+
+
+    for IProfile in ImageProfileList:
+	logging.debug('GetImageRenditions(): Search ImageRendition for this image profile: %s' % IProfile.name)
+	try:
+	    IRendition = models.ImageRendition.objects.get(item=Package.item, image_profile=IProfile, status='D')
+	    logging.debug('GetImageRenditions(): Found: %s' % IRendition.file_name)
+	    ImageRenditionList.append(IRendition)
+	except:
+	    ErrorString = 'Does not exist an Image Rendition for this item: ' + item.name + ', for this profile: ' + IProfile.name
+	    logging.error('GetImageRenditions(): %s. RETURN None' % ErrorString)
+
+    return ImageRenditionList
+
 def GetVideoRenditions(Package=None):
 
     if Package is not None:
@@ -54,7 +84,6 @@ def GetVideoRenditions(Package=None):
 	Item		 = Package.item
 
 	global ErrorString
-	
 	ErrorString = ''
 
 
@@ -73,7 +102,7 @@ def GetVideoRenditions(Package=None):
 	    #
 	    # No tiene correctamente definido los profiles
 	    #
-	    ErrorString = '01: Number of VideoProfile are wrong: ' + VPListLen
+	    ErrorString = '01: Number of VideoProfile are wrong: ' + str(VPListLen)
 	    logging.error("GetVideoRenditions():" + ErrorString)
 	    return None
 
@@ -81,10 +110,12 @@ def GetVideoRenditions(Package=None):
 	    #
 	    # Que formatos usa el cliente
 	    #
+	    logging.info('GetVideoRenditions(): Customer: ' + Customer.name + ', Export Format: ' + Customer.export_format)
 	    if Customer.export_format == 'BOTH' or Customer.export_format == 'HD':
-	        #
+		#
 	        # Ambos formatos
 	        #
+		logging.info('GetVideoRenditions(): Len of Video Profiles: ' + str(VPListLen))
 		if VPListLen == 2:
 
 		    if VideoProfileList[0].format != VideoProfileList[1].format:
@@ -101,6 +132,8 @@ def GetVideoRenditions(Package=None):
 			    ProfileSD = VideoProfileList[1]
 			    ProfileHD = VideoProfileList[0]
 
+			logging.info("Profile SD: %s" % ProfileSD.name)
+			logging.info("Profile HD: %s" % ProfileHD.name)
 		    else:
 			#
 			# Esta mal definido tiene dos profiles pero iguales
@@ -116,17 +149,20 @@ def GetVideoRenditions(Package=None):
 		    # Tiene un solo profile definido
 		    #
 		    if VideoProfileList[0] == 'SD':
+			logging.info("GetVideoRenditions(): The Customer %s only have a SD profile defined" % Customer.name)
 			#
 		        # Exporta solamente SD porque no tiene definido uno HD
 		        #
 			ExportSD = True
 			ProfileSD = VideoProfileList[0]
-
+			logging.info("GetVideoRenditions(): Profile SD: %s" % ProfileSD.name)
 		    else:
+			logging.info("GetVideoRenditions(): The Customer %s only have a HD profile defined" % Customer.name)
 			#
 		        # Exporta solamente HD porque no tiene definido uno SD
 			#
 			ProfileHD = VideoProfileList[0]
+			logging.info("GetVideoRenditions(): Profile HD: %s" % ProfileHD.name)
 			ExportHD = True
 
 
@@ -139,6 +175,7 @@ def GetVideoRenditions(Package=None):
 			#
 			ExportSD = True
 			ProfileSD = VideoProfileList[0]
+			logging.info("GetVideoRenditions(): Profile SD: %s" % ProfileSD.name) 
 		    else:
 			#
 			# Tiene un solo profile definido pero no es SD
@@ -153,6 +190,7 @@ def GetVideoRenditions(Package=None):
 			    ProfileSD = VideoProfileList[0]
 			else:
 			    ProfileSD = VideoProfileList[1]
+			logging.info("GetVideoRenditions(): Profile SD: %s" % ProfileSD.name)
 			ExportSD = True
 		    else:
 			#
@@ -186,6 +224,7 @@ def GetVideoRenditions(Package=None):
 			else:
 			    ProfileHD = VideoProfileList[1]
 			ExportHD = True
+			logging.info("GetVideoRenditions(): Profile HD: %s" % ProfileHD.name)
 		    else:
 			#
 			# Error logico, solamente el cliente exporta hd pero no tiene ningun
@@ -197,6 +236,8 @@ def GetVideoRenditions(Package=None):
 		    
 
 
+
+	logging.info("GetVideoRenditions(): Item Format: %s" % Item.format)
 	if Item.format == 'HD':
 	    #
 	    # El item esta en formato HD
@@ -205,11 +246,13 @@ def GetVideoRenditions(Package=None):
 		try:
 		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileHD, status='F')
 		    VRenditionList.append(VRendition)
-		    
+		    logging.info("GetVideoRendition(): Video Rendition HD: %s" % VRendition.file_name)
 		    #
 		    # Si el cliente prefiere HD no le exporta la version en SD
 		    #
+		    
 		    if Customer.export_format == 'HD':
+			logging.info("GetVideoRendition(): Only export a HD format because is the customer preference")
 			ExportSD = False			    
     		except:
 		    #
@@ -223,7 +266,7 @@ def GetVideoRenditions(Package=None):
 		try:
 		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD,status='F')
 		    VRenditionList.append(VRendition)
-		    
+		    logging.info("GetVideoRendition(): Video Rendition SD: %s" % VRendition.file_name)
 		except:
 		    #
 		    # No existe el video rendition para ese video
@@ -240,8 +283,7 @@ def GetVideoRenditions(Package=None):
 	    	try:
 		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD, status='F')
 		    VRenditionList.append(VRendition)
-
-
+		    logging.info("GetVideoRendition(): Video Rendition SD: %s" % VRendition.file_name)
 		
 		except:
 		    #
@@ -250,6 +292,9 @@ def GetVideoRenditions(Package=None):
 		    ErrorString = '09: Not exist VideoRendition for this VideoProfile in the Item: [ITEM: ' + Item.name + '], [VP: ' + ProfileSD.name + ']'
 		    logging.error("GetVideoRenditions(): " + ErrorString)
 		    return None
+	    
+	    if ExportHD:
+		    logging.info("GetVideoProfile(): Not exist a HD Rendition for this item because the item is in SD Format")
 
 	ErrorString = 'OK'
 	return VRenditionList
@@ -280,15 +325,12 @@ def GetExportPathFromPackage(Package=None):
 	    # group_path es el nombre del grupo de exportacion
 	    # nunca deberia tener /, siempre se agrega
 	    #
-	    group_path = group_path + '/'
+	    group_path		= group_path    + '/'
+	    export_path		= export_path   + '/' if not export_path.endswith('/')   else export_path
+	    customer_path	= customer_path + '/' if not customer_path.endswith('/') else customer_path
+	    basepath		= export_path   + customer_path
 
-	    if not export_path.endswith('/'):
-		export_path = export_path + '/'
 
-	    if not customer_path.endswith('/'):
-		customer_path = customer_path + '/'
-
-	    basepath = export_path + customer_path
 	    if os.path.exists(basepath):
 	    
 		if not os.path.exists(basepath+group_path):
@@ -340,7 +382,7 @@ def GetMetadataLanguage(Item, Language):
 
 
 
-def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=""):
+def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
 
     if Package is None or VideoRendition is None or ImageRendition is None:
 	#
@@ -455,9 +497,11 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=""):
     MetadataXml.Movie.Content_FileSize 	= str(VideoRendition.file_size)
     MetadataXml.Movie.Content_CheckSum 	= VideoRendition.checksum
     MetadataXml.Movie.Audio_Type	= VideoRendition.video_profile.audio_type
-    MetadataXml.Movie.Resolution	= VideoRendition.video_profile.resolution
-    MetadataXml.Movie.Frame_Rate	= VideoRendition.video_profile.frame_rate
-    MetadataXml.Movie.Codec		= VideoRendition.video_profile.codec
+    if Customer.extended_video_information == 'Y':
+        MetadataXml.Movie.Resolution	= VideoRendition.video_profile.resolution
+        MetadataXml.Movie.Frame_Rate	= VideoRendition.video_profile.frame_rate
+        MetadataXml.Movie.Codec		= VideoRendition.video_profile.codec
+
     MetadataXml.Movie.Bit_Rate		= VideoRendition.video_profile.bit_rate
     MetadataXml.Movie.Screen_Format	= VideoRendition.screen_format
     MetadataXml.Movie.Languages		= Package.item.content_language.code
@@ -478,76 +522,171 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=""):
 
 def main():
     
+    global ErrorString
+    ErrorString = ''
+
     logging.basicConfig(format='%(asctime)s - QIPackager.py -[%(levelname)s]: %(message)s', filename='./log/QPackager.log',level=logging.DEBUG)
 
 
     x = True
     while x:
-	
 
+	#
+	# Trae todos los Paquetes que estan en la cola
+	#
 	for Package in models.GetPackageQueue():
 
 	    ExportPath 		= GetExportPathFromPackage(Package)
-	    
+	    if ExportPath is None:
+		Package.error  = ErrorString
+		Package.status = 'E'
+		Package.save() 
+		continue
+
 	    VideoRenditionList 	= GetVideoRenditions(Package)
+	    if VideoRenditionList is None:
+		Package.error  = ErrorString
+		Package.status = 'E'
+		Package.save()
+		continue
+
+	    ImageRenditionList	= GetImageRenditions(Package)
+	    if ImageRenditionList is None:
+		Package.error  = ErrorString
+		Package.status = 'E'
+		Package.save()
+		continue
 
 	    for VideoRendition in VideoRenditionList:
+		#
+		# Genera el XML
+		#
+		MetadataXml 	= MakeAdiXmlCablelabs(Package, VideoRendition, ImageRenditionList)
+		if MetadataXml is None:
+		    Package.status = 'E'
+		    Package.save()
+		    continue
 
-		MetadataXml 	= MakeAdiXmlCablelabs(Package, VideoRendition)
+		#
+		# Arma el nombre del Path de Exportacion
+		#
+		PackagePath		= ExportPath + MetadataXml.Title.Category + MetadataXml.AMS.Asset_Name
+		PackagePath		= PackagePath + '/' if not PackagePath.endswith('/') else PackagePath
+		
+		#
+		# Arma el nombre del Xml de Metadata
+		#
+		PackageXmlFileName = MetadataXml.AMS.Asset_Name + '.xml'
 
-		PackagePath 	= ExportPath + MetadataXml.Title.Category + MetadataXml.AMS.Asset_Name
-
+		#
+		# Intenta crear el Path de exportacion
+		#
 		if not os.path.exists(PackagePath):
 		    try:
 			os.makedirs(PackagePath)
 		    except:
-			#
-			print "El error"
-			# Error
-			#
+			e = sys.exc_info()[0]
+			ErrorString = 'Error Creating Directorys, Catch: ' + e
+			Package.error  = ErrorString
+			Package.status = 'E'
+			Package.save()
+			logging.error = ('main(): %s' % ErrorString)
 			continue
     
-		if not PackagePath.endswith('/'):
-		    PackagePath = PackagePath + '/'
-
+		
 		print PackagePath
     
 		#
 		# Exporta el XML en la carpeta
 		#
-		ADIXml.Package_toADIFile(MetadataXml, PackagePath + MetadataXml.AMS.Asset_Name + '.xml')
-		print "Estoy aca"
-
-		video_local_path = models.GetPath('video_local_path')
-
-		print video_local_path + VideoRendition.file_name
-
-		os.link(video_local_path + '/' + VideoRendition.file_name, PackagePath + VideoRendition.file_name )
+		try:
+		    ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName)
+		except:
+		    e = sys.exc_info()[0]
+		    logging.error('main(): Error creating CablelabsXml: Catch: %s' % e)
 
 
+		video_local_path = models.GetPath('video_local_path') 
+		image_local_path = models.GetPath('image_local_path')
+
+	    
+		if video_local_path is not None:
+		    video_local_path = video_local_path + '/' if not video_local_path.endswith('/') else video_local_path
+		else:
+		    print "Error critico"
+
+		if image_local_path is not None:
+		    image_local_path = image_local_path + '/' if not image_local_path.endswith('/') else image_local_path
+		else:
+		    print "Error critico"
+
+		#
+		# Intenta crear los links
+		#
+		try:
+		    # Video
+		    os.link(video_local_path + '/' + VideoRendition.file_name, PackagePath + VideoRendition.file_name )
+		except:
+		    e = sys.exc_info()[0]
+		    ErrorString    = 'Error creating Video Hard Link: Catch: ' + e
+		    Package.error  = ErrorString
+		    logging.error('main(): %s' % ErrorString)
+		    Package.status = 'E'
+		    Package.save()
+		    continue
+
+		error = False
+		for ImageRendition in ImageRenditionList:
+		    try:
+			# Imagen
+			os.link(image_local_path + ImageRendition.file_name, PackagePath + ImageRendition.file_name)
+		    except:
+			error = True
+			e = sys.exc_info()[0]
+			ErrorString    = 'Error creating Image Hard Link: Catch: ' + e
+			Package.error  = ErrorString
+		        logging.error('main(): %s' % ErrorString)
+		        Package.status = 'E'
+		        Package.save()
+		        continue
+
+		
+		if error:
+		    Package.status = 'E'
+		    Package.save()
+
+		else:
+		    Package.status = 'P'
+		    Package.save()
+
+	time.sleep(60)
 	x = False
 
-#print len(MakeAssetId('package',12))
 
-#x = models.GetPackageQueue()
-#j = x[0]
-#MakeAdiXmlCablelabs(x[0], models.VideoRendition.objects.get(id=1))
+class main_daemon(Daemon):
+    def run(self):
+        try:
+    	    main()
+	except KeyboardInterrupt:
+	    sys.exit()	    
 
-main()
+if __name__ == "__main__":
+	daemon = main_daemon('./pid/QPackager.pid', stdout='./log/QPackager.err', stderr='./log/QPackafer.err')
+	if len(sys.argv) == 2:
+		if 'start'     == sys.argv[1]:
+			daemon.start()
+		elif 'stop'    == sys.argv[1]:
+			daemon.stop()
+		elif 'restart' == sys.argv[1]:
+			daemon.restart()
+		elif 'run'     == sys.argv[1]:
+			daemon.run()
+		else:
+			print "Unknown command"
+			sys.exit(2)
+		sys.exit(0)
+	else:
+		print "usage: %s start|stop|restart|run" % sys.argv[0]
+		sys.exit(2)
 
-#j.status = 'P'
-#j.error  = 'Trolo'
-#j.save()
 
-#GetExportPathFromPackage(j)
-#j.error = ErrorString
-#j.status = 'P'
-#j.save()
-
-#print dir(x[0])
-#print type((x[0]).save())
-#print x[0].status
-#print ErrorString
-#print GetVideoRenditions(j)
-#j.error = ErrorString
-#j.save()
