@@ -336,11 +336,11 @@ def GetExportPathFromPackage(Package=None):
 		if not os.path.exists(basepath+group_path):
 		    try:
 			os.mkdir(basepath+group_path)
-		    except:
+		    except OSError as e:
 			#
 			# No puede crear el directorio
 			#
-			ErrorString = '11: Can not create dir -> ' + basepath + group_path
+			ErrorString = '11: Can not create dir -> ' + basepath + group_path + "[" + e.strerror +"]"
 			logging.error("GetExportPathFromPackage():" + ErrorString)
 			return None
 		return_path = basepath + group_path
@@ -401,8 +401,6 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
 	#
 	return None
 
-    print dir(Package)
-
     MetadataXml = ADIXml.Package(Provider      = 'PBTVLA',
                 		 Product       = 'First-Run',
                 		 Asset_Name    = MetadataLanguage.title_brief.replace(' ', '_'),
@@ -416,7 +414,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     #
     # Agrega el titulo
     #
-    print dir(MetadataXml)
+    
 
     MetadataXml.AddTitle()
     MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', Package.item.id)
@@ -427,19 +425,18 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     MetadataXml.Title.Actors		= Package.item.actors
     MetadataXml.Title.Actors_Display	= Package.item.actors
     MetadataXml.Title.Director		= Package.item.director
-    MetadataXml.Title.Director_Display	= Package.item.director
+    MetadataXml.Title.Directors_Display	= Package.item.director
     MetadataXml.Title.Box_Office	= '0'
     MetadataXml.Title.Billing_ID	= '00001'
     MetadataXml.Title.Episode_ID	= Package.item.episode_id
     MetadataXml.Title.Country_of_Origin = Package.item.country_of_origin.code
     MetadataXml.Title.Studio		= (Package.item.studio_name.split(' '))[0]
     MetadataXml.Title.Studio_Name	= Package.item.studio_name
-
+    MetadataXml.Title.Show_Type		= 'Movie'
 
     MetadataXml.Title.Provider_QA_Contact = 'www.claxson.com'
 
-    print MetadataLanguage.title_brief
-
+    
     #
     # Metadata especifica del lenguage
     # 
@@ -497,7 +494,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     MetadataXml.Movie.Content_FileSize 	= str(VideoRendition.file_size)
     MetadataXml.Movie.Content_CheckSum 	= VideoRendition.checksum
     MetadataXml.Movie.Audio_Type	= VideoRendition.video_profile.audio_type
-    if Customer.extended_video_information == 'Y':
+    if Package.customer.extended_video_information == 'Y':
         MetadataXml.Movie.Resolution	= VideoRendition.video_profile.resolution
         MetadataXml.Movie.Frame_Rate	= VideoRendition.video_profile.frame_rate
         MetadataXml.Movie.Codec		= VideoRendition.video_profile.codec
@@ -528,8 +525,7 @@ def main():
     logging.basicConfig(format='%(asctime)s - QIPackager.py -[%(levelname)s]: %(message)s', filename='./log/QPackager.log',level=logging.DEBUG)
 
 
-    x = True
-    while x:
+    while True:
 
 	#
 	# Trae todos los Paquetes que estan en la cola
@@ -584,17 +580,14 @@ def main():
 		if not os.path.exists(PackagePath):
 		    try:
 			os.makedirs(PackagePath)
-		    except:
-			e = sys.exc_info()[0]
-			ErrorString = 'Error Creating Directorys, Catch: ' + e
+		    except OSError as e:
+			ErrorString = 'Error Creating Directorys, Catch: ' + e.strerror
 			Package.error  = ErrorString
 			Package.status = 'E'
 			Package.save()
 			logging.error = ('main(): %s' % ErrorString)
 			continue
     
-		
-		print PackagePath
     
 		#
 		# Exporta el XML en la carpeta
@@ -603,7 +596,7 @@ def main():
 		    ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName)
 		except:
 		    e = sys.exc_info()[0]
-		    logging.error('main(): Error creating CablelabsXml: Catch: %s' % e)
+		    logging.error('main(): Error creating CablelabsXml: Catch: %s' % str(e))
 
 
 		video_local_path = models.GetPath('video_local_path') 
@@ -614,21 +607,21 @@ def main():
 		    video_local_path = video_local_path + '/' if not video_local_path.endswith('/') else video_local_path
 		else:
 		    print "Error critico"
+		    return None
 
 		if image_local_path is not None:
 		    image_local_path = image_local_path + '/' if not image_local_path.endswith('/') else image_local_path
 		else:
 		    print "Error critico"
-
+		    return None
 		#
 		# Intenta crear los links
 		#
 		try:
 		    # Video
 		    os.link(video_local_path + '/' + VideoRendition.file_name, PackagePath + VideoRendition.file_name )
-		except:
-		    e = sys.exc_info()[0]
-		    ErrorString    = 'Error creating Video Hard Link: Catch: ' + e
+		except OSError as e:
+		    ErrorString    = 'Error creating Video Hard Link -> Catch: ' + e.strerror
 		    Package.error  = ErrorString
 		    logging.error('main(): %s' % ErrorString)
 		    Package.status = 'E'
@@ -640,10 +633,9 @@ def main():
 		    try:
 			# Imagen
 			os.link(image_local_path + ImageRendition.file_name, PackagePath + ImageRendition.file_name)
-		    except:
+		    except OSError as e:
 			error = True
-			e = sys.exc_info()[0]
-			ErrorString    = 'Error creating Image Hard Link: Catch: ' + e
+			ErrorString    = 'Error creating Image Hard Link -> Catch: ' + e.strerror
 			Package.error  = ErrorString
 		        logging.error('main(): %s' % ErrorString)
 		        Package.status = 'E'
@@ -660,7 +652,6 @@ def main():
 		    Package.save()
 
 	time.sleep(60)
-	x = False
 
 
 class main_daemon(Daemon):

@@ -15,10 +15,6 @@ FORMAT = (
 	('3D', '3D'),
 )	
 
-IMAGE_TYPE = (
-	('S', 'Soft'),
-	('H', 'Hard'),
-)
 
 
 
@@ -282,13 +278,16 @@ class VideoProfile(models.Model):
 		return self.name
 
 class ImageProfile(models.Model):
-	
+	IMAGE_TYPE = (
+		('S', 'Soft'),
+		('H', 'Hard'),
+	)
 	name 						= models.CharField(max_length=256)
-	description 					= models.CharField(max_length=512)
+	description 					= models.CharField(max_length=512, blank=True)
 	sufix 						= models.CharField(max_length=32)
 	file_extension 					= models.CharField(max_length=32)
 	status 						= models.CharField(max_length=1, choices=ACTIVE_STATUS)
-	regex 						= models.CharField(max_length=512)
+	regex 						= models.CharField(max_length=512, blank=True)
 	image_aspect_ratio				= models.CharField(max_length=24)
 	type 						= models.CharField(max_length=1, choices=IMAGE_TYPE)
 	

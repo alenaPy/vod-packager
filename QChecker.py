@@ -236,13 +236,21 @@ def CheckVideoRenditionStatus():
         else:
     	    if JobState == 'NEX_JOB_ERROR':
     		#
-    		# Si el job termino con errores
+		# Si el job termino con errores
     		#
     		
     		VRendition.status = 'E'
 		VRendition.error  = "Rhozet Error"
     		VRendition.save()
-    	
+	    
+	    if JobState == 'NEX_JOB_STOPPED':
+    		#
+		# Alguien Freno el Job
+		# 
+		VRendition.status = 'E'
+		VRendition.error  = "Stop Job"
+		VRendition.save()
+
     logging.info("CheckVideoRenditionStatus(): End Check Video Rendition Status")
     return True
     	

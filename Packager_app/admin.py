@@ -14,7 +14,7 @@ class VideoRenditionAdmin(admin.ModelAdmin):
 	list_display = ('file_name', 'video_profile', 'transcoding_server', 'status')
 
 class ImageRenditionAdmin(admin.ModelAdmin):
-	list_display = ('id', 'file_name', 'image_profile')
+	list_display = ('id', 'file_name', 'image_profile', 'status')
 
 class PackageGroupAdmin(admin.ModelAdmin):
 	list_display = ('name',)

@@ -53,6 +53,9 @@ def RenditionFileName(original_filename = None, sufix = None, ext = None):
 	if basename is None:
 	    return None
     
+	if not sufix.startswith('_'):
+	    sufix = '_' +  sufix
+
 	if not ext.startswith('.'):
 	    ext = '.' + ext
 	    
