@@ -522,7 +522,7 @@ def main():
     global ErrorString
     ErrorString = ''
 
-    logging.basicConfig(format='%(asctime)s - QIPackager.py -[%(levelname)s]: %(message)s', filename='./log/QPackager.log',level=logging.DEBUG)
+    logging.basicConfig(format='%(asctime)s - QIPackager.py -[%(levelname)s]: %(message)s', filename='./log/QPackager.log',level=logging.INFO)
 
 
     while True:
@@ -532,12 +532,19 @@ def main():
 	#
 	for Package in models.GetPackageQueue():
 
+	    logging.info("main(): NEW PACKAGE -------------")
+	    logging.info("main(): Make package: %s" % str(Package.id))
+	    logging.info("main(): Customer: %s" % Package.customer.name)
+	    logging.info("main(): Item: %s" % str(Package.item.id))
+
 	    ExportPath 		= GetExportPathFromPackage(Package)
 	    if ExportPath is None:
 		Package.error  = ErrorString
 		Package.status = 'E'
 		Package.save() 
 		continue
+
+	    logging.info("main(): Export Path: %s" % ExportPath)
 
 	    VideoRenditionList 	= GetVideoRenditions(Package)
 	    if VideoRenditionList is None:
@@ -557,8 +564,12 @@ def main():
 		#
 		# Genera el XML
 		#
+		logging.info("main(): Making Package for VideoRendition: %s" % VideoRendition.file_name)
 		MetadataXml 	= MakeAdiXmlCablelabs(Package, VideoRendition, ImageRenditionList)
 		if MetadataXml is None:
+		    #
+		    # ??? Y el error
+		    #
 		    Package.status = 'E'
 		    Package.save()
 		    continue
@@ -569,11 +580,12 @@ def main():
 		PackagePath		= ExportPath + MetadataXml.Title.Category + MetadataXml.AMS.Asset_Name
 		PackagePath		= PackagePath + '/' if not PackagePath.endswith('/') else PackagePath
 		
+		logging.info("main(): Package Path: %s" % PackagePath)
 		#
 		# Arma el nombre del Xml de Metadata
 		#
 		PackageXmlFileName = MetadataXml.AMS.Asset_Name + '.xml'
-
+		logging.info("main(): Xml Metadata FileName: %s" % PackageXmlFileName)
 		#
 		# Intenta crear el Path de exportacion
 		#
@@ -606,20 +618,20 @@ def main():
 		if video_local_path is not None:
 		    video_local_path = video_local_path + '/' if not video_local_path.endswith('/') else video_local_path
 		else:
-		    print "Error critico"
+		    logging.error("Critical error: video_local_path is None. Check your configuration")
 		    return None
 
 		if image_local_path is not None:
 		    image_local_path = image_local_path + '/' if not image_local_path.endswith('/') else image_local_path
 		else:
-		    print "Error critico"
+		    logging.error("Critical error: image_local_path is None. Check your configuration")
 		    return None
 		#
 		# Intenta crear los links
 		#
 		try:
 		    # Video
-		    os.link(video_local_path + '/' + VideoRendition.file_name, PackagePath + VideoRendition.file_name )
+		    os.link(video_local_path + VideoRendition.file_name, PackagePath + VideoRendition.file_name )
 		except OSError as e:
 		    ErrorString    = 'Error creating Video Hard Link -> Catch: ' + e.strerror
 		    Package.error  = ErrorString
@@ -628,29 +640,24 @@ def main():
 		    Package.save()
 		    continue
 
-		error = False
 		for ImageRendition in ImageRenditionList:
 		    try:
 			# Imagen
 			os.link(image_local_path + ImageRendition.file_name, PackagePath + ImageRendition.file_name)
 		    except OSError as e:
-			error = True
 			ErrorString    = 'Error creating Image Hard Link -> Catch: ' + e.strerror
 			Package.error  = ErrorString
 		        logging.error('main(): %s' % ErrorString)
 		        Package.status = 'E'
 		        Package.save()
-		        continue
+		        break;
 
 		
-		if error:
-		    Package.status = 'E'
-		    Package.save()
+		Package.status = 'P'
+		Package.save()
 
-		else:
-		    Package.status = 'P'
-		    Package.save()
 
+	logging.info("main(): Nothing to do... Sleep")
 	time.sleep(60)
 
 
@@ -672,6 +679,8 @@ if __name__ == "__main__":
 			daemon.restart()
 		elif 'run'     == sys.argv[1]:
 			daemon.run()
+		elif 'status'  == sys.argv[1]:
+			daemon.status()
 		else:
 			print "Unknown command"
 			sys.exit(2)

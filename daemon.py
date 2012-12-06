@@ -86,6 +86,35 @@ class Daemon:
 		self.daemonize()
 		self.run()
 
+	
+	def status(self):
+		"""
+		Status of de daemon
+		"""
+		# Get the pid from the pidfile
+		try:
+			pf = file(self.pidfile,'r')
+			pid = int(pf.read().strip())
+			pf.close()
+		except IOError:
+			pid = None
+	
+		if not pid:
+			message = "Daemon not running\n"
+			sys.stdout.write(message)
+			return # not an error in a restart
+		else:
+			if not os.path.exists('/proc/'+ str(pid)):
+				message = "Daemon not running\n"
+				sys.stdout.write(message)
+				self.delpid()
+				pid = None
+				return
+			else:
+				message = "Daemon is running\n"
+				sys.stdout.write(message)
+
+
 	def stop(self):
 		"""
 		Stop the daemon

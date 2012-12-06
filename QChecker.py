@@ -292,6 +292,9 @@ if __name__ == "__main__":
 			daemon.restart()
 		elif 'run'     == sys.argv[1]:
 			daemon.run()
+
+		elif 'status'  == sys.argv[1]:
+			daemon.status()
 		else:
 			print "Unknown command"
 			sys.exit(2)
