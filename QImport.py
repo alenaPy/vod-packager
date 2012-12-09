@@ -124,6 +124,8 @@ def MakeImageRenditions(RenditionTask=None):
 	IRendition.image_profile = IProfile
 	IRendition.item          = Item
 	IRendition.status        = 'U'
+
+	logging.info("MakeImageRendition(): Creating Image rendition for Item: " + Item.name + " [IP: " + IProfile.name + "]")
 	IRendition.save()
 
     return True

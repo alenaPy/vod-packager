@@ -432,7 +432,8 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     MetadataXml.Title.Country_of_Origin = Package.item.country_of_origin.code
     MetadataXml.Title.Studio		= (Package.item.studio_name.split(' '))[0]
     MetadataXml.Title.Studio_Name	= Package.item.studio_name
-    MetadataXml.Title.Show_Type		= 'Movie'
+    MetadataXml.Title.Show_Type		= Package.item.show_type
+
 
     MetadataXml.Title.Provider_QA_Contact = 'www.claxson.com'
 
@@ -510,6 +511,17 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     MetadataXml.Movie.Viewing_Can_Be_Resumed 	= 'N'
     MetadataXml.Movie.Copy_Protection		= 'N'
     MetadataXml.Movie.Watermarking		= 'N'
+
+    if Customer.image_type == 'poster' and ImageRendition != []:
+	MetadataXml.AddPoster()
+    else:
+	MetadataXml.AddBoxCover()
+
+    MetadataXml.StillImage.Content_Checksum   = ImageRendition[0].checksum
+    MetadataXml.StillImage.Content_FileSize   = ImageRendition[0].file_size
+    MetadataXml.StillImage.Content_Value      = ImageRendition[0].file_name
+    MetadataXml.StillImage.Image_Aspect_Ratio = ImageRendition[0].image_profile.image_aspect_ratio
+
 
 
     return MetadataXml

@@ -65,10 +65,14 @@ class Customer(models.Model):
 		('DT', 'Date + Time'),
 		('DO', 'Only Date'),
 	)
-
+	IMAGE_TYPE = (
+		('poster', 'Poster'),
+		('box cover', 'Box Cover'),
+	)
 
 	name 						= models.CharField(max_length=256)
 	vod_active 					= models.BooleanField(default=True)
+	
 	image_type 					= models.CharField(max_length=128)
 	video_profile 					= models.ManyToManyField('VideoProfile')
 	image_profile 					= models.ManyToManyField('ImageProfile')
@@ -118,28 +122,67 @@ class Item(models.Model):
 		('D', 'Done'),
 		('W', 'Warning'),
 	)
-	name						= models.CharField(max_length=256)
-	creation_date 					= models.DateTimeField(auto_now_add=True)
-	modification_date 				= models.DateTimeField(auto_now=True)	
-	kill_date 					= models.DateTimeField(default=datetime.now()+timedelta(days=45))
-	format						= models.CharField(max_length=2, choices=FORMAT)
-	status 						= models.CharField(max_length=2, choices=ITEM_STATUS)
-	content_language				= models.ForeignKey('Language')
-	content_duration				= models.CharField(max_length=10)
-	episode_name					= models.CharField(max_length=255, blank=True)
-	episode_id					= models.CharField(max_length=60, blank=True)
-	category					= models.ForeignKey('Category')
-	audience					= models.CharField(max_length=32, blank=True, default='Adult')
-	show_type					= models.CharField(max_length=32, default='Movie')
-	rating 						= models.CharField(max_length=32)
-	genres 						= models.CharField(max_length=32)
-	actors 						= models.CharField(max_length=512)
-	country_of_origin				= models.ForeignKey('Country')
-	year 						= models.CharField(max_length=4)
-	director 					= models.CharField(max_length=128)
-	studio						= models.CharField(max_length=64)
-	studio_name 					= models.CharField(max_length=128)
-	mam_id 						= models.CharField(max_length=64)
+	name				= models.CharField(max_length=256)
+	creation_date			= models.DateTimeField(auto_now_add=True)
+	modification_date		= models.DateTimeField(auto_now=True)	
+	kill_date 			= models.DateTimeField(default=datetime.now()+timedelta(days=45))
+	format				= models.CharField(max_length=2, choices=FORMAT)
+	status 				= models.CharField(max_length=2, choices=ITEM_STATUS)
+	content_language		= models.ForeignKey('Language')
+	
+	'''
+	A string representing a period of time and 
+	the maximum number of views over the 
+	period of time.
+	The separator shall be a "," between the 
+	period start date, period end date and 
+	maximum views.
+	'''
+	subscriber_view_limit		= models.CharField(max_length=30, blank=True)
+	
+	'''
+	Digital Object Identifier (DOI) from the 
+	Entertainment ID Registry [EIDR]
+	'''
+	eidr				= models.CharField(max_length=30, blank=True)
+
+	'''
+	International Standard Audiovisual Number 
+	(ISAN)
+	'''
+	isan				= models.CharField(max_length=30, blank=True)
+
+
+	closed_captioning		= models.CharField(max_length=1, choises=(('Y', 'Yes'),('N', 'No')), default='N')
+	run_time			= models.CharField(max_length=8)
+	display_run_time		= models.CharField(max_length=5)
+	year 				= models.CharField(max_length=4)
+	country_of_origin		= models.ForeignKey('Country')
+	actors				= models.CharField(max_length=512, blank=True)
+	actors_display			= models.CharField(max_length=512, blank=True)
+		
+
+
+	episode_name			= models.CharField(max_length=255, blank=True)
+	episode_id			= models.CharField(max_length=60, blank=True)
+	category			= models.ForeignKey('Category')
+	audience			= models.CharField(max_length=32, blank=True, default='Adult')
+
+	SHOW_TYPE = (('Ad', 'Advertisement'),
+		     ('Events', 'Events'),
+		     ('Kids', 'Kids'),
+		     ('Lifestyle', 'Lifestyle'),
+		     ('Movie', 'Movie'),
+		     ('Music', 'Music'),
+		     ('Series', 'Series'),
+		     ('Sports', 'Sports'))
+	show_type			= models.CharField(max_length=10, choises=SHOW_TYPE,default='Movie')
+	rating				= models.CharField(max_length=32)
+	genres				= models.CharField(max_length=32)
+	director 			= models.CharField(max_length=128)
+	studio				= models.CharField(max_length=64)
+	studio_name 			= models.CharField(max_length=128)
+	mam_id 				= models.CharField(max_length=64)
 
 
 	def __unicode__(self):
@@ -163,7 +206,8 @@ class RenditionQueue(models.Model):
 
 	def __unicode__(self):
 		return self.file_name 
-	
+
+
 class VideoRendition(models.Model):
 	VIDEO_RENDITION_STATUS = (
 		('Q', 'Queued'),
