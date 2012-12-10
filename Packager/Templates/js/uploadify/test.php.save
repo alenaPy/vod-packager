@@ -1,0 +1,15 @@
+<?php
+	$targetFile = "XXXXXXXXX_IP01.png";
+$extension = pathinfo($targetFile, PATHINFO_EXTENSION);
+$fileName = basename($targetFile, ".".$extension);
+$pos = strrpos($targetFile, "_");
+if ($pos > 0) {
+	$pos = ($pos - 1) * (-1); 
+	$suffix = substr($fileName, $pos);
+}
+echo "Fil:".$targetFile."<br />";
+echo "Nam:".$fileName."<br />";
+echo "Ext:".$extension."<br />";
+echo "Pos:".$pos."<br />";
+echo "Suf:".$suffix."<br />";
+?>

@@ -1,0 +1,86 @@
+<?php
+/*
+Uploadify
+Copyright (c) 2012 Reactive Apps, Ronnie Garcia
+Released under the MIT License <http://www.opensource.org/licenses/mit-license.php> 
+*/
+
+// Define a destination
+$targetFolder = '/uploads'; // Relative to the root
+
+//$verifyToken = md5('unique_salt' . $_POST['timestamp']);
+
+print "Hola mundo!";
+echo $targetFolder;
+
+if (!empty($_FILES)) {
+	$tempFile = $_FILES['Filedata']['tmp_name'];
+	$targetPath = $_SERVER['DOCUMENT_ROOT'] . $targetFolder;
+	$targetFile = rtrim($targetPath,'/') . '/' . $_FILES['Filedata']['name'];
+
+	// Validate the file type
+	$fileTypes = array('jpg','jpeg','gif','png'); // File extensions
+	$fileParts = pathinfo($_FILES['Filedata']['name']);
+
+	if (in_array($fileParts['extension'],$fileTypes)) {
+		move_uploaded_file($tempFile,$targetFile);
+		echo $targetFile;
+		echo '1';
+	} else {
+		echo 'Invalid file type.';
+	}
+}
+
+function associateFilesToImageRenditionEntries() {
+	// This could be supplied by a user, for example
+	$firstname = 'fred';
+	$lastname  = 'fox';
+
+	// Formulate Query
+	// This is the best way to perform an SQL query
+	// For more examples, see mysql_real_escape_string()
+	$query = sprintf("SELECT firstname, lastname, address, age FROM friends 
+		WHERE firstname='%s' AND lastname='%s'",
+		mysql_real_escape_string($firstname),
+		mysql_real_escape_string($lastname));
+
+	// Perform Query
+	$result = mysql_query($query);
+
+	// Check result
+	// This shows the actual query sent to MySQL, and the error. Useful for debugging.
+	if (!$result) {
+		$message  = 'Invalid query: ' . mysql_error() . "\n";
+		$message .= 'Whole query: ' . $query;
+		die($message);
+	}
+
+	// Use result
+	// Attempting to print $result won't allow access to information in the resource
+	// One of the mysql result functions must be used
+	// See also mysql_result(), mysql_fetch_array(), mysql_fetch_row(), etc.
+	while ($row = mysql_fetch_assoc($result)) {
+		echo $row['firstname'];
+		echo $row['lastname'];
+		echo $row['address'];
+		echo $row['age'];
+	}
+
+	// Free the resources associated with the result set
+	// This is done automatically at the end of the script
+	mysql_free_result($result);
+}
+
+function returnAllFilesInDirectory() {
+	$dir = "images/"; //You could add a $_GET to change the directory
+	$files = scandir($dir);
+
+	return $files;
+
+/*
+	foreach($files as $key => $value) {
+		echo $value; //You could add an icon in here maybe, a link to the file/directory, or a link to list files in that directory
+	}
+*/
+}
+?>
