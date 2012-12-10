@@ -523,7 +523,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
 	    MetadataXml.AddBoxCover()
 
 
-	MetadataXml.StillImage.Content_Checksum   = ImageRendition[0].checksum
+	MetadataXml.StillImage.Content_CheckSum   = ImageRendition[0].checksum
         MetadataXml.StillImage.Content_FileSize   = str(ImageRendition[0].file_size)
         MetadataXml.StillImage.Content_Value      = ImageRendition[0].file_name
         MetadataXml.StillImage.Image_Aspect_Ratio = ImageRendition[0].image_profile.image_aspect_ratio
