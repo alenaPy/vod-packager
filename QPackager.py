@@ -69,7 +69,7 @@ def GetImageRenditions(Package=None):
 	    logging.debug('GetImageRenditions(): Found: %s' % IRendition.file_name)
 	    ImageRenditionList.append(IRendition)
 	except:
-	    ErrorString = 'Does not exist an Image Rendition for this item: ' + item.name + ', for this profile: ' + IProfile.name
+	    ErrorString = 'Does not exist an Image Rendition for this item: ' + Package.item.name + ', for this profile: ' + IProfile.name
 	    logging.error('GetImageRenditions(): %s. RETURN None' % ErrorString)
 
     return ImageRenditionList
@@ -512,15 +512,18 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     MetadataXml.Movie.Copy_Protection		= 'N'
     MetadataXml.Movie.Watermarking		= 'N'
 
-    if Customer.image_type == 'poster' and ImageRendition != []:
-	MetadataXml.AddPoster()
-    else:
-	MetadataXml.AddBoxCover()
+    if ImageRendition != []:
 
-    MetadataXml.StillImage.Content_Checksum   = ImageRendition[0].checksum
-    MetadataXml.StillImage.Content_FileSize   = ImageRendition[0].file_size
-    MetadataXml.StillImage.Content_Value      = ImageRendition[0].file_name
-    MetadataXml.StillImage.Image_Aspect_Ratio = ImageRendition[0].image_profile.image_aspect_ratio
+	if Package.customer.image_type == 'poster':
+	    MetadataXml.AddPoster()
+	else:
+	    MetadataXml.AddBoxCover()
+
+
+	MetadataXml.StillImage.Content_Checksum   = ImageRendition[0].checksum
+        MetadataXml.StillImage.Content_FileSize   = ImageRendition[0].file_size
+        MetadataXml.StillImage.Content_Value      = ImageRendition[0].file_name
+        MetadataXml.StillImage.Image_Aspect_Ratio = ImageRendition[0].image_profile.image_aspect_ratio
 
 
 
@@ -616,12 +619,15 @@ def main():
 		#
 		# Exporta el XML en la carpeta
 		#
-		try:
-		    ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName)
-		except:
-		    e = sys.exc_info()[0]
-		    logging.error('main(): Error creating CablelabsXml: Catch: %s' % str(e))
-
+#		try:
+		ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName)
+#		except:
+#		    e = sys.exc_info()[0]
+#		    logging.error('main(): Error creating CablelabsXml: Catch: %s' % str(e))
+#		    Package.status = 'E'
+#		    Package.error = 'main(): Error creating CablelabsXml: Catch: %s' % str(e)
+#		    Package.save()
+#		    continue
 
 		video_local_path = models.GetPath('video_local_path') 
 		image_local_path = models.GetPath('image_local_path')

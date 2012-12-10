@@ -106,22 +106,13 @@ def image_rendition(request, image_rendition_id):
                 resp = 'No ta!'
                 return HttpResponse("You're looking at image rendition %s." % resp)
 
-def image_renditions_upload(request):
+def image_renditions_upload(request, item_id):
 
-	return render_to_response('image_renditions_upload.html')
-
-@csrf_exempt
-def upload_file(request):
-	if request.method == "POST":
-		upload = request.FILES['Filedata']
-		try:
-			dest = open(upload.name, "wb+")
-			for block in upload.chunks():
-				dest.write(block)
-			dest.close()
-		except IOError:
-			pass # ignore failed uploads for now
- 
-	response = HttpResponse()
-	response.write("%s\r\n" % upload.name)
-	return response
+#       try:
+                item = models.Item.objects.get(id=item_id)
+                image_renditions = models.ImageRendition.objects.filter(item=item_id)
+                video_renditions = models.VideoRendition.objects.filter(item=item_id)
+                return render_to_response('image_renditions_upload.html', {'item': item})
+#       except:
+#               resp = 'No ta!'
+#               return HttpResponse("You're looking at item %s." % resp)

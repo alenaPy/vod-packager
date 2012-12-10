@@ -92,9 +92,9 @@ def ConfigPaths(Path, Description = ""):
 
 
 Header()
-#LoadCountries()
+LoadCountries()
 ConfigPaths("video_local_path", "Video Local Path")
 ConfigPaths("image_local_path", "Imagen Local Path")
 ConfigPaths("package_export_path", "Export Package Path")
-#LoadLanguages()
+LoadLanguages()
 

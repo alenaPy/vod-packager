@@ -53,6 +53,9 @@ class MetadataLanguageAdmin(admin.ModelAdmin):
 class LanguageAdmin(admin.ModelAdmin):
 	list_display = ('name', 'code') 
 
+class CountryAdmin(admin.ModelAdmin):
+	list_display = ('country', 'code') 
+
 class RatingAdmin(admin.ModelAdmin):
 	list_display = ('name',)
 
@@ -75,7 +78,7 @@ admin.site.register(CategoryRelation, CategoryRelationAdmin)
 admin.site.register(MetadataLanguage, MetadataLanguageAdmin)
 admin.site.register(Language, LanguageAdmin)
 admin.site.register(Rating, RatingAdmin)
-
+admin.site.register(Country, CountryAdmin)
 '''
 admin.site.register(Customer)
 admin.site.register(Item)

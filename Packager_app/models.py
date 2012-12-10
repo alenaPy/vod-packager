@@ -153,7 +153,7 @@ class Item(models.Model):
 	isan				= models.CharField(max_length=30, blank=True)
 
 
-	closed_captioning		= models.CharField(max_length=1, choises=(('Y', 'Yes'),('N', 'No')), default='N')
+	closed_captioning		= models.CharField(max_length=1, choices=(('Y', 'Yes'),('N', 'No')), default='N')
 	run_time			= models.CharField(max_length=8)
 	display_run_time		= models.CharField(max_length=5)
 	year 				= models.CharField(max_length=4)
@@ -176,7 +176,7 @@ class Item(models.Model):
 		     ('Music', 'Music'),
 		     ('Series', 'Series'),
 		     ('Sports', 'Sports'))
-	show_type			= models.CharField(max_length=10, choises=SHOW_TYPE,default='Movie')
+	show_type			= models.CharField(max_length=10, choices=SHOW_TYPE,default='Movie')
 	rating				= models.CharField(max_length=32)
 	genres				= models.CharField(max_length=32)
 	director 			= models.CharField(max_length=128)
