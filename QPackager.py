@@ -433,6 +433,8 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     MetadataXml.Title.Studio		= (Package.item.studio_name.split(' '))[0]
     MetadataXml.Title.Studio_Name	= Package.item.studio_name
     MetadataXml.Title.Show_Type		= Package.item.show_type
+    MetadataXml.Title.Run_Time		= Package.item.run_time
+    MetadataXml.Title.Display_Run_Time	= Package.item.display_run_time
 
 
     MetadataXml.Title.Provider_QA_Contact = 'www.claxson.com'
@@ -465,6 +467,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     except:
 	License_Days = 90
 
+    
     
     MetadataXml.Title.Licensing_Window_Start = str(Package.date_published + timedelta(days=15))
     MetadataXml.Title.Licensing_Window_End   = str(Package.date_published + timedelta(days=15) + timedelta(days=License_Days))
@@ -521,7 +524,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
 
 
 	MetadataXml.StillImage.Content_Checksum   = ImageRendition[0].checksum
-        MetadataXml.StillImage.Content_FileSize   = ImageRendition[0].file_size
+        MetadataXml.StillImage.Content_FileSize   = str(ImageRendition[0].file_size)
         MetadataXml.StillImage.Content_Value      = ImageRendition[0].file_name
         MetadataXml.StillImage.Image_Aspect_Ratio = ImageRendition[0].image_profile.image_aspect_ratio
 

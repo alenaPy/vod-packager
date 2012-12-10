@@ -20,7 +20,7 @@ class PackageGroupAdmin(admin.ModelAdmin):
 	list_display = ('name',)
 
 class PackageAdmin(admin.ModelAdmin):
-	list_display = ('date_published', 'item', 'customer')
+	list_display = ('date_published', 'item', 'customer', 'status')
 
 class TranscodingServerAdmin(admin.ModelAdmin):
 	list_display = ('host_name', 'ip_address', 'status')
