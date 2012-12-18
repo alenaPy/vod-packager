@@ -23,7 +23,7 @@ import logging
 ErrorString = ''
 
 
-def MakeAssetId(asset_type='package', asset_id = 0):
+def MakeAssetId(asset_type='package', asset_id = 0, package_id = 0):
 
     first = '4'
 
@@ -36,7 +36,7 @@ def MakeAssetId(asset_type='package', asset_id = 0):
     elif asset_type == 'image':
 	first = '3'
 
-    str_id = str(asset_id)
+    str_id = str(asset_id) + str(package_id)
     zero = ''
     i = len(str_id)
     while i < 15:
@@ -402,12 +402,12 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
 	return None
 
     MetadataXml = ADIXml.Package(Provider      = 'PBTVLA',
-                		 Product       = 'First-Run',
+                		 Product       = 'MOD',
                 		 Asset_Name    = MetadataLanguage.title_brief.replace(' ', '_'),
                 		 Description   = MetadataLanguage.title_brief,
                 		 Creation_Date = str(Package.date_published),
                 		 Provider_ID   = 'playboytvla.com',
-                		 Asset_ID      = MakeAssetId('package', Package.id),
+                		 Asset_ID      = MakeAssetId('package', VideoRendition.id, Package.id),
                 		 App_Data_App  = Package.customer.product_type)
 
 
@@ -417,7 +417,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     
 
     MetadataXml.AddTitle()
-    MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', Package.item.id)
+    MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', VideoRendition.id, Package.id)
 
     
     MetadataXml.Title.Closed_Captioning = 'N'
@@ -437,6 +437,14 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     MetadataXml.Title.Display_Run_Time	= Package.item.display_run_time
 
 
+    #
+    # QUE LEA EL SUGESTED PRICE DE LA BASE DE DATOS
+    #
+    MetadataXml.Title.Suggested_Price	  = '0.00'
+    #
+    # CORREGIR
+    #
+
     MetadataXml.Title.Provider_QA_Contact = 'www.claxson.com'
 
     
@@ -447,6 +455,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     MetadataXml.Title.Title_Brief	= MetadataLanguage.title_brief
     MetadataXml.Title.Title_Sort_Name	= MetadataLanguage.title_sort_name
     MetadataXml.Title.Title		= MetadataLanguage.title
+    MetadataXml.Title.Contract_Name	= MetadataLanguage.title
     MetadataXml.Title.Episode_Name	= MetadataLanguage.episode_name
     MetadataXml.Title.Summary_Long	= MetadataLanguage.summary_long
     MetadataXml.Title.Summary_Short	= MetadataLanguage.summary_short
@@ -474,10 +483,8 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
 
     
     if Package.customer.license_date_format == 'DT':
-	MetadataXml.Title.Licensing_Window_Start = MetadataXml.Title.Licensing_Window_Start + 'T23:59:59'
+	MetadataXml.Title.Licensing_Window_Start = MetadataXml.Title.Licensing_Window_Start + 'T00:00:00'
 	MetadataXml.Title.Licensing_Window_End   = MetadataXml.Title.Licensing_Window_End   + 'T23:59:59'
-
-
 
     try:
         CategoryRelation = models.CategoryRelation.objects.get(category=Package.item.category,customer=Package.customer)
@@ -486,14 +493,15 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
         CustomCategory = Package.item.category
 
 
-    CategoryPath = 'Adults' + MetadataXml.Title.Studio + VideoRendition.video_profile.format + '/' + CustomCategory.name + '/'
+    CategoryPath = 'Adults' + MetadataXml.Title.Studio + VideoRendition.video_profile.format + '/' + CustomCategory.name
 
     MetadataXml.Title.Category	= CategoryPath.replace(' ', '')
     MetadataXml.Title.Genre 	= CustomCategory.name
 
 
+
     MetadataXml.AddMovie()
-    MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id)
+    MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id, Package.id)
 
     MetadataXml.Movie.Content_FileSize 	= str(VideoRendition.file_size)
     MetadataXml.Movie.Content_CheckSum 	= VideoRendition.checksum
@@ -506,7 +514,16 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     MetadataXml.Movie.Bit_Rate		= VideoRendition.video_profile.bit_rate
     MetadataXml.Movie.Screen_Format	= VideoRendition.screen_format
     MetadataXml.Movie.Languages		= Package.item.content_language.code
-    MetadataXml.Movie.Content_Value	= VideoRendition.file_name
+
+
+    #
+    # Nombre del file se Video
+    #
+    if VideoRendition.video_profile.file_extension.startswith('.'):
+        MetadataXml.Movie.Content_Value	= MetadataXml.AMS.Asset_Name + VideoRendition.video_profile.file_extension
+    else:
+	MetadataXml.Movie.Content_Value	= MetadataXml.AMS.Asset_Name + '.' + VideoRendition.video_profile.file_extension
+
 
     #
     # Defaults values
@@ -523,9 +540,21 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
 	    MetadataXml.AddBoxCover()
 
 
+	MetadataXml.StillImage.AMS.Asset_ID	  = MakeAssetId('image', VideoRendition.id, Package.id)
+
 	MetadataXml.StillImage.Content_CheckSum   = ImageRendition[0].checksum
         MetadataXml.StillImage.Content_FileSize   = str(ImageRendition[0].file_size)
-        MetadataXml.StillImage.Content_Value      = ImageRendition[0].file_name
+
+
+	#
+	# Nombre del file de imagen
+	# 
+	if ImageRendition[0].image_profile.file_extension.startswith('.'):
+	    MetadataXml.StillImage.Content_Value  = MetadataXml.AMS.Asset_Name +  ImageRendition[0].image_profile.file_extension
+	else:
+    	    MetadataXml.StillImage.Content_Value  = MetadataXml.AMS.Asset_Name + '.' + ImageRendition[0].image_profile.file_extension
+
+
         MetadataXml.StillImage.Image_Aspect_Ratio = ImageRendition[0].image_profile.image_aspect_ratio
 
 
@@ -595,7 +624,7 @@ def main():
 		#
 		# Arma el nombre del Path de Exportacion
 		#
-		PackagePath		= ExportPath + MetadataXml.Title.Category + MetadataXml.AMS.Asset_Name
+		PackagePath		= ExportPath + MetadataXml.Title.Category + '/' + MetadataXml.AMS.Asset_Name
 		PackagePath		= PackagePath + '/' if not PackagePath.endswith('/') else PackagePath
 		
 		logging.info("main(): Package Path: %s" % PackagePath)
@@ -623,7 +652,7 @@ def main():
 		# Exporta el XML en la carpeta
 		#
 #		try:
-		ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName)
+		ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName, '1.1')
 #		except:
 #		    e = sys.exc_info()[0]
 #		    logging.error('main(): Error creating CablelabsXml: Catch: %s' % str(e))
@@ -652,7 +681,8 @@ def main():
 		#
 		try:
 		    # Video
-		    os.link(video_local_path + VideoRendition.file_name, PackagePath + VideoRendition.file_name )
+		    os.link(video_local_path + VideoRendition.file_name, PackagePath + MetadataXml.Movie.Content_Value)
+		    #os.link(video_local_path + VideoRendition.file_name, PackagePath + VideoRendition.file_name )
 		except OSError as e:
 		    ErrorString    = 'Error creating Video Hard Link -> Catch: ' + e.strerror
 		    Package.error  = ErrorString
@@ -664,7 +694,8 @@ def main():
 		for ImageRendition in ImageRenditionList:
 		    try:
 			# Imagen
-			os.link(image_local_path + ImageRendition.file_name, PackagePath + ImageRendition.file_name)
+			os.link(image_local_path + ImageRendition.file_name, PackagePath + MetadataXml.StillImage.Content_Value)
+			#os.link(image_local_path + ImageRendition.file_name, PackagePath + ImageRendition.file_name)
 		    except OSError as e:
 			ErrorString    = 'Error creating Image Hard Link -> Catch: ' + e.strerror
 			Package.error  = ErrorString

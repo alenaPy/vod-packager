@@ -106,7 +106,7 @@ class MetadataLanguage(models.Model):
 	title_sort_name 				= models.CharField(max_length=22)
 	title_brief 					= models.CharField(max_length=19)
 	title 						= models.CharField(max_length=128)
-	episode_name					= models.CharField(max_length=256)
+	episode_name					= models.CharField(max_length=256, blank=True)
 	summary_long 					= models.CharField(max_length=4096)
 	summary_medium 					= models.CharField(max_length=1024)
 	summary_short	 				= models.CharField(max_length=256)
@@ -412,5 +412,43 @@ def GetProcessingItems():
 def GetPackageQueue():
     return Package.objects.filter(status='Q')
 
+def GetCustomersForExport(it):
+	customers_for_export = []
+	customers_vod_active = Customer.objects.filter(vod_active=True)
+	for c in customers_vod_active:
+		x = 0
+		ips = c.image_profile.all()
+		for ip in ips:
+			irs = ImageRendition.objects.filter(image_profile=ip.id)
+			for ir in irs:
+				if ir.image_profile == ip and ir.status == "D":
+					x = x + 1
 
+		if len(ips) == x and x != 0:
+			imagesOK = True
+		else:
+			imagesOK = False
+	
+		y = 0
+		vps = c.video_profile.all()
+		for vp in vps:
+			vrs = VideoRendition.objects.filter(video_profile=vp.id)
+			for vr in vrs:
+				if vr.video_profile == vp and vr.status == "F":
+					y = y + 1
 
+		if len(vps) == y and y != 0:
+			videosOK = True
+		else:
+			videosOK = False
+
+		mdl = MetadataLanguage.objects.filter(item_id = it.id, language = c.export_language)
+		if len(mdl) == 0:
+			metadataOK = False
+		else:
+			metadataOK = True
+
+		if imagesOK and videosOK and metadataOK:
+			customers_for_export.append(c)
+
+	return customers_for_export

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	{% load dajaxice_templatetags %}
 	<meta charset="utf-8" />
 	<title>VOD Claxson</title>
 	<link rel="stylesheet" href="/css/reset.css" />
@@ -10,20 +11,15 @@
 	<link rel="stylesheet" href="/css/css3-gmail-style.css" />
 	<link rel="stylesheet" href="/css/tables.css" />
 	<link href='http://fonts.googleapis.com/css?family=Anaheim|Carrois+Gothic|Gafata' rel='stylesheet' type='text/css'>
-	<script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
-	<script type="text/javascript" src="/js/jquery.cookie.js"></script>
-	<script type="text/javascript" src="/js/jquery.accordion.js"></script>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$('.accordion').accordion({defaultOpen: ''});
-		});
-	</script>
+	{% block resources %}{% endblock %}
+	<!-- DAJAXICE.CORE.JS -->
+	<script src="/js/xx8.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
 	<div class="container_12">
 		<div class="grid_12" style="background: #6B6E80">
 			<h1>
-				<a href="#">VOD Claxsonxx</a>
+				<a href="#">Playboy TV Latin America VOD Packager</a>
 			</h1>
 		</div>
 		<div class="clear"></div>
@@ -31,7 +27,8 @@
 			<br />
 			<a href="/vod" class="bttn" style="width: 150px;">Items</a><br />
 			<a href="/vod/customers" class="bttn" style="width: 150px;">Customers</a><br />
-			<a href="#" class="bttn" style="width: 150px;">Packages</a><br />
+			<a href="/vod/packages" class="bttn" style="width: 150px;">Packages</a><br />
+			<a href="/vod/dashboard" class="bttn" style="width: 150px;">Dashboard</a><br />
 			<br /><br />
 			<a href="/admin" class="bttn" style="width: 150px;">Admin</a><br />
 			<a href="#" class="bttn" style="width: 150px;">Logout</a>

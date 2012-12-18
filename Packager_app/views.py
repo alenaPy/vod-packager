@@ -67,6 +67,21 @@ def packages(request):
 	
 	return render_to_response('view_packages.html', {'packages': packages})
 
+def dashboard(request):
+
+	packages_groups_list = models.PackageGroup.objects.all()
+        paginator = Paginator(packages_groups_list, 1)
+
+        page = request.GET.get('page')
+        try:
+                packages_groups = paginator.page(page)
+        except PageNotAnInteger:
+                packages_groups = paginator.page(1)
+        except EmptyPage:
+                packages_groups = paginator.page(paginator.num_pages)
+
+        return render_to_response('view_dashboard.html', {'packages_groups': packages_groups})
+
 def item(request, item_id):
 	
 #	try:
@@ -74,7 +89,9 @@ def item(request, item_id):
 		resp = item.name
 		image_renditions = models.ImageRendition.objects.filter(item=item_id)
 		video_renditions = models.VideoRendition.objects.filter(item=item_id)
-		return render_to_response('item.html', {'item': item, 'video_renditions': video_renditions, 'image_renditions': image_renditions}) 
+		packages_groups = models.PackageGroup.objects.all()
+		customers_for_export = models.GetCustomersForExport(item)
+		return render_to_response('item.html', {'item': item, 'video_renditions': video_renditions, 'image_renditions': image_renditions, 'customers_for_export': customers_for_export, 'packages_groups': packages_groups}) 
 #	except:
 #		resp = 'No ta!'
 #		return HttpResponse("You're looking at item %s." % resp)
@@ -116,3 +133,6 @@ def image_renditions_upload(request, item_id):
 #       except:
 #               resp = 'No ta!'
 #               return HttpResponse("You're looking at item %s." % resp)
+
+def new_package_group(request):
+	return render_to_response('new_package_group.html')

@@ -4,6 +4,13 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
+# dajaxice
+from dajaxice.core import dajaxice_autodiscover, dajaxice_config
+from django.conf import settings
+dajaxice_autodiscover()
+
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
 urlpatterns = patterns('',
     # Examples:
     #url(r'^$', include('Packager_app.urls')),
@@ -18,4 +25,10 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^uploadify/', include('uploadify.urls')),
+
+    url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
+    #url(r'^dajaxice/', include('dajaxice.urls')),
+    #url(r'^%s/' % settings.DAJAXICE_MEDIA_PREFIX, include('dajaxice.urls')),
 )
+
+urlpatterns += staticfiles_urlpatterns()
