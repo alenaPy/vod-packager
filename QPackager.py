@@ -682,7 +682,7 @@ def main():
 		try:
 		    # Video
 		    os.link(video_local_path + VideoRendition.file_name, PackagePath + MetadataXml.Movie.Content_Value)
-		    #os.link(video_local_path + VideoRendition.file_name, PackagePath + VideoRendition.file_name )
+		    
 		except OSError as e:
 		    ErrorString    = 'Error creating Video Hard Link -> Catch: ' + e.strerror
 		    Package.error  = ErrorString
@@ -695,7 +695,7 @@ def main():
 		    try:
 			# Imagen
 			os.link(image_local_path + ImageRendition.file_name, PackagePath + MetadataXml.StillImage.Content_Value)
-			#os.link(image_local_path + ImageRendition.file_name, PackagePath + ImageRendition.file_name)
+			
 		    except OSError as e:
 			ErrorString    = 'Error creating Image Hard Link -> Catch: ' + e.strerror
 			Package.error  = ErrorString
@@ -705,6 +705,7 @@ def main():
 		        break;
 
 		
+		logging.info("main(): END PACKAGE -------------")
 		Package.status = 'P'
 		Package.save()
 

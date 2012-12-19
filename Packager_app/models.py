@@ -42,6 +42,15 @@ class Rating(models.Model):
 	    return self.name
 
 
+#
+# Descomentar luego de cambiar el modelo
+#
+#class CustomMetadata(models.Model):
+#	customer					= models.ForeingKey('Customer')
+#	key						= models.CharField(max_length=256)
+#	value						= models.CharField(max_length=256)
+
+
 class Customer(models.Model):
 
 	PRODUCT_TYPE = (
@@ -88,6 +97,9 @@ class Customer(models.Model):
 	sugested_price_longform_hd			= models.CharField(max_length=10)
 	sugested_price_shortform_sd			= models.CharField(max_length=10)
 	sugested_price_shortform_hd			= models.CharField(max_length=10)
+#
+#	Quitar rental period del siguiente cambio de la base de datos
+#
 	rental_period_shortform				= models.CharField(max_length=10)
 	rental_period_longform				= models.CharField(max_length=10)
 	license_window					= models.CharField(max_length=3, default='90')
@@ -130,6 +142,11 @@ class Item(models.Model):
 	status 				= models.CharField(max_length=2, choices=ITEM_STATUS)
 	content_language		= models.ForeignKey('Language')
 	
+	#
+	# Si es Short form o long form!
+	#
+
+#	material_type			= models.CharField(max_length=2, choices=(('SF', 'Short Form'), ('LF', 'Long Form')))
 	'''
 	A string representing a period of time and 
 	the maximum number of views over the 
@@ -158,7 +175,10 @@ class Item(models.Model):
 	display_run_time		= models.CharField(max_length=5)
 	year 				= models.CharField(max_length=4)
 	country_of_origin		= models.ForeignKey('Country')
-	actors				= models.CharField(max_length=512, blank=True)
+	#
+	# Hacer las modificaciones
+	#
+	actors				= models.CharField(max_length=512, blank=True) # (max_length=35, blank=True)
 	actors_display			= models.CharField(max_length=512, blank=True)
 		
 

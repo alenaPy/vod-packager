@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render, render_to_response, get_object_or
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+#from sort import SortHeaders
 import models
 
 def index(request):
@@ -55,7 +56,7 @@ def customers(request):
 def packages(request):
 	
 	packages_list = models.Package.objects.all()
-	paginator = Paginator(packages_list, 7)
+	paginator = Paginator(packages_list, 12)
 	
 	page = request.GET.get('page')
 	try:
@@ -80,7 +81,9 @@ def dashboard(request):
         except EmptyPage:
                 packages_groups = paginator.page(paginator.num_pages)
 
-        return render_to_response('view_dashboard.html', {'packages_groups': packages_groups})
+	customers = models.Customer.objects.all().order_by('name')
+	packages = models.Package.objects.filter(group=packages_groups[0].id)
+        return render_to_response('view_dashboard.html', {'packages_groups': packages_groups, 'packages': packages, 'customers': customers})
 
 def item(request, item_id):
 	

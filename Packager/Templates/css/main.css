@@ -1,8 +1,6 @@
 body {
   background: #282A30;
   color: #333;
-  /* font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; */
-  /* font-family: 'Anaheim', sans-serif; */
   font-size: 16px;
   height: auto;
   padding-bottom: 20px;
@@ -95,6 +93,19 @@ input[type=submit] {
 .th {
  background-color: #fff;
 }
+.tblDashboard {
+ color: #fff;
+ font-family: 'Anaheim', sans-serif;
+}
+.tdDashboardTitle {
+ font-family: 'Anaheim', sans-serif;
+}
+#hor-zebra {
+ font-family: 'Anaheim', sans-serif;
+}
+#hor-zebra > thead > tr > th {
+ font-size: 13px;
+}
 input[type=search] { 	
  width: 200px;
 }
@@ -103,6 +114,18 @@ input[type=search] {
 }
 .right {
  text-align: right;
+}
+.rotate {
+ /* Safari */
+ -webkit-transform: rotate(-90deg);
+ /* Firefox */
+ -moz-transform: rotate(-90deg);
+ /* IE */
+ -ms-transform: rotate(-90deg);
+ /* Opera */
+ -o-transform: rotate(-90deg);
+ /* Internet Explorer */
+ filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
 }
 .display_icon {
  text-align: center;
