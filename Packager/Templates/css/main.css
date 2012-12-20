@@ -97,8 +97,11 @@ input[type=submit] {
  color: #fff;
  font-family: 'Anaheim', sans-serif;
 }
-.tdDashboardTitle {
+.dashboardTitle {
  font-family: 'Anaheim', sans-serif;
+ color: #fff;
+ text-align: left;
+ font-size: 16px;
 }
 #hor-zebra {
  font-family: 'Anaheim', sans-serif;

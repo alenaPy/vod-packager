@@ -402,7 +402,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
 	return None
 
     MetadataXml = ADIXml.Package(Provider      = 'PBTVLA',
-                		 Product       = 'MOD',
+                		 Product       = Package.customer.product_type,
                 		 Asset_Name    = MetadataLanguage.title_brief.replace(' ', '_'),
                 		 Description   = MetadataLanguage.title_brief,
                 		 Creation_Date = str(Package.date_published),
@@ -477,6 +477,14 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
 	License_Days = 90
 
     
+    # 
+    # Campos inventados por el cliente ???
+    # 
+    # - DESCOMENTAR -
+    #CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer)
+    #for CustomMetadata in CustomeMetadataList:
+    #	Metatadata.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
+    #
     
     MetadataXml.Title.Licensing_Window_Start = str(Package.date_published + timedelta(days=15))
     MetadataXml.Title.Licensing_Window_End   = str(Package.date_published + timedelta(days=15) + timedelta(days=License_Days))

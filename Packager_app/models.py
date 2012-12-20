@@ -47,7 +47,7 @@ class Rating(models.Model):
 #
 #class CustomMetadata(models.Model):
 #	customer					= models.ForeingKey('Customer')
-#	key						= models.CharField(max_length=256)
+#	name						= models.CharField(max_length=256)
 #	value						= models.CharField(max_length=256)
 
 
