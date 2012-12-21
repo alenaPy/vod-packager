@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render, render_to_response, get_object_or
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+import json
 #from sort import SortHeaders
 import models
 
@@ -82,8 +83,23 @@ def dashboard(request):
                 packages_groups = paginator.page(paginator.num_pages)
 
 	customers = models.Customer.objects.all().order_by('name')
-	packages = models.Package.objects.filter(group=packages_groups[0].id)
-        return render_to_response('view_dashboard.html', {'packages_groups': packages_groups, 'packages': packages, 'customers': customers})
+	packages = models.Package.objects.filter(group=packages_groups[0].id).order_by('item', 'customer')
+
+	matriz = []
+	item_id = 0
+	contItems = -1
+	for pkg in packages:
+		if item_id != pkg.item.id:
+                	contItems = contItems + 1
+			litem = [int(pkg.item.id), str(pkg.item.name)]
+			matriz.append((litem, []))
+		item_id = pkg.item.id
+		while item_id == pkg.item.id:
+			lpkg = [int(pkg.id), int(pkg.customer.id), str(pkg.status)]
+			matriz[contItems][1].append(lpkg)
+			break
+	#json_string = json.dumps(unicode(matriz))
+        return render_to_response('view_dashboard.html', {'packages_groups': packages_groups, 'packages': packages, 'customers': customers, 'matriz': matriz})
 
 def item(request, item_id):
 	
