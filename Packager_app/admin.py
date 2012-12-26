@@ -2,7 +2,7 @@ from django.contrib import admin
 from Packager_app.models import *
 
 class CustomerAdmin(admin.ModelAdmin):
-	list_display = ('name', 'vod_active')
+	list_display = ('name', 'id', 'vod_active')
 
 class ItemAdmin(admin.ModelAdmin):
 	list_display = ('name', 'format', 'status')
