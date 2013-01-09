@@ -1,0 +1,57 @@
+{% extends "base_views.html" %}
+
+{% block title %}Package's view{% endblock %}
+
+{% block content %}
+<table id="hor-zebra">
+	<thead>
+		<tr>
+			<th scope="col" width="20px"><!-- <input type="checkbox" name="your-group" value="unit-in-group" /> --></th>
+			<th scope="col" class="center" width="20px"></th>
+			<th scope="col">Item</th>
+			<th scope="col">Customer</th>
+			<th scope="col">Group</th>
+		</tr>
+	</thead>
+	<tbody>
+
+{% for package in packages %}
+		<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
+			<td><input type="checkbox" name="entrycheck" value="{{package.id}}"/></td>
+			<td class="display_icon"><span id="status" class="pkgstatus_{{package.status}}" /></td>
+			<td><a href="/vod/package/{{package.id}}">{{package.item}}</a></td>
+			<td>{{package.customer}}</td>
+			<td>{{package.group}}</td>
+		</tr>
+{% endfor %}
+	</tbody>
+</table>
+<!-- VIEW'S ICONOGRAPHY -->
+<table id="tblIconography">
+	<tr>
+		<td class="tdIconographyIcon" title="Package under process">
+			<img src="/images/icons/hourglass.png"></td><td class="tdIconographyDesc">Queued
+		</td>
+		<td class="tdIconographyIcon" title="Package ready for download">
+			<img src="/images/icons/package_green.png"></td><td class="tdIconographyDesc">Packaged
+		</td>
+		<td class="tdIconographyIcon" title="Error creating package">
+			<img src="/images/icons/exclamation.png"></td><td class="tdIconographyDesc">Error
+		</td>
+		<td width="99%"></td>
+	<tr>
+</table>
+{% endblock %}
+
+{% block action_bar %}
+
+{% if packages.has_previous %}
+<a href="?page={{ packages.previous_page_number }}" class="bttn prev">Previous</a>
+{% endif %}
+<a href="#" onclick="javascript:actionViewEntry('/vod/item');" class="bttn icon view">View</a>
+<a href="#" onclick="javascript:actionRefreshView();" class="bttn icon refresh">Refresh<a>
+{% if packages.has_next %}
+<a href="?page={{ packages.next_page_number }}" class="bttn next">Next</a>
+{% endif %}
+
+{% endblock %}

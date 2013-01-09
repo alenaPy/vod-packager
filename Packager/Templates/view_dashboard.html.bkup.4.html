@@ -1,0 +1,92 @@
+{% extends "base_views.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="/css/dashboard.css" />
+
+{% for package_group in packages_groups %}
+<span class="dashboardTitle">Package group: {{package_group.name}}</span>
+
+<table class="tblDashboard">
+	<tbody>
+		<tr>
+			<th class="thUpperLeft"></th>
+			{% for customer in customers %}
+			<th style="border: 1px solid white;"><div class="verticalText">{{customer.name}}</div></th>
+			{% endfor %}
+		</tr>
+		{% for item in matriz %}
+		<tr id="item_{{item.0.0}}">
+			<td style="border: 1px solid white;">{{item.0.1}}</td>
+			{% for customer in customers %}
+			<td id="customer_{{customer.id}}" class="tdPackageStatus"></td>
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<script>
+var json_string = "{
+	"items": [
+{% for item in matriz %}
+		{"item":{{item.0.0}}, "pkgs":[
+		{% for pkg in item.1 %}
+			{"pkg_id":{{pkg.0}}, "customer_id":{{pkg.1}}, "pkg_status":"{{pkg.2}}"},
+		{% endfor %}
+		]},
+{% endfor %}
+	]
+}"
+alert(json_string);
+</script>
+
+<script>
+var json_string = "{
+	\"items\": [
+{% for item in matriz %}
+		{\"item\":{{item.0.0}}, \"pkgs\":[
+		{% for pkg in item.1 %}
+			{\"pkg_id\":{{pkg.0}}, \"customer_id\":{{pkg.1}}, \"pkg_status\":\"{{pkg.2}}\"},
+		{% endfor %}
+		{\"pkg_id\":0, \"customer_id\":0, \"pkg_status\":\"\"}
+		]},
+{% endfor %}
+	{\"item\":0, \"pkgs\":[]}
+	]
+}"
+alert(json_string);
+</script>
+
+<script>
+var json_string = "{
+	\x22items\x22: [
+{% for item in matriz %}
+		{\x22item\x22:{{item.0.0}}, \x22pkgs\x22:[
+		{% for pkg in item.1 %}
+			{\x22pkg_id\x22:{{pkg.0}}, \x22customer_id\x22:{{pkg.1}}, \x22pkg_status\x22:\x22{{pkg.2}}\x22},
+		{% endfor %}
+		]},
+{% endfor %}
+	]
+}"
+alert(json_string);
+</script>
+
+{% endfor %}
+
+{% endblock %}
+
+{% block action_bar %}
+
+{% if packages_groups.has_previous %}
+<a href="?page={{ packages_groups.previous_page_number }}" class="bttn prev">Previous</a>
+{% endif %}
+<a href="#" onclick="javascript:actionRefreshView();" class="bttn icon refresh">Refresh<a>
+{% if packages_groups.has_next %}
+<a href="?page={{ packages_groups.next_page_number }}" class="bttn next">Next</a>
+{% endif %}
+
+{% endblock %}

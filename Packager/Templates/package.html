@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="grid_9" style="color: #fff; padding-top: 5px;">
+	<h1 class="formTitle">Package</h1>
+	<table class="tblFormView">
+		<tr class="trFieldLabel">
+			<td width="150px">Customer</td>
+			<td><input type="text" name="customer" readonly value="{{package.customer}}" style="width: 380px;" /></td>
+		</tr>
+		<tr>
+			<td>Item</td>
+			<td><input type="text" name="item" readonly value="{{package.item}}" style="width: 380px;" /></td>
+		</tr>
+		<tr>
+			<td>Status</td>
+			<td><input type="text" name="status" readonly value="{{package.status}}" style="width: 80px;" /></td>
+		</tr>
+		<tr>
+			<td>Group</td>
+			<td><input type="text" name="group" readonly value="{{package.group}}" style="width: 280px;" /></td>
+		</tr>
+		<tr>
+			<td>Error</td>
+			<td><textarea name="error" readonly rows="4" cols="53">{{package.error}}</textarea>
+		</tr>
+	</table>
+</div>
+{% endblock %}

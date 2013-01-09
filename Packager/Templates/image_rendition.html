@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="grid_9" style="color: #fff; padding-top: 5px;">
+	<table>
+		<tr>
+			<td width="150px">Name</td>
+			<td>{{ image_rendition.file_name }}</td>
+		</tr>
+		<tr>
+			<td>Size</td>
+			<td>{{ image_rendition.file_size }}</td>
+		</tr>
+		<tr>
+			<td>Checksum</td>
+			<td>{{ image_rendition.checksum }}</td>
+		</tr>
+		<tr>
+			<td>Image profile</td>
+			<td>{{ image_rendition.image_profile }}</td>
+		</tr>
+		<tr>
+			<td>Item</td>
+			<td>{{ image_rendition.item }}</td>
+		</tr>
+		<tr>
+			<td>Status</td>
+			<td>{{ image_rendition.status }}</td>
+		</tr>
+		<tr>
+			<td>Error</td>
+			<td>{{ image_rendition.error }}</td>
+		</tr>
+	</table>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block resources %}
+<script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="/js/jquery.cookies.js"></script>
+{% endblock %}
+ 
+{% block content %}
+<div class="grid_9" style="color: #fff; padding-top: 5px;">
+	<script src="/js/uploadify/jquery.uploadify.js" type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="/css/uploadify.css" />
+	
+	<form>
+		<div id="queue" style="font-color: #000;"></div>
+		<input id="file_upload" name="file_upload" type="file" multiple="true">
+		<input type="hidden" id="item_id" value="{{item.id}}"/>
+	</form>
+
+	<script type="text/javascript">
+		$(function() {
+			$('#file_upload').uploadify({
+				'formData'     : {
+					'timestamp' : '1234567890',
+					'token'     : '0987654321'
+				},
+				'swf'      : '/js/uploadify/uploadify.swf',
+				'uploader' : '/js/uploadify/uploadify.php?item_id='+$("#item_id").val(),
+				'onQueueComplete' : function(queueData) {
+					alert(queueData.uploadsSuccessful + ' files were successfully uploaded.');
+				}
+			});
+		});
+	</script>
+	
+	
+	
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base_views.html" %}
+
+{% block title %}Item's view{% endblock %}
+
+{% block content %}
+<table id="hor-zebra">
+	<thead>
+		<tr>
+			<th scope="col" width="20px"><!-- <input type="checkbox" name="your-group" value="unit-in-group" /> --></th>
+			<th scope="col" class="center" width="20px"></th>
+			<th scope="col">Name</th>
+			<th scope="col">MAM</th>
+			<th scope="col" class="center">Creation</th>
+			<th scope="col" class="center">Kill</th>
+		</tr>
+	</thead>
+	<tbody>
+
+{% for item in items %}
+		<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
+			<td class="display_check"><input type="checkbox" name="entrycheck" value="{{item.id}}"/></td>
+			<td class="display_icon"><span class="status_{{item.status}}" /></td>
+			<td><a href="/vod/item/{{item.id}}">{{ item.name }}</a></td>
+			<td>{{item.mam_id}}</td>
+			<td class="center">{{ item.creation_date }}</td>
+			<td class="center">{{ item.kill_date }}</td>
+		</tr>
+{% endfor %}
+	</tbody>
+</table>
+<!-- VIEW'S ICONOGRAPHY -->
+<table id="tblIconography">
+	<tr>
+		<td class="tdIconographyIcon" title="New item from Fork">
+			<img src="/images/icons/new.png"></td><td class="tdIconographyDesc">New
+		</td>
+		<td class="tdIconographyIcon" title="Processing item">
+			<img src="/images/icons/time.png"></td><td class="tdIconographyDesc">Processing
+		</td>
+		<td class="tdIconographyIcon" title="Item done">
+			<img src="/images/icons/tick.png"></td><td class="tdIconographyDesc">Done
+		</td>
+		<td class="tdIconographyIcon" title="Item error">
+			<img src="/images/icons/exclamation.png"></td><td class="tdIconographyDesc">Warning
+		</td>
+		<td width="99%"></td>
+	<tr>
+</table>
+{% endblock %}
+
+{% block action_bar %}
+
+{% if items.has_previous %}
+<a href="?page={{ items.previous_page_number }}" class="bttn prev">Previous</a>
+{% endif %}
+<a href="#" onclick="javascript:actionViewEntry('/vod/item');" class="bttn icon view">View</a>
+<a href="#" onclick="javascript:actionRefreshView();" class="bttn icon refresh">Refresh<a>
+{% if items.has_next %}
+<a href="?page={{ items.next_page_number }}" class="bttn next">Next</a>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base_views.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+{% for package_group in packages_groups %}
+<span class="dashboardTitle">Package group: {{package_group.name}}</span>
+
+<table class="tblDashboard">
+	<tr></tr>
+	<tr>
+		<td>
+		
+		
+		<table style="border: 1px solid white;">
+			<tbody>
+				<tr>
+					<th>X</th>
+					{% for customer in customers %}
+					<th style="border: 1px solid white;"><div class="verticalText">{{customer.name}}</div></th>
+					{% endfor %}
+				</tr>
+				<!-- 
+				<script src="/js/json/json_parse.js" type="text/javascript"></script>
+				<script>
+					$(document).ready(function() {
+						//json_data = json_parse({{json_string}});
+						json_data = json_parse({{json_string|safe}});
+						alert(json_data);
+					});
+				</script>
+				-->
+				{% for item in matriz %}
+				<tr id="item_{{item.0.0}}">
+					<td style="border: 1px solid white;">{{item.0.1}}</td>
+					
+					<!-- ORDENAR LOS CUSTOMERS POR ID -->
+					{% for customer in customers %}
+					<td class="right" style="border: 1px solid white;padding-right: 5px;">
+						<!-- <input type="checkbox" name="entrycheck" value="{{package.id}}"/> -->
+						{{package.id}}
+					</td>
+					{% endfor %}
+					
+					{% for pkg in item.1 %}
+					<td style="border: 1px solid white;">
+					{{pkg}}
+					<span>
+					</span>
+					</td>
+					{% endfor %}
+					
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		
+		{{json_string}}
+		
+		<style>
+			th
+			{
+				background-color: grey;
+				color: white;
+				text-align: center;
+				vertical-align: bottom;
+				height: 150px;
+				padding-bottom: 3px;
+				padding-left: 5px;
+				padding-right: 5px;
+			}
+			
+			.verticalText
+			{
+				text-align: center;
+				vertical-align: middle;
+				width: 20px;
+				margin: 0px;
+				padding: 0px;
+				padding-left: 3px;
+				padding-right: 3px;
+				padding-top: 10px;
+				white-space: nowrap;
+				-webkit-transform: rotate(-90deg); 
+				-moz-transform: rotate(-90deg);  				
+			};
+		</style>
+		
+		<!--
+			<table id="hor-zebra">
+				<thead>
+					<tr>
+						<th scope="col" width="20px"></th>
+						<th scope="col" class="center" width="20px"></th>
+						<th scope="col">Item</th>
+						<th scope="col">Customer</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for package in packages %}
+					<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
+						<td><input type="checkbox" name="entrycheck" value="{{package.id}}"/></td>
+						<td class="display_icon"><span id="status" class="pkgstatus_{{package.status}}" /></td>
+						<td><a href="/vod/package/{{package.id}}">{{package.item}}</a></td>
+						<td>{{package.customer}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		-->
+		</td>
+	</tr>
+</table>
+{% endfor %}
+
+{% endblock %}
+
+{% block action_bar %}
+
+{% if packages_groups.has_previous %}
+<a href="?page={{ packages_groups.previous_page_number }}" class="bttn prev">Previous</a>
+{% endif %}
+<a href="#" onclick="javascript:actionViewEntry('/vod/item');" class="bttn icon view">View</a>
+<a href="#" onclick="javascript:actionRefreshView();" class="bttn icon refresh">Refresh<a>
+{% if packages_groups.has_next %}
+<a href="?page={{ packages_groups.next_page_number }}" class="bttn next">Next</a>
+{% endif %}
+
+{% endblock %}

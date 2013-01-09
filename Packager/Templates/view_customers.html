@@ -1,0 +1,50 @@
+{% extends "base_views.html" %}
+
+{% block title %}Customer's view{% endblock %}
+
+{% block content %}
+<table id="hor-zebra">
+	<thead>
+		<tr>
+			<th scope="col" width="20px"><!-- <input type="checkbox" name="your-group" value="unit-in-group" /> --></th>
+			<th scope="col" class="center" width="20px"></th>
+			<th scope="col">Name</th>
+		</tr>
+	</thead>
+	<tbody>
+
+{% for customer in customers %}
+		<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
+			<td><input type="checkbox" name="entrycheck" value="{{customer.id}}"/></td>
+			<td class="display_icon"><span class="vod_active_{{customer.vod_active}}" /></td>
+			<td><a href="/vod/customer/{{customer.id}}">{{customer.name}}</a></td>
+		</tr>
+{% endfor %}
+	</tbody>
+</table>
+<!-- VIEW'S ICONOGRAPHY -->
+<table id="tblIconography">
+	<tr>
+		<td class="tdIconographyIcon" title="Enabled client for export">
+			<img src="/images/icons/accept.png"></td><td class="tdIconographyDesc">Enabled
+		</td>
+		<td class="tdIconographyIcon" title="Disabled client for export">
+			<img src="/images/icons/cancel.png"></td><td class="tdIconographyDesc">Disabled
+		</td>
+		<td width="99%"></td>
+	<tr>
+</table>
+{% endblock %}
+
+{% block action_bar %}
+
+{% if customers.has_previous %}
+<a href="?page={{ customers.previous_page_number }}" class="bttn prev">Previous</a>
+{% endif %}
+<a href="#" onclick="javascript:actionViewEntry('/vod/customer');" class="bttn icon view">View</a>
+<a href="#" onclick="javascript:actionRefreshView();" class="bttn icon refresh">Refresh<a>
+{% if customers.has_next %}
+<a href="?page={{ customers.next_page_number }}" class="bttn next">Next</a>
+{% endif %}
+
+{% endblock %}
