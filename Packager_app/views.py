@@ -3,14 +3,16 @@ from django.shortcuts import redirect, render, render_to_response, get_object_or
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+
 import json
-#from sort import SortHeaders
 import models
+
+from Packager_app.search import *
 
 def index(request):
 	
 	items_list = models.Item.objects.all()
-	paginator = Paginator(items_list, 7)
+	paginator = Paginator(items_list, 10)
 	
 	page = request.GET.get('page')
 	try:
@@ -27,7 +29,7 @@ def index(request):
 def items(request):
 	
 	items_list = models.Item.objects.all()
-	paginator = Paginator(items_list, 7)
+	paginator = Paginator(items_list, 10)
 	
 	page = request.GET.get('page')
 	try:
@@ -42,7 +44,7 @@ def items(request):
 def customers(request):
 	
 	customer_list = models.Customer.objects.all()
-	paginator = Paginator(customer_list, 7)
+	paginator = Paginator(customer_list, 10)
 	
 	page = request.GET.get('page')
 	try:
@@ -57,7 +59,7 @@ def customers(request):
 def packages(request):
 	
 	packages_list = models.Package.objects.all()
-	paginator = Paginator(packages_list, 12)
+	paginator = Paginator(packages_list, 10)
 	
 	page = request.GET.get('page')
 	try:
@@ -72,25 +74,24 @@ def packages(request):
 def dashboard(request):
 
 	packages_groups_list = models.PackageGroup.objects.all()
-        paginator = Paginator(packages_groups_list, 1)
-
-        page = request.GET.get('page')
-        try:
-                packages_groups = paginator.page(page)
-        except PageNotAnInteger:
-                packages_groups = paginator.page(1)
-        except EmptyPage:
-                packages_groups = paginator.page(paginator.num_pages)
-
+	paginator = Paginator(packages_groups_list, 1)
+	page = request.GET.get('page')
+	try:
+		packages_groups = paginator.page(page)
+	except PageNotAnInteger:
+		packages_groups = paginator.page(1)
+	except EmptyPage:
+		packages_groups = paginator.page(paginator.num_pages)
+	
 	customers = models.Customer.objects.all().order_by('name')
 	packages = models.Package.objects.filter(group=packages_groups[0].id).order_by('item', 'customer')
-
+	
 	matriz = []
 	item_id = 0
 	contItems = -1
 	for pkg in packages:
 		if item_id != pkg.item.id:
-                	contItems = contItems + 1
+			contItems = contItems + 1
 			litem = [int(pkg.item.id), str(pkg.item.name)]
 			matriz.append((litem, []))
 		item_id = pkg.item.id
@@ -99,7 +100,7 @@ def dashboard(request):
 			matriz[contItems][1].append(lpkg)
 			break
 	#json_string = json.dumps(unicode(matriz))
-        return render_to_response('view_dashboard.html', {'packages_groups': packages_groups, 'packages': packages, 'customers': customers, 'matriz': matriz})
+	return render_to_response('view_dashboard.html', {'packages_groups': packages_groups, 'packages': packages, 'customers': customers, 'matriz': matriz})
 
 def item(request, item_id):
 	
@@ -155,3 +156,15 @@ def image_renditions_upload(request, item_id):
 
 def new_package_group(request):
 	return render_to_response('new_package_group.html')
+
+def search(request):
+	query_string = ''
+	found_entries = None
+	if ('q' in request.GET) and request.GET['q'].strip():
+		query_string = request.GET['q']
+		entry_query = get_query(query_string, ['name', 'year',])
+		found_entries = models.Item.objects.filter(entry_query).order_by('id')
+
+	return render_to_response('search_results.html',
+						{ 'query_string': query_string, 'found_entries': found_entries },
+						context_instance=RequestContext(request))

@@ -518,8 +518,9 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
         MetadataXml.Movie.Resolution	= VideoRendition.video_profile.resolution
         MetadataXml.Movie.Frame_Rate	= VideoRendition.video_profile.frame_rate
         MetadataXml.Movie.Codec		= VideoRendition.video_profile.codec
+	MetadataXml.Movie.Bit_Rate		= VideoRendition.video_profile.bit_rate
 
-    MetadataXml.Movie.Bit_Rate		= VideoRendition.video_profile.bit_rate
+
     MetadataXml.Movie.Screen_Format	= VideoRendition.screen_format
     MetadataXml.Movie.Languages		= Package.item.content_language.code
 

@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     # Examples:
     #url(r'^$', include('Packager_app.urls')),
     # url(r'^Packager/', include('Packager.foo.urls')),
-
+	
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 	
@@ -23,9 +23,9 @@ urlpatterns = patterns('',
 	
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-
+	
     url(r'^uploadify/', include('uploadify.urls')),
-
+	
     url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
     #url(r'^dajaxice/', include('dajaxice.urls')),
     #url(r'^%s/' % settings.DAJAXICE_MEDIA_PREFIX, include('dajaxice.urls')),

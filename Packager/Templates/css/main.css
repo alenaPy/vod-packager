@@ -93,16 +93,6 @@ input[type=submit] {
 .th {
  background-color: #fff;
 }
-.tblDashboard {
- color: #fff;
- font-family: 'Anaheim', sans-serif;
-}
-.dashboardTitle {
- font-family: 'Anaheim', sans-serif;
- color: #fff;
- text-align: left;
- font-size: 16px;
-}
 #hor-zebra {
  font-family: 'Anaheim', sans-serif;
 }
@@ -154,7 +144,7 @@ span {
 }
 span.status_N {
  display: block;
- background-image: url(/images/icons/tick.png);
+ background-image: url(/images/icons/new.png);
  background-repeat:no-repeat;
  width: 16px;
  height: 16px;
@@ -190,6 +180,13 @@ span.vod_active_True {
 span.vod_active_False {
  display: block;
  background-image: url(/images/icons/cancel.png);
+ background-repeat:no-repeat;
+ width: 16px;
+ height: 16px;
+}
+span.pkgstatus_ {
+ display: block;
+ background-image: url(/images/icons/help.png);
  background-repeat:no-repeat;
  width: 16px;
  height: 16px;
@@ -337,4 +334,25 @@ select {
 .actbarTd {
  padding-top: 5px;
  text-align: right;
+}
+#tblIconography {
+ width: 100%;
+ color: #fff;
+ font-family: 'Anaheim', sans-serif;
+ font-size: 13px;
+}
+.tdIconographyIcon {
+ padding-left: 10px;
+ vertical-align: middle;
+}
+.tdIconographyDesc {
+ padding-left: 4px;
+ vertical-align: middle;
+}
+.headerTitle {
+ text-align: left;
+ padding-left: 88px;
+ font-family: 'Anaheim', sans-serif;
+ font-size: 37px;
+ font-weight: normal;
 }

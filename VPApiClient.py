@@ -37,3 +37,6 @@ def VodPackagerAddItem(SmbPath = None, FileName = None, IMetadata = None, IMetad
 #L = ItemMetadataLanguage()
 #L['language'] = 'esp'
 #VodPackagerAddItem('\\\\aca\\', 'Gran Trolo.mov', I, [L] )
+
+def main():
+	print "Hola!"

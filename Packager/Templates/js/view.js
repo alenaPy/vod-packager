@@ -1,3 +1,12 @@
+$(document).ready(function() {
+	$("#search").keypress(function(e) {
+		if(e.which == 13) {
+			// enter pressed
+			window.location = "/vod/search?q=" + $("#search").val();
+		}
+	});
+});
+
 function getSelectedEntries() {
 	var selectedEntries = $("input:checkbox[name=entrycheck]:checked");
 	
@@ -22,10 +31,6 @@ function actionRefreshView() {
 	window.location.reload();
 }
 
-function actionPrevious() {
-	alert("Previous");
-}
-
-function actionNext() {
-	alert("Next");
+function actionSearch() {
+	alert("Search");
 }
