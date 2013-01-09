@@ -1,0 +1,48 @@
+th {
+ background-color: #c6c6c6;
+ color: #fff;
+ text-align: center;
+ vertical-align: bottom;
+ height: 150px;
+ padding-bottom: 3px;
+ padding-left: 5px;
+ padding-right: 5px;
+}
+.thUpperLeft {
+ background-color: transparent;
+ border-left: 0px;
+ border-top: 0px;
+}
+.verticalText {
+ text-align: center;
+ vertical-align: middle;
+ width: 15px;
+ margin: 0px;
+ padding: 0px;
+ padding-left: 3px;
+ padding-right: 3px;
+ padding-top: 10px;
+ white-space: nowrap;
+ -webkit-transform: rotate(-90deg); 
+ -moz-transform: rotate(-90deg);  				
+}
+.tblDashboard {
+ color: #fff;
+ font-family: 'Anaheim', sans-serif;
+}
+.dashboardTitle {
+ font-family: 'Anaheim', sans-serif;
+ color: #fff;
+ text-align: left;
+ font-size: 16px;
+}
+.tdPackageStatus {
+ border: 1px solid white;
+ padding-top: 5px;
+ padding-left: 10px;
+}
+.tdItemTitle {
+ border: 1px solid white;
+ padding-left: 3px;
+ padding-right: 3px;
+}
