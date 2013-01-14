@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>VOD Claxson</title>
+	<link rel="stylesheet" href="/css/reset.css" />
+	<link rel="stylesheet" href="/css/text.css" />
+	<link rel="stylesheet" href="/css/960.css" />
+	<link rel="stylesheet" href="/css/login.css" />
+	<link rel="stylesheet" href="/css/css3-gmail-style.css" />
+	<link href='http://fonts.googleapis.com/css?family=Inder|BenchNine|Anaheim|Strait|Cinzel' rel='stylesheet' type='text/css'>
+</head>
+<body>
+	<h1 class="headerTitle">
+		<img src="/images/PBTV.png" width="55" height="55">
+		<a href="#" style="padding-left: 7px;">PlayboyTV LA: VOD Packager</a>
+	</h1>
+	<div class="container_12">
+		<div class="grid_12"><p></p></div>
+		<div class="clear"></div>
+		<div class="grid_4"><p></p></div>
+		<div class="grid_4">
+			<section>
+				{% if form.errors %}
+				<p>Your username and password didn't match, please try again.</p>
+				{% endif %}
+
+				<form method="post" action="{% url Packager_app.views.login_user %}">{% csrf_token %}
+					<p>
+						{{state}}
+					</p>
+					<p>
+						<label for="username">Username</label>
+						<input type="text" name="username" value="{{username}}" />
+						<label for="password">Password</label>
+						<input type="password" name="password" value="" />
+						{% if next %}
+						<input type="hidden" name="next" value="{{next}}" />
+						{% else %}
+						<input type="hidden" name="next" value="/vod/items" />
+						{% endif %}
+						<input type="submit" value="login" />
+					</p>
+				</form>
+			</section>
+		</div>
+		<div class="grid_4"><p></p></div>
+		<div class="clear"></div>
+		<div class="grid_12"><p></p></div>
+		<div class="clear"></div>
+	</div>
+</body>
+</html>

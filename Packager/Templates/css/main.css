@@ -200,7 +200,7 @@ span.pkgstatus_Q {
 }
 span.pkgstatus_P {
  display: block;
- background-image: url(/images/icons/package_green.png);
+ background-image: url(/images/icons/tick.png);
  background-repeat:no-repeat;
  width: 16px;
  height: 16px;
