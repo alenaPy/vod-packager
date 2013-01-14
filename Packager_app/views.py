@@ -117,8 +117,11 @@ def dashboard(request):
 		packages_groups = paginator.page(paginator.num_pages)
 	
 	customers = models.Customer.objects.all().order_by('name')
-	packages = models.Package.objects.filter(group=packages_groups[0].id).order_by('item', 'customer')
-	
+	try:
+	    packages = models.Package.objects.filter(group=packages_groups[0].id).order_by('item', 'customer')
+	except:
+	    packages = []
+		    
 	matriz = []
 	item_id = 0
 	contItems = -1
