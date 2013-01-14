@@ -22,6 +22,7 @@ $(document).ready(function() {
 		openEffect	: 'none',
 		closeEffect	: 'none'
 	});
+	
 });
 
 function actionUploadImageRenditions(e) {
@@ -62,7 +63,18 @@ function clbkNewPackageGroup(data) {
 }
 
 function validateItem() {
-	return true;
+	if ($("#customers_for_export").val() != null) {
+		pkg_grp = $("#package_group").val();
+		if ((pkg_grp != "null") && (pkg_grp != "new")) {
+			return true;
+		} else {
+			alert("Por favor indique el grupo para el cual desea exportar el item.");
+			return false;
+		}
+	} else {
+		alert("Debe seleccionar al menos un cliente.");
+		return false;
+	}
 }
 
 /* DAJAXICE: Funciones de ejemplo, por favor no borrar! */

@@ -3,31 +3,59 @@ from django.shortcuts import redirect, render, render_to_response, get_object_or
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponseRedirect
 
 import json
 import models
 
 from Packager_app.search import *
 
+@csrf_protect
+def login_user(request):
+	#c = {}
+
+	if request.user.is_authenticated():
+		return HttpResponseRedirect("/vod/items")
+	else:
+		# Do something for anonymous users.
+		
+		state = "Please log in below..."
+		username = password = ''
+		if request.GET:
+			next = request.GET.get('next', '')
+		else:
+			next = '/vod/items'
+		if request.POST:
+			username = request.POST.get('username')
+			password = request.POST.get('password')
+			next = request.POST.get('next')
+			
+			user = authenticate(username=username, password=password)
+			if user is not None:
+				if user.is_active:
+					login(request, user)
+					state = "You're successfully logged in!"
+					return HttpResponseRedirect(next)
+				else:
+					state = "Your account is not active, please contact the site admin."
+			else:
+				state = "Your username and/or password were incorrect."
+		
+		return render_to_response('registration/login.html', {'state':state, 'username': username, 'next': next}, context_instance=RequestContext(request))
+
+@login_required
+@csrf_protect
 def index(request):
-	
-	items_list = models.Item.objects.all()
-	paginator = Paginator(items_list, 10)
-	
-	page = request.GET.get('page')
-	try:
-		items = paginator.page(page)
-	except PageNotAnInteger:
-		# If page is not an integer, deliver first page.
-		items = paginator.page(1)
-	except EmptyPage:
-		# If page is out of range (e.g. 9999), deliver last page of results.
-		items = paginator.page(paginator.num_pages)
-	
-	return render_to_response('view_items.html', {'items': items})
+	#c = {}
+	#return render_to_response('index.html', c, context_instance=RequestContext(request))
+	return render_to_response('index.html', context_instance=RequestContext(request))
 
+@login_required
+@csrf_protect
 def items(request):
-	
 	items_list = models.Item.objects.all()
 	paginator = Paginator(items_list, 10)
 	
@@ -39,10 +67,11 @@ def items(request):
 	except EmptyPage:
 		items = paginator.page(paginator.num_pages)
 	
-	return render_to_response('view_items.html', {'items': items})
+	return render_to_response('view_items.html', {'items': items}, context_instance=RequestContext(request))
 
+@login_required
+@csrf_protect
 def customers(request):
-	
 	customer_list = models.Customer.objects.all()
 	paginator = Paginator(customer_list, 10)
 	
@@ -56,6 +85,8 @@ def customers(request):
 	
 	return render_to_response('view_customers.html', {'customers': customers})
 
+@login_required
+@csrf_protect
 def packages(request):
 	
 	packages_list = models.Package.objects.all()
@@ -71,6 +102,8 @@ def packages(request):
 	
 	return render_to_response('view_packages.html', {'packages': packages})
 
+@login_required
+@csrf_protect
 def dashboard(request):
 
 	packages_groups_list = models.PackageGroup.objects.all()
@@ -102,6 +135,8 @@ def dashboard(request):
 	#json_string = json.dumps(unicode(matriz))
 	return render_to_response('view_dashboard.html', {'packages_groups': packages_groups, 'packages': packages, 'customers': customers, 'matriz': matriz})
 
+@login_required
+@csrf_protect
 def item(request, item_id):
 	
 #	try:
@@ -116,6 +151,8 @@ def item(request, item_id):
 #		resp = 'No ta!'
 #		return HttpResponse("You're looking at item %s." % resp)
 
+@login_required
+@csrf_protect
 def customer(request, customer_id):
 	
 	try:
@@ -125,6 +162,8 @@ def customer(request, customer_id):
 		resp = 'No ta!'
 		return HttpResponse("You're looking at customer %s." % resp)
 
+@login_required
+@csrf_protect
 def package(request, package_id):
 	
 	try:
@@ -134,15 +173,19 @@ def package(request, package_id):
 		resp = 'No ta!'
 		return HttpResponse("You're looking at package %s." % resp)
 
+@login_required
+@csrf_protect
 def image_rendition(request, image_rendition_id):
 
-        try:
-                image_rendition = models.ImageRendition.objects.get(id=image_rendition_id)
-                return render_to_response('image_rendition.html', {'image_rendition': image_rendition})
-        except:
-                resp = 'No ta!'
-                return HttpResponse("You're looking at image rendition %s." % resp)
+	try:
+		image_rendition = models.ImageRendition.objects.get(id=image_rendition_id)
+		return render_to_response('image_rendition.html', {'image_rendition': image_rendition})
+	except:
+		resp = 'No ta!'
+		return HttpResponse("You're looking at image rendition %s." % resp)
 
+@login_required
+@csrf_protect
 def image_renditions_upload(request, item_id):
 
 #       try:
@@ -154,9 +197,13 @@ def image_renditions_upload(request, item_id):
 #               resp = 'No ta!'
 #               return HttpResponse("You're looking at item %s." % resp)
 
+@login_required
+@csrf_protect
 def new_package_group(request):
-	return render_to_response('new_package_group.html')
+	return render_to_response('new_package_group.html', context_instance=RequestContext(request))
 
+@login_required
+@csrf_protect
 def search(request):
 	query_string = ''
 	found_entries = None

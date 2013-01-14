@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url
 from Packager_app import views
 
 urlpatterns = patterns('',
-	url(r'^$', views.index, name='index'),
+	url(r'^$', views.login_user, name='login_user'),
 	url(r'^customers$', views.customers, name='customers'),
 	url(r'^customer/(?P<customer_id>\d+)/$', views.customer, name='customer'),
 	url(r'^items$', views.items, name='items'),

@@ -6,6 +6,7 @@ import urlparse
 import json
 import logging
 import models
+import sys
 
 @dajaxice_register
 def dajaxice_example(request):
@@ -21,7 +22,7 @@ def args_example(request, text):
 def export_item(request, item_id, selected_customers, package_group):
 
 	try:
-		item 		= models.Item.objects.get(id=int(item_id))
+		item 			= models.Item.objects.get(id=int(item_id))
 		package_group 	= models.PackageGroup.objects.get(id=int(package_group))
 #		logging.basicConfig(format='%(asctime)s - ajax.py -[%(levelname)s]: %(message)s', filename='../log/Ajax.log',level=logging.INFO)
 #		logging.info("Esto es un log!")
@@ -30,23 +31,28 @@ def export_item(request, item_id, selected_customers, package_group):
 			for c in selected_customers:
 				customer = models.Customer.objects.get(id=int(c))
 				try:
-					package = models.Package.objects.get(customer=customer, item=item, package_group=package_group)
+					package = models.Package.objects.get(customer=customer, item=item, group=package_group)
+					# Agregar a futuro que no deje exportar algo que este packaged
+					msg = 'Se han modificado '
 				except:
-					package 		= models.Package()
+					package 			= models.Package()
 					package.customer 	= customer
 					package.item     	= item
-					package_group		= package_group
+					package.group		= package_group
+					msg = 'Se han creado '
 				package.status = 'Q'
 				package.error = ''
 				package.save()
 				i = i + 1
-			return simplejson.dumps({'message': 'Se han creado ' + str(i) + ' paquetes.'})		
+			return simplejson.dumps({'message': msg + str(i) + ' paquetes.'})		
 		else:
 			return simplejson.dumps({'message':'Por favor seleccione al menos un cliente.'})
 	except ObjectDoesNotExist:
 		return simplejson.dumps({'message':'No encontre el item!'})
+	#except IntegrityError, e:
+	#	return simplejson.dumps({'message':'Error: bla'})
 	except:
-		return simplejson.dumps({'message':'No se que paso!'})
+		return simplejson.dumps({'message':'Error: ' + str(sys.exc_info()[1])})
 
 @dajaxice_register
 def package_group_save(request, data):

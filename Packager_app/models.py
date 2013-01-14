@@ -99,6 +99,7 @@ class Customer(models.Model):
 #
 #	Quitar rental period del siguiente cambio de la base de datos
 #
+#	billing_id					= models.CharField(max_length=10, blank=True)
 	rental_period_shortform				= models.CharField(max_length=10)
 	rental_period_longform				= models.CharField(max_length=10)
 	license_window					= models.CharField(max_length=3, default='90')

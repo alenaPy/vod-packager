@@ -78,7 +78,7 @@
 		<tr><td>Export to:</td></tr>
 		<tr>
 			<td>
-				<select multiple="multiple" class="slctCusFE" name="customers_for_export" id="customers_for_export">
+				<select multiple="multiple" class="slctCusFE" name="customers_for_export" id="customers_for_export" name="customers_for_export">
 					{% for cfe in customers_for_export %}
 					<option value="{{cfe.id}}">{{cfe.name}}</option>
 					{% endfor %}
@@ -89,7 +89,7 @@
 		<tr>
 			<td>
 				<select id="package_group" class="slctPkgGrp">
-					<option value="none">Please select one...</option>
+					<option value="null">Please select one...</option>
 					{% for pkgg in packages_groups %}
 					<option value="{{pkgg.id}}">{{pkgg.name}}</option>
 					{% endfor %}

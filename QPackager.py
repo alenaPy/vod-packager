@@ -427,7 +427,13 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     MetadataXml.Title.Director		= Package.item.director
     MetadataXml.Title.Directors_Display	= Package.item.director
     MetadataXml.Title.Box_Office	= '0'
+#    if Customer.billing_id	!= '':
+#	MetadataXml.Title.Billing_ID	= Customer.billing_id
+#    else:
+#	MetadataXml.Title.Billing_ID	= '00001'
+
     MetadataXml.Title.Billing_ID	= '00001'
+
     MetadataXml.Title.Episode_ID	= Package.item.episode_id
     MetadataXml.Title.Country_of_Origin = Package.item.country_of_origin.code
     MetadataXml.Title.Studio		= (Package.item.studio_name.split(' '))[0]

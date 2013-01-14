@@ -1,4 +1,8 @@
 import xmlrpclib
+import ApiSettings
+
+
+API_VERSION = '1.0.0'
 
 def ItemMetadata():
     return dict([('name', ''),
@@ -6,6 +10,7 @@ def ItemMetadata():
 		 ('content_language', ''),
 		 ('material_type', ''),
 		 ('run_time', ''),
+		 ('display_runtime', ''),
 		 ('episode_name', ''),
 		 ('episode_id', ''),
 		 ('category', ''),
@@ -25,7 +30,7 @@ def ItemMetadataLanguage():
 		 ('title_sort_name', ''),
 		 ('title_brief', ''),
 		 ('title', ''),
-		 ('episode_tile', ''),
+		 ('episode_title', ''),
 		 ('summary_long', ''),
 		 ('summary_medium', ''),
 		 ('summary_short', '')])
@@ -33,16 +38,9 @@ def ItemMetadataLanguage():
 
 def VodPackagerAddItem(SmbPath = None, FileName = None, IMetadata = None, IMetadataLanguage = []):
     if FileName is not None and SmbPath is not None and IMetadata is not None:
-	s = xmlrpclib.ServerProxy('http://localhost:8000')
-	return s.VPAddItem(SmbPath, FileName, IMetadata, IMetadataLanguage)
-
-
-#I = ItemMetadata()
-#I['name'] = 'Putin'
-
-#L = ItemMetadataLanguage()
-#L['language'] = 'esp'
-#VodPackagerAddItem('\\\\aca\\', 'Gran Trolo.mov', I, [L] )
-
-def main():
-	print "Hola!"
+	s = xmlrpclib.ServerProxy('http://'+ ApiSettings.SERVER_HOST + ':' + ApiSettings.SERVER_PORT, allow_none=True)
+	ret = s.TestApiVersion(API_VERSION)
+	if ret:
+	    return s.VPAddItem(SmbPath, FileName, IMetadata, IMetadataLanguage)
+	else:
+	    return False

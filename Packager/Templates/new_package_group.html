@@ -4,7 +4,7 @@
 		<link rel="stylesheet" href="/css/modal.css" />
 		<link rel="stylesheet" href="/css/css3-gmail-style.css" />
 		<script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
-		<script src="/js/xx8.js" type="text/javascript" charset="utf-8"></script>	
+		<script src="/js/xxx9.js" type="text/javascript" charset="utf-8"></script>	
 		<script>
 			function closeWindow() {
 				parent.$.fancybox.close();
@@ -22,10 +22,14 @@
     				alert(data.message);
     			}
 			}
+			
+			$(document).ready(function() {
+				
+			});
 		</script>
 	</head>
 	<body>
-		<form id="new_package_group">
+		<form id="new_package_group">{% csrf_token %}
 			<h1>New package group</h1>
 			<table>
 				<tr>
