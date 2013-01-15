@@ -92,6 +92,7 @@ class Customer(models.Model):
 	license_date_format				= models.CharField(max_length=2, choices=LICENSE_DATE_FORMAT)
 	rating_display					= models.ForeignKey('Rating')
 	product_type					= models.CharField(max_length=4, choices=PRODUCT_TYPE)
+#	viewing_can_be_resumed				= models.CharField(max_length=1, choices=(('Y', 'Yes')('N', 'No')), default='N')
 	sugested_price_longform_sd			= models.CharField(max_length=10)
 	sugested_price_longform_hd			= models.CharField(max_length=10)
 	sugested_price_shortform_sd			= models.CharField(max_length=10)
@@ -439,7 +440,7 @@ def GetCustomersForExport(it):
 		x = 0
 		ips = c.image_profile.all()
 		for ip in ips:
-			irs = ImageRendition.objects.filter(image_profile=ip.id)
+			irs = ImageRendition.objects.filter(item=it, image_profile=ip.id)
 			for ir in irs:
 				if ir.image_profile == ip and ir.status == "D":
 					x = x + 1
@@ -452,7 +453,7 @@ def GetCustomersForExport(it):
 		y = 0
 		vps = c.video_profile.all()
 		for vp in vps:
-			vrs = VideoRendition.objects.filter(video_profile=vp.id)
+			vrs = VideoRendition.objects.filter(item=it, video_profile=vp.id)
 			for vr in vrs:
 				if vr.video_profile == vp and vr.status == "F":
 					y = y + 1

@@ -15,7 +15,6 @@ from Packager_app.search import *
 
 @csrf_protect
 def login_user(request):
-	#c = {}
 
 	if request.user.is_authenticated():
 		return HttpResponseRedirect("/vod/items")
@@ -49,13 +48,13 @@ def login_user(request):
 @login_required
 @csrf_protect
 def index(request):
-	#c = {}
-	#return render_to_response('index.html', c, context_instance=RequestContext(request))
+
 	return render_to_response('index.html', context_instance=RequestContext(request))
 
 @login_required
 @csrf_protect
 def items(request):
+
 	items_list = models.Item.objects.all()
 	paginator = Paginator(items_list, 10)
 	
@@ -72,6 +71,7 @@ def items(request):
 @login_required
 @csrf_protect
 def customers(request):
+
 	customer_list = models.Customer.objects.all()
 	paginator = Paginator(customer_list, 10)
 	
@@ -83,7 +83,7 @@ def customers(request):
 	except EmptyPage:
 		customers = paginator.page(paginator.num_pages)
 	
-	return render_to_response('view_customers.html', {'customers': customers})
+	return render_to_response('view_customers.html', {'customers': customers}, context_instance=RequestContext(request))
 
 @login_required
 @csrf_protect
@@ -100,13 +100,41 @@ def packages(request):
 	except EmptyPage:
 		packages = paginator.page(paginator.num_pages)
 	
-	return render_to_response('view_packages.html', {'packages': packages})
+	return render_to_response('view_packages.html', {'packages': packages}, context_instance=RequestContext(request))
+
+@login_required
+@csrf_protect
+def package_group(request, package_group_id):
+
+	packages_groups_list = models.PackageGroup.objects.all().order_by('-id')
+	package_group = models.PackageGroup.objects.get(id=package_group_id)
+	customers = models.Customer.objects.all().order_by('name')
+	try:
+	    packages = models.Package.objects.filter(group=package_group.id).order_by('item', 'customer')
+	except:
+	    packages = []
+	
+	matriz = []
+	item_id = 0
+	contItems = -1
+	for pkg in packages:
+		if item_id != pkg.item.id:
+			contItems = contItems + 1
+			litem = [int(pkg.item.id), str(pkg.item.name)]
+			matriz.append((litem, []))
+		item_id = pkg.item.id
+		while item_id == pkg.item.id:
+			lpkg = [int(pkg.id), int(pkg.customer.id), str(pkg.status)]
+			matriz[contItems][1].append(lpkg)
+			break
+
+	return render_to_response('view_package_group.html', {'packages_group_list': packages_groups_list, 'package_group': package_group, 'packages': packages, 'customers': customers, 'matriz': matriz}, context_instance=RequestContext(request))
 
 @login_required
 @csrf_protect
 def dashboard(request):
 
-	packages_groups_list = models.PackageGroup.objects.all()
+	packages_groups_list = models.PackageGroup.objects.all().order_by('-id')
 	paginator = Paginator(packages_groups_list, 1)
 	page = request.GET.get('page')
 	try:
@@ -135,8 +163,8 @@ def dashboard(request):
 			lpkg = [int(pkg.id), int(pkg.customer.id), str(pkg.status)]
 			matriz[contItems][1].append(lpkg)
 			break
-	#json_string = json.dumps(unicode(matriz))
-	return render_to_response('view_dashboard.html', {'packages_groups': packages_groups, 'packages': packages, 'customers': customers, 'matriz': matriz})
+
+	return render_to_response('view_dashboard.html', {'packages_group_list': packages_groups_list, 'packages_groups': packages_groups, 'packages': packages, 'customers': customers, 'matriz': matriz}, context_instance=RequestContext(request))
 
 @login_required
 @csrf_protect
@@ -149,7 +177,7 @@ def item(request, item_id):
 		video_renditions = models.VideoRendition.objects.filter(item=item_id)
 		packages_groups = models.PackageGroup.objects.all()
 		customers_for_export = models.GetCustomersForExport(item)
-		return render_to_response('item.html', {'item': item, 'video_renditions': video_renditions, 'image_renditions': image_renditions, 'customers_for_export': customers_for_export, 'packages_groups': packages_groups}) 
+		return render_to_response('item.html', {'item': item, 'video_renditions': video_renditions, 'image_renditions': image_renditions, 'customers_for_export': customers_for_export, 'packages_groups': packages_groups}, context_instance=RequestContext(request)) 
 #	except:
 #		resp = 'No ta!'
 #		return HttpResponse("You're looking at item %s." % resp)
@@ -160,7 +188,7 @@ def customer(request, customer_id):
 	
 	try:
 		customer = models.Customer.objects.get(id=customer_id)
-		return render_to_response('customer.html', {'customer': customer}) 
+		return render_to_response('customer.html', {'customer': customer}, context_instance=RequestContext(request))
 	except:
 		resp = 'No ta!'
 		return HttpResponse("You're looking at customer %s." % resp)
@@ -171,7 +199,7 @@ def package(request, package_id):
 	
 	try:
 		package = models.Package.objects.get(id=package_id)
-		return render_to_response('package.html', {'package': package}) 
+		return render_to_response('package.html', {'package': package}, context_instance=RequestContext(request))
 	except:
 		resp = 'No ta!'
 		return HttpResponse("You're looking at package %s." % resp)
@@ -182,7 +210,7 @@ def image_rendition(request, image_rendition_id):
 
 	try:
 		image_rendition = models.ImageRendition.objects.get(id=image_rendition_id)
-		return render_to_response('image_rendition.html', {'image_rendition': image_rendition})
+		return render_to_response('image_rendition.html', {'image_rendition': image_rendition}, context_instance=RequestContext(request))
 	except:
 		resp = 'No ta!'
 		return HttpResponse("You're looking at image rendition %s." % resp)
@@ -195,7 +223,7 @@ def image_renditions_upload(request, item_id):
                 item = models.Item.objects.get(id=item_id)
                 image_renditions = models.ImageRendition.objects.filter(item=item_id)
                 video_renditions = models.VideoRendition.objects.filter(item=item_id)
-                return render_to_response('image_renditions_upload.html', {'item': item})
+                return render_to_response('image_renditions_upload.html', {'item': item}, context_instance=RequestContext(request))
 #       except:
 #               resp = 'No ta!'
 #               return HttpResponse("You're looking at item %s." % resp)
@@ -203,11 +231,13 @@ def image_renditions_upload(request, item_id):
 @login_required
 @csrf_protect
 def new_package_group(request):
+
 	return render_to_response('new_package_group.html', context_instance=RequestContext(request))
 
 @login_required
 @csrf_protect
 def search(request):
+
 	query_string = ''
 	found_entries = None
 	if ('q' in request.GET) and request.GET['q'].strip():

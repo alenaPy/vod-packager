@@ -11,13 +11,13 @@ class RenditionQueueAdmin(admin.ModelAdmin):
 	list_display = ('file_name', 'item', 'queue_status')
 
 class VideoRenditionAdmin(admin.ModelAdmin):
-	list_display = ('file_name', 'video_profile', 'transcoding_server', 'status')
+	list_display = ('id', 'file_name', 'item', 'video_profile', 'transcoding_server', 'status')
 
 class ImageRenditionAdmin(admin.ModelAdmin):
-	list_display = ('id', 'file_name', 'image_profile', 'status')
+	list_display = ('id', 'file_name', 'item', 'image_profile', 'status')
 
 class PackageGroupAdmin(admin.ModelAdmin):
-	list_display = ('name',)
+	list_display = ('id', 'name',  'description')
 
 class PackageAdmin(admin.ModelAdmin):
 	list_display = ('date_published', 'item', 'customer', 'group', 'status')

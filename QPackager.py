@@ -543,6 +543,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     #
     # Defaults values
     #
+#    MetadataXml.Movie.Viewing_Can_Be_Resumed    = Package.customer.viewing_can_be_resumed
     MetadataXml.Movie.Viewing_Can_Be_Resumed 	= 'N'
     MetadataXml.Movie.Copy_Protection		= 'N'
     MetadataXml.Movie.Watermarking		= 'N'
