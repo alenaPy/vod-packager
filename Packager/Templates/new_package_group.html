@@ -31,6 +31,7 @@
 	<body>
 		<form id="new_package_group">{% csrf_token %}
 			<h1>New package group</h1>
+			<center>
 			<table>
 				<tr>
 					<td>Name</td>
@@ -38,9 +39,10 @@
 				</tr>
 				<tr>
 					<td>Description</td>
-					<td><textarea id="description" name="description" rows="4" cols="50"></textarea></td>
+					<td><textarea id="description" name="description" rows="4" cols="40"></textarea></td>
 				</tr>
 			</table>
+			</center>
 		</form>
 		<hr />
 		<center>

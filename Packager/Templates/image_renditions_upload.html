@@ -10,7 +10,8 @@
 	<script src="/js/uploadify/jquery.uploadify.js" type="text/javascript"></script>
 	<link rel="stylesheet" type="text/css" href="/css/uploadify.css" />
 	
-	<form>
+	<h1 class="formTitle">{{item.name}}: Uploading image renditions</h1>
+	<form style="text-align: left;">
 		<div id="queue" style="font-color: #000;"></div>
 		<input id="file_upload" name="file_upload" type="file" multiple="true">
 		<input type="hidden" id="item_id" value="{{item.id}}"/>
