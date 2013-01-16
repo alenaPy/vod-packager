@@ -51,7 +51,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     #
     Item.name 			= ItemMetadata["name"]
     Item.format 		= ItemMetadata["format"]
-
+    Item.metarial_type		= ItemMetadata["material_type"]
     #
     # Busca el Lenguage
     #
@@ -59,10 +59,11 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	print ItemMetadata["content_language"]
 	Language = models.Language.objects.get(code=ItemMetadata["content_language"].lower())
     except:
+	Language = models.Language.objects.get(code='en')
 	#
 	# Si no encuentra el Lenguage falla
 	#
-	return False
+	#return False
 
 
     Item.content_language	= Language
@@ -109,7 +110,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     Item.episode_name		= ItemMetadata["episode_name"]
     Item.rating 		= ItemMetadata["rating"]
     Item.genres 		= ItemMetadata["genres"]
-    Item.actors_display		= ItemMetadata["actors_display"]
+    Item.actors_display		= ItemMetadata["actors"]
     Item.year 			= ItemMetadata["year"]
     Item.director		= ItemMetadata["director"]
     Item.studio_name 		= ItemMetadata["studio_name"]

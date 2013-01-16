@@ -92,7 +92,7 @@ class Customer(models.Model):
 	license_date_format				= models.CharField(max_length=2, choices=LICENSE_DATE_FORMAT)
 	rating_display					= models.ForeignKey('Rating')
 	product_type					= models.CharField(max_length=4, choices=PRODUCT_TYPE)
-	#viewing_can_be_resumed				= models.CharField(max_length=1, choices=(('Y', 'Yes'),('N', 'No')), default='N')
+	viewing_can_be_resumed				= models.CharField(max_length=1, choices=(('Y', 'Yes'),('N', 'No')), default='N')
 	sugested_price_longform_sd			= models.CharField(max_length=10)
 	sugested_price_longform_hd			= models.CharField(max_length=10)
 	sugested_price_shortform_sd			= models.CharField(max_length=10)
@@ -100,7 +100,7 @@ class Customer(models.Model):
 #
 #	Quitar rental period del siguiente cambio de la base de datos
 #
-	#billing_id					= models.CharField(max_length=10, blank=True)
+	billing_id					= models.CharField(max_length=10, blank=True)
 #	rental_period_shortform				= models.CharField(max_length=10)
 #	rental_period_longform				= models.CharField(max_length=10)
 	license_window					= models.CharField(max_length=3, default='90')
@@ -147,7 +147,7 @@ class Item(models.Model):
 	# Si es Short form o long form!
 	#
 
-	#material_type			= models.CharField(max_length=2, choices=(('SF', 'Short Form'), ('LF', 'Long Form')))
+	material_type			= models.CharField(max_length=2, choices=(('SF', 'Short Form'), ('LF', 'Long Form')))
 	'''
 	A string representing a period of time and 
 	the maximum number of views over the 

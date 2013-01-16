@@ -723,6 +723,7 @@ def main():
 
 		
 		logging.info("main(): END PACKAGE -------------")
+		Package.error  = ''
 		Package.status = 'P'
 		Package.save()
 
