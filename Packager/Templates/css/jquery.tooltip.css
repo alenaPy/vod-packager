@@ -1,0 +1,17 @@
+#tooltip {
+ position: absolute;
+ z-index: 3000;
+ border: 1px solid #333;
+ background-color: #ffffca;
+ padding: 0px 3px 0px 3px;
+ opacity: 0.85;
+
+ font-family: 'Anaheim', sans-serif;
+ font-size: 12px;
+}
+#tooltip h3, #tooltip div {
+ margin: 0;
+ font-size: 12px;
+ font-weight: normal;
+ line-height: 15px;
+}
