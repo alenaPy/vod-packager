@@ -88,7 +88,7 @@
 		<tr><td colspan="2" style="padding-top: 3px;">Package group:</td></tr>
 		<tr>
 			<td>
-				<select id="package_group" class="slctPkgGrp">
+				<select id="package_group" class="slctPkgGrp" style="width: 100%;">
 					<option value="null">Please select one...</option>
 					{% for pkgg in packages_groups %}
 					<option value="{{pkgg.id}}">{{pkgg.name}}</option>
