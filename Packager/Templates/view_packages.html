@@ -3,6 +3,21 @@
 {% block title %}Package's view{% endblock %}
 
 {% block content %}
+<!-- TOOLTIPS -->
+<link rel="stylesheet" href="/css/jquery.tooltip.css" />
+<script src="/js/jquery.bgiframe.js" type="text/javascript"></script>
+<script src="/js/jquery.dimensions.js" type="text/javascript"></script>
+<script src="/js/jquery.tooltip.js" type="text/javascript"></script>
+<script src="/js/chili-1.7.pack.js" type="text/javascript"></script>
+<script>
+	$(document).ready(function() {
+		// Enabling tooltips
+		$('#iconography *').tooltip();
+		$('#viewicons *').tooltip();
+});
+</script>
+
+<fieldset id="viewicons">
 <table id="hor-zebra">
 	<thead>
 		<tr>
@@ -13,34 +28,38 @@
 			<th scope="col">Group</th>
 		</tr>
 	</thead>
+	
+	
 	<tbody>
-
-{% for package in packages %}
+	{% for package in packages %}
 		<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
 			<td><input type="checkbox" name="entrycheck" value="{{package.id}}"/></td>
-			<td class="display_icon"><span id="status" class="pkgstatus_{{package.status}}" /></td>
+			<td class="display_icon"><span id="status" class="pkgstatus_{{package.status}}" title="{{package.error}}" /></td>
 			<td><a href="/vod/package/{{package.id}}">{{package.item}}</a></td>
 			<td>{{package.customer}}</td>
 			<td>{{package.group}}</td>
 		</tr>
-{% endfor %}
+	{% endfor %}
 	</tbody>
+	
 </table>
+</fieldset>
+
 <!-- VIEW'S ICONOGRAPHY -->
-<table id="tblIconography">
-	<tr>
-		<td class="tdIconographyIcon" title="Package under process">
-			<img src="/images/icons/hourglass.png"></td><td class="tdIconographyDesc">Queued
-		</td>
-		<td class="tdIconographyIcon" title="Package ready for download">
-			<img src="/images/icons/tick.png"></td><td class="tdIconographyDesc">Packaged
-		</td>
-		<td class="tdIconographyIcon" title="Error creating package">
-			<img src="/images/icons/exclamation.png"></td><td class="tdIconographyDesc">Error
-		</td>
-		<td width="99%"></td>
-	<tr>
-</table>
+<hr />
+<fieldset id="iconography">
+	<table id="tblIconography">
+		<tr>
+			<td class="tdIconographyIcon" title="Package being processed.">
+				<a href="#"><img src="/images/icons/hourglass.png"><br />Queued</a></td>
+			<td class="tdIconographyIcon" title="Package ready for download.">
+				<a href="#"><img src="/images/icons/tick.png"><br />Packaged</a></td>
+			<td class="tdIconographyIcon" title="Error while creating package. Please contact system administrator.">
+				<a href="#"><img src="/images/icons/exclamation.png"><br />Error</a></td>
+			<td width="99%"></td>
+		<tr>
+	</table>
+</fieldset>
 {% endblock %}
 
 {% block action_bar %}

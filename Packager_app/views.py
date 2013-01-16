@@ -124,7 +124,7 @@ def package_group(request, package_group_id):
 			matriz.append((litem, []))
 		item_id = pkg.item.id
 		while item_id == pkg.item.id:
-			lpkg = [int(pkg.id), int(pkg.customer.id), str(pkg.status)]
+			lpkg = [int(pkg.id), int(pkg.customer.id), str(pkg.status), str(pkg.error)]
 			matriz[contItems][1].append(lpkg)
 			break
 
@@ -160,7 +160,7 @@ def dashboard(request):
 			matriz.append((litem, []))
 		item_id = pkg.item.id
 		while item_id == pkg.item.id:
-			lpkg = [int(pkg.id), int(pkg.customer.id), str(pkg.status)]
+			lpkg = [int(pkg.id), int(pkg.customer.id), str(pkg.status), str(pkg.error)]
 			matriz[contItems][1].append(lpkg)
 			break
 

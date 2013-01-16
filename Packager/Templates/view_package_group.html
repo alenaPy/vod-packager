@@ -3,18 +3,24 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-
 <link rel="stylesheet" href="/css/dashboard.css" />
 <script type="text/javascript" src="/js/dashboard.js"></script>
+<!-- TOOLTIPS -->
+<link rel="stylesheet" href="/css/jquery.tooltip.css" />
+<script src="/js/jquery.bgiframe.js" type="text/javascript"></script>
+<script src="/js/jquery.dimensions.js" type="text/javascript"></script>
+<script src="/js/jquery.tooltip.js" type="text/javascript"></script>
+<script src="/js/chili-1.7.pack.js" type="text/javascript"></script>
 
 <span class="dashboardTitle">Package group: 
-	<select id="package_group" name="package_group" class="slctPkgGrp" style="width: auto;" onchange="javascript:onChangePackageGroup();">
+	<select id="package_group" name="package_group" class="slctPkgGrp" onchange="javascript:onChangePackageGroup();">
 		{% for pkgg in packages_group_list %}
 		<option value="{{pkgg.id}}">{{pkgg.name}}</option>
 		{% endfor %}
 	</select>
 </span>
 
+<fieldset id="dashboardicons">
 <table class="tblDashboard">
 	<tbody>
 		<tr>
@@ -28,32 +34,33 @@
 			<td class="tdItemTitle">{{item.0.1}}</td>
 			{% for customer in customers %}
 			<td id="customer_{{customer.id}}" class="tdPackageStatus" style="text-align:right;">
-				<span class="pkgstatus_"></span>
+				<span class="pkgstatus_" title="There is no information about package status. <br />Please contact system administrator."></span>
 			</td>
 			{% endfor %}
 		</tr>
 		{% endfor %}
 	</tbody>
 </table>
+</fieldset>
 
 <!-- VIEW'S ICONOGRAPHY -->
-<table id="tblIconography">
-	<tr>
-		<td class="tdIconographyIcon" title="Package under process">
-			<img src="/images/icons/hourglass.png"></td><td class="tdIconographyDesc">Queued
-		</td>
-		<td class="tdIconographyIcon" title="Package ready for download">
-			<img src="/images/icons/tick.png"></td><td class="tdIconographyDesc">Packaged
-		</td>
-		<td class="tdIconographyIcon" title="Error creating package">
-			<img src="/images/icons/exclamation.png"></td><td class="tdIconographyDesc">Error
-		</td>
-		<td width="99%"></td>
-	<tr>
-</table>
+<fieldset id="iconography">
+	<table id="tblIconography">
+		<tr>
+			<td class="tdIconographyIcon" title="Package being processed.">
+				<a href="#"><img src="/images/icons/hourglass.png"><br />Queued</a></td>
+			<td class="tdIconographyIcon" title="Package ready for download.">
+				<a href="#"><img src="/images/icons/tick.png"><br />Packaged</a></td>
+			<td class="tdIconographyIcon" title="Error while creating package. Please contact system administrator.">
+				<a href="#"><img src="/images/icons/exclamation.png"><br />Error</a></td>
+			<td width="99%"></td>
+		<tr>
+	</table>
+</fieldset>
 
 <script>
-var json_string = "{\"items\": [{% for item in matriz %}{\"item\":{{item.0.0}}, \"pkgs\":[{% for pkg in item.1 %}{\"pkg_id\":{{pkg.0}}, \"customer_id\":{{pkg.1}}, \"pkg_status\":\"{{pkg.2}}\"},{% endfor %}{\"pkg_id\":0, \"customer_id\":0, \"pkg_status\":\"\"}]},{% endfor %}{\"item\":0, \"pkgs\":[]}]}";
+//var json_string = "{\"items\": [{% for item in matriz %}{\"item\":{{item.0.0}}, \"pkgs\":[{% for pkg in item.1 %}{\"pkg_id\":{{pkg.0}}, \"customer_id\":{{pkg.1}}, \"pkg_status\":\"{{pkg.2}}\"},{% endfor %}{\"pkg_id\":0, \"customer_id\":0, \"pkg_status\":\"\"}]},{% endfor %}{\"item\":0, \"pkgs\":[]}]}";
+var json_string = "{\"items\": [{% for item in matriz %}{\"item\":{{item.0.0}}, \"pkgs\":[{% for pkg in item.1 %}{\"pkg_id\":{{pkg.0}}, \"customer_id\":{{pkg.1}}, \"pkg_status\":\"{{pkg.2}}\", \"pkg_error\":\"{{pkg.3}}\"},{% endfor %}{\"pkg_id\":0, \"customer_id\":0, \"pkg_status\":\"\"}]},{% endfor %}{\"item\":0, \"pkgs\":[]}]}";
 </script>
 
 <!-- HIDDEN FIELDS -->

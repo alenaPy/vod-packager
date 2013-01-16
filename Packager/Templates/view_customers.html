@@ -3,6 +3,19 @@
 {% block title %}Customer's view{% endblock %}
 
 {% block content %}
+<!-- TOOLTIPS -->
+<link rel="stylesheet" href="/css/jquery.tooltip.css" />
+<script src="/js/jquery.bgiframe.js" type="text/javascript"></script>
+<script src="/js/jquery.dimensions.js" type="text/javascript"></script>
+<script src="/js/jquery.tooltip.js" type="text/javascript"></script>
+<script src="/js/chili-1.7.pack.js" type="text/javascript"></script>
+<script>
+	$(document).ready(function() {
+		// Enabling tooltips
+		$('#iconography *').tooltip();
+});
+</script>
+
 <table id="hor-zebra">
 	<thead>
 		<tr>
@@ -22,18 +35,20 @@
 {% endfor %}
 	</tbody>
 </table>
+
 <!-- VIEW'S ICONOGRAPHY -->
-<table id="tblIconography">
-	<tr>
-		<td class="tdIconographyIcon" title="Enabled client for export">
-			<img src="/images/icons/accept.png"></td><td class="tdIconographyDesc">Enabled
-		</td>
-		<td class="tdIconographyIcon" title="Disabled client for export">
-			<img src="/images/icons/cancel.png"></td><td class="tdIconographyDesc">Disabled
-		</td>
-		<td width="99%"></td>
-	<tr>
-</table>
+<hr />
+<fieldset id="iconography">
+	<table id="tblIconography">
+		<tr>
+			<td class="tdIconographyIcon" title="Enabled client for export.">
+				<a href="#"><img src="/images/icons/accept.png"><br />Enabled</a></td>
+			<td class="tdIconographyIcon" title="Disabled client for export.">
+				<a href="#"><img src="/images/icons/cancel.png"><br />Disabled</a></td>
+			<td width="99%"></td>
+		<tr>
+	</table>
+</fieldset>
 {% endblock %}
 
 {% block action_bar %}

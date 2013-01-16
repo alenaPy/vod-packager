@@ -3,6 +3,19 @@
 {% block title %}Item's view{% endblock %}
 
 {% block content %}
+<!-- TOOLTIPS -->
+<link rel="stylesheet" href="/css/jquery.tooltip.css" />
+<script src="/js/jquery.bgiframe.js" type="text/javascript"></script>
+<script src="/js/jquery.dimensions.js" type="text/javascript"></script>
+<script src="/js/jquery.tooltip.js" type="text/javascript"></script>
+<script src="/js/chili-1.7.pack.js" type="text/javascript"></script>
+<script>
+	$(document).ready(function() {
+		// Enabling tooltips
+		$('#iconography *').tooltip();
+});
+</script>
+
 <table id="hor-zebra">
 	<thead>
 		<tr>
@@ -28,24 +41,25 @@
 {% endfor %}
 	</tbody>
 </table>
+
 <!-- VIEW'S ICONOGRAPHY -->
-<table id="tblIconography">
-	<tr>
-		<td class="tdIconographyIcon" title="New item from Fork">
-			<img src="/images/icons/new.png"></td><td class="tdIconographyDesc">New
-		</td>
-		<td class="tdIconographyIcon" title="Processing item">
-			<img src="/images/icons/time.png"></td><td class="tdIconographyDesc">Processing
-		</td>
-		<td class="tdIconographyIcon" title="Item done">
-			<img src="/images/icons/tick.png"></td><td class="tdIconographyDesc">Done
-		</td>
-		<td class="tdIconographyIcon" title="Item error">
-			<img src="/images/icons/exclamation.png"></td><td class="tdIconographyDesc">Warning
-		</td>
-		<td width="99%"></td>
-	<tr>
-</table>
+<hr />
+<fieldset id="iconography">
+	<table id="tblIconography">
+		<tr>
+			<td class="tdIconographyIcon" title="New item from Fork.">
+				<a href="#"><img src="/images/icons/new.png"><br />New</a></td>
+			<td class="tdIconographyIcon" title="Item being processed.">
+				<a href="#"><img src="/images/icons/time.png"><br />Processing</a></td>
+			<td class="tdIconographyIcon" title="Item done.">
+				<a href="#"><img src="/images/icons/tick.png"><br />Done</a></td>
+			<td class="tdIconographyIcon" title="Item error. Please contact system adminitrator.">
+				<a href="#"><img src="/images/icons/exclamation.png"><br />Warning</a></td>
+			<td width="99%"></td>
+		<tr>
+	</table>
+</fieldset>
+
 {% endblock %}
 
 {% block action_bar %}

@@ -326,7 +326,8 @@ select {
  cursor:pointer;
 }
 .slctPkgGrp {
- width: 100%;
+ width: auto;
+ padding: 3px 7px 3px 7px;
 }
 .slctCusFE {
  width: 100%;
@@ -344,6 +345,7 @@ select {
 .tdIconographyIcon {
  padding-left: 10px;
  vertical-align: middle;
+ text-align: center;
 }
 .tdIconographyDesc {
  padding-left: 4px;
