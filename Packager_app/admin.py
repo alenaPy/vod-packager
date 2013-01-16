@@ -1,6 +1,9 @@
 from django.contrib import admin
 from Packager_app.models import *
 
+class CustomMetadataAdmin(admin.ModelAdmin):
+	list_display = ('customer', 'name', 'value')
+
 class CustomerAdmin(admin.ModelAdmin):
 	list_display = ('name', 'id', 'vod_active')
 
@@ -61,6 +64,7 @@ class RatingAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Customer, CustomerAdmin)
+admin.site.register(CustomMetadata, CustomMetadataAdmin)
 admin.site.register(Item, ItemAdmin)
 admin.site.register(RenditionQueue, RenditionQueueAdmin)
 admin.site.register(VideoRendition, VideoRenditionAdmin)

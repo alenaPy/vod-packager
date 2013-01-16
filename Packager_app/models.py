@@ -44,10 +44,10 @@ class Rating(models.Model):
 #
 # Descomentar luego de cambiar el modelo
 #
-#class CustomMetadata(models.Model):
-#	customer					= models.ForeingKey('Customer')
-#	name						= models.CharField(max_length=256)
-#	value						= models.CharField(max_length=256)
+class CustomMetadata(models.Model):
+	customer					= models.ForeignKey('Customer')
+	name						= models.CharField(max_length=256)
+	value						= models.CharField(max_length=256)
 
 
 class Customer(models.Model):
@@ -92,7 +92,7 @@ class Customer(models.Model):
 	license_date_format				= models.CharField(max_length=2, choices=LICENSE_DATE_FORMAT)
 	rating_display					= models.ForeignKey('Rating')
 	product_type					= models.CharField(max_length=4, choices=PRODUCT_TYPE)
-#	viewing_can_be_resumed				= models.CharField(max_length=1, choices=(('Y', 'Yes')('N', 'No')), default='N')
+	viewing_can_be_resumed				= models.CharField(max_length=1, choices=(('Y', 'Yes'),('N', 'No')), default='N')
 	sugested_price_longform_sd			= models.CharField(max_length=10)
 	sugested_price_longform_hd			= models.CharField(max_length=10)
 	sugested_price_shortform_sd			= models.CharField(max_length=10)
@@ -100,9 +100,9 @@ class Customer(models.Model):
 #
 #	Quitar rental period del siguiente cambio de la base de datos
 #
-#	billing_id					= models.CharField(max_length=10, blank=True)
-	rental_period_shortform				= models.CharField(max_length=10)
-	rental_period_longform				= models.CharField(max_length=10)
+	billing_id					= models.CharField(max_length=10, blank=True)
+#	rental_period_shortform				= models.CharField(max_length=10)
+#	rental_period_longform				= models.CharField(max_length=10)
 	license_window					= models.CharField(max_length=3, default='90')
 	preview_period					= models.CharField(max_length=4, default='0', blank=True)
 	maximum_viewing_length				= models.CharField(max_length=8, default='00:24:00', blank=True)
@@ -147,7 +147,7 @@ class Item(models.Model):
 	# Si es Short form o long form!
 	#
 
-#	material_type			= models.CharField(max_length=2, choices=(('SF', 'Short Form'), ('LF', 'Long Form')))
+	material_type			= models.CharField(max_length=2, choices=(('SF', 'Short Form'), ('LF', 'Long Form')))
 	'''
 	A string representing a period of time and 
 	the maximum number of views over the 
@@ -179,7 +179,7 @@ class Item(models.Model):
 	#
 	# Hacer las modificaciones
 	#
-	actors				= models.CharField(max_length=512, blank=True) # (max_length=35, blank=True)
+	actors				= models.CharField(max_length=35, blank=True)
 	actors_display			= models.CharField(max_length=512, blank=True)
 		
 

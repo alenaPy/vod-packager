@@ -427,12 +427,13 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     MetadataXml.Title.Director		= Package.item.director
     MetadataXml.Title.Directors_Display	= Package.item.director
     MetadataXml.Title.Box_Office	= '0'
-#    if Customer.billing_id	!= '':
-#	MetadataXml.Title.Billing_ID	= Customer.billing_id
-#    else:
-#	MetadataXml.Title.Billing_ID	= '00001'
+    if Customer.billing_id	!= '':
+	MetadataXml.Title.Billing_ID	= Customer.billing_id
+    else:
+	MetadataXml.Title.Billing_ID	= '00001'
 
-    MetadataXml.Title.Billing_ID	= '00001'
+#  
+#    MetadataXml.Title.Billing_ID	= '00001'
 
     MetadataXml.Title.Episode_ID	= Package.item.episode_id
     MetadataXml.Title.Country_of_Origin = Package.item.country_of_origin.code
@@ -487,10 +488,10 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     # Campos inventados por el cliente ???
     # 
     # - DESCOMENTAR -
-    #CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer)
-    #for CustomMetadata in CustomeMetadataList:
-    #	Metatadata.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
-    #
+    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer)
+    for CustomMetadata in CustomeMetadataList:
+    	Metatadata.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
+    
     
     MetadataXml.Title.Licensing_Window_Start = str(Package.date_published + timedelta(days=15))
     MetadataXml.Title.Licensing_Window_End   = str(Package.date_published + timedelta(days=15) + timedelta(days=License_Days))
@@ -543,8 +544,8 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     #
     # Defaults values
     #
-#    MetadataXml.Movie.Viewing_Can_Be_Resumed    = Package.customer.viewing_can_be_resumed
-    MetadataXml.Movie.Viewing_Can_Be_Resumed 	= 'N'
+    MetadataXml.Movie.Viewing_Can_Be_Resumed    = Package.customer.viewing_can_be_resumed
+#    MetadataXml.Movie.Viewing_Can_Be_Resumed 	= 'N'
     MetadataXml.Movie.Copy_Protection		= 'N'
     MetadataXml.Movie.Watermarking		= 'N'
 
