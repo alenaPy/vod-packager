@@ -2,7 +2,7 @@
 
 //if (!empty($_FILES)) {
 	// Database info
-	$db_host = "localhost";
+	$db_host = "127.0.0.1";
 	$db_user = "root";
 	$db_pass = "ard010fx";
 	$db_name = "packager";

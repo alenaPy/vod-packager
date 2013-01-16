@@ -2,7 +2,7 @@
 
 if (!empty($_FILES)) {
 	// Database info
-	$db_host = "localhost";
+	$db_host = "127.0.0.1";
 	$db_user = "root";
 	$db_pass = "ard010fx";
 	$db_name = "packager";
@@ -44,7 +44,7 @@ function connectToDatabase($db_host, $db_user, $db_pass, $db_name) {
 
 	$link = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
 	/* check connection */
-	if (mysqli_connect_errno()) {
+	if (mysqli_connect_error()) {
 		printf("Connect failed: %s\n", mysqli_connect_error());
 		exit();
 	} else {
@@ -101,7 +101,7 @@ function updateImageRendition($link, $itemId, $imageProfileId, $fileName) {
 			SET file_name=\"".$fileName."\", status=\"F\" 
 			WHERE image_profile_id =".$imageProfileId." AND item_id=".$itemId." AND status=\"U\" LIMIT 1;";
 //echo $query."\n";
-	/* If we have to retrieve large amount of data we use MYSQLI_USE_RESULT */
+	/* If we have to retrieve large amount of data we use mysqliI_USE_RESULT */
 	if ($result = mysqli_query($link, $query, MYSQLI_USE_RESULT)) {
 		return true;
 		mysqli_free_result($result);

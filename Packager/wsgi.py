@@ -16,7 +16,7 @@ framework.
 import os
 import sys
 import site
-site.addsitedir("/opt/packager/app/lib/python2.7/site-packages")
+site.addsitedir("/opt/packager/app/lib/python2.6/site-packages")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Packager.settings")
 
 # This application object is used by any WSGI server configured to use this
