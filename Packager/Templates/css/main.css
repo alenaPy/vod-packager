@@ -370,3 +370,10 @@ select {
  height: 350px;
  background-color: #fff;
 }
+.tblItemExport {
+ color: #fff;
+ width: 100%;
+}
+.font {
+ font-family: 'Anaheim', sans-serif;
+}
