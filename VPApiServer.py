@@ -46,20 +46,34 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     #
     Item 			= models.Item()
 
+    logging.info("Creating new Item")
+
     #
     # Se cargan los Datos Basicos
     #
     Item.name 			= ItemMetadata["name"]
     Item.format 		= ItemMetadata["format"]
-    Item.metarial_type		= ItemMetadata["material_type"]
+    Item.material_type		= ItemMetadata["material_type"]
+    
+    logging.info("Item Name: " + Item.name)
+    logging.info("Item Format: " + Item.format)
+    logging.info("Item Material Type: " + Item.material_type)
     #
     # Busca el Lenguage
     #
     try:
-	print ItemMetadata["content_language"]
 	Language = models.Language.objects.get(code=ItemMetadata["content_language"].lower())
     except:
-	Language = models.Language.objects.get(code='en')
+	logging.warning("Cannot find the specific language: " + ItemMetadata["content_language"].lower())
+	try:
+	    Language = models.Language.objects.get(code='en')
+	except:
+	    logging.error("Cannot find English language")
+	    Language = models.Language()
+	    Language.code = 'en'
+	    Language.name = 'English'
+	    Language.save()
+	    logging.info("English language created")
 	#
 	# Si no encuentra el Lenguage falla
 	#
@@ -67,7 +81,6 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 
 
     Item.content_language	= Language
-
 
     #
     # Buscar la Categoria
@@ -78,6 +91,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	#
 	# Si no existe la crea
 	#
+	logging.warning("New category for this item: " + ItemMetadata["category"] )
 	Category = models.Category()
 	Category.name = ItemMetadata["category"]
 	Category.save()
@@ -130,12 +144,14 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     	MetadataLanguage 			= models.MetadataLanguage()
     	MetadataLanguage.item			= Item
 
+	
 	#
 	# Buscar el lenguaje
 	#
-	try:
-	    
+	try:	    
 	    Language	= models.Language.objects.get(code=ItemMetadataLan["language"].lower())
+
+	    logging.info("Adding Metadata Language: " + ItemMetadataLan["language"].lower())
 
 	    MetadataLanguage.language 		= Language
 	    MetadataLanguage.title_sort_name 	= ItemMetadataLan["title_sort_name"]
@@ -148,14 +164,16 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	    MetadataLanguage.save()
 	    
 	except:
-	    print "Fallo Metadata Language"
-	    pass
+	    logging.error("Cannot find the specific language, fail to add Metadata Language: " + ItemMetadataLan["language"].lower())
+
 
     ImportQueue = models.RenditionQueue()
     ImportQueue.item		= Item
     ImportQueue.file_name 	= FileName
     ImportQueue.svc_path	= SmbPath
     ImportQueue.queue_status	= 'Q'
+
+    logging.info("New Rendition Queue: " + SmbPath + FileName  )
 
     ImportQueue.save()
     return True
@@ -190,6 +208,9 @@ if __name__ == "__main__":
 			daemon.restart()
 		elif 'run'     == sys.argv[1]:
 			daemon.run()
+		elif 'status'  == sys.argv[1]:
+			daemon.status()
+	    
 		else:
 			print "Unknown command"
 			sys.exit(2)

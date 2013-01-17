@@ -1,0 +1,64 @@
+#!/bin/bash
+
+#
+# packager Startup script for Vod Packager
+#
+#
+
+start() {
+    echo "Starting Queue Import Daemon"
+    python QImport.py  start
+    echo "Starting Queue Checker Daemon"
+    python QChecker.py start
+    echo "Starting Queue Packager Daemon"
+    python QPackager.py start
+    echo "Starting Vod Packager Api Server"
+    python VPApiServer.py start
+}
+
+
+stop() {
+    echo "Stopping Queue Import Daemon"
+    python QImport.py stop
+    echo "Stopping Queue Checker Daemon"
+    python QChecker.py stop
+    echo "Stopping Queue Packager Daemon"
+    python QPackager.py stop
+    echo "Stopping Vod Packager Api Server"
+    python VPApiServer.py stop
+}
+
+
+status() {
+    echo -n "Queue Import Status: "
+    python QImport.py status
+    echo -n "Queue Checker Status: "
+    python QChecker.py status
+    echo -n "Queue Packager Ststua: "
+    python QPackager.py status
+    echo -n "Vod Packager Api Server Status: "
+    python VPApiServer.py status
+    
+}
+
+
+echo "Vod Packager Starter"
+
+case "$1" in
+    start)
+	start
+	;;
+    stop)
+	stop
+	;;
+    status)
+	status
+	;;
+    restart)
+	stop
+	start
+	;;
+    *)
+	echo "Usage: packager {start|stop|restart|status}"
+esac
+exit
