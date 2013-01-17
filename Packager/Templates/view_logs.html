@@ -1,0 +1,33 @@
+{% extends "base_views.html" %}
+
+{% block title %}Logs{% endblock %}
+
+{% block content %}
+<script>
+	$(document).ready(function() {
+		$("#ifLog").attr('src', "/logs/" + $("#logfile").val());
+	});
+	
+	function changeIframeSrc() {
+		$("#ifLog").attr('src', "/logs/" + $("#logfile").val());
+	}
+</script>
+
+<table style="width: 100%;">
+	<tr><td style="padding-top: 10px;">
+		<select class="slctLogFile" name="logfile" id="logfile" onchange="javascript: changeIframeSrc();">
+			{% for f in onlyfiles %}
+			<option value="{{f}}">{{f}}</option>
+			{% endfor %}
+		</select>
+	</td></tr>
+	<tr><td>
+		<iframe src="" id="ifLog"></iframe>
+	</td></tr>
+</table>
+
+{% endblock %}
+
+{% block action_bar %}
+<a href="#" onclick="javascript:actionRefreshView();" class="bttn icon refresh">Refresh<a>
+{% endblock %}

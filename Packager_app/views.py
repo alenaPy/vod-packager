@@ -7,6 +7,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
+from os import listdir
+from os.path import isfile, join
 
 import json
 import models
@@ -165,6 +167,15 @@ def dashboard(request):
 			break
 
 	return render_to_response('view_dashboard.html', {'packages_group_list': packages_groups_list, 'packages_groups': packages_groups, 'packages': packages, 'customers': customers, 'matriz': matriz}, context_instance=RequestContext(request))
+
+@login_required
+@csrf_protect
+def logs(request):
+
+	logs = []
+	mypath = '/opt/packager/app/vod-packager/log'
+	onlyfiles = [ f for f in listdir(mypath) if isfile(join(mypath,f)) ]
+        return render_to_response('view_logs.html', {'onlyfiles': onlyfiles}, context_instance=RequestContext(request))
 
 @login_required
 @csrf_protect

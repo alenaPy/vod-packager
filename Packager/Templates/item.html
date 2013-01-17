@@ -78,7 +78,7 @@
 		<tr><td>Export to:</td></tr>
 		<tr>
 			<td>
-				<select multiple="multiple" class="slctCusFE" name="customers_for_export" id="customers_for_export" name="customers_for_export">
+				<select multiple="multiple" class="slctCusFE" name="customers_for_export" id="customers_for_export">
 					{% for cfe in customers_for_export %}
 					<option value="{{cfe.id}}">{{cfe.name}}</option>
 					{% endfor %}
@@ -131,7 +131,7 @@
 				<tbody class="itemVwTbody">
 			{% for vr in video_renditions %}
 			<tr>
-				<td>{{vr.file_name}}</td>
+				<td><a href="/videos/{{vr.file_name}}">{{vr.file_name}}</a></td>
 				<td>{{vr.video_profile}}</td>
 				<td><center><span class="vrstatus_{{vr.status}}" /></center></td>
 			</tr>
@@ -164,7 +164,7 @@
 				<tbody class="itemVwTbody">
 			{% for ir in image_renditions %}
 			<tr>
-				<td>{{ir.file_name}}</td>
+				<td><a href="/images_proc/{{ir.file_name}}">{{ir.file_name}}</a></td>
 				<td>{{ir.image_profile}}</td>
 				<td><center><span class="irstatus_{{ir.status}}" /></center></td>
 			</tr>
