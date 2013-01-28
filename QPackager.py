@@ -60,8 +60,6 @@ def GetImageRenditions(Package=None):
     ImageProfileList   = Package.customer.image_profile.filter(status='E')
     ImageRenditionList = []
 
-
-
     for IProfile in ImageProfileList:
 	logging.debug('GetImageRenditions(): Search ImageRendition for this image profile: %s' % IProfile.name)
 	try:
@@ -382,7 +380,7 @@ def GetMetadataLanguage(Item, Language):
 
 
 
-def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
+def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 
     if Package is None or VideoRendition is None or ImageRendition is None:
 	#
@@ -427,17 +425,14 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     MetadataXml.Title.Director		= Package.item.director
     MetadataXml.Title.Directors_Display	= Package.item.director
     MetadataXml.Title.Box_Office	= '0'
-    if Customer.billing_id	!= '':
-	MetadataXml.Title.Billing_ID	= Customer.billing_id
+    if Package.customer.billing_id	!= '':
+	MetadataXml.Title.Billing_ID	= Package.customer.billing_id
     else:
 	MetadataXml.Title.Billing_ID	= '00001'
 
-#  
-#    MetadataXml.Title.Billing_ID	= '00001'
-
     MetadataXml.Title.Episode_ID	= Package.item.episode_id
     MetadataXml.Title.Country_of_Origin = Package.item.country_of_origin.code
-    MetadataXml.Title.Studio		= (Package.item.studio_name.split(' '))[0]
+    MetadataXml.Title.Studio		= Package.item.studio_name #.split(' '))[0]
     MetadataXml.Title.Studio_Name	= Package.item.studio_name
     MetadataXml.Title.Show_Type		= Package.item.show_type
     MetadataXml.Title.Run_Time		= Package.item.run_time
@@ -445,21 +440,34 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
 
 
     #
-    # QUE LEA EL SUGESTED PRICE DE LA BASE DE DATOS
+    # Precio segun formato y duracion
+    # 
+    if Package.item.material_type == 'SF':
+	if VideoRendition.video_profile.format == 'SD':
+	    MetadataXml.Title.Suggested_Price = Package.customer.suggested_price_shortform_sd
+	elif VideoRendition.video_profile.format == 'HD':
+	    MetadataXml.Title.Suggested_Price = Package.customer.suggested_price_shortform_hd
+    
+    elif Package.item.material_type == 'LF':
+	if VideoRendition.video_profile.format == 'SD':
+	    MetadataXml.Title.Suggested_Price = Package.customer.suggested_price_longform_sd
+	elif VideoRendition.video_profile.format == 'HD':
+	    MetadataXml.Title.Suggested_Price = Package.customer.suggested_price_longform_hd
+	
     #
-    MetadataXml.Title.Suggested_Price	  = '0.00'
+    # Nunca deberia llegar a este else
     #
-    # CORREGIR
-    #
+    else:
+	MetadataXml.Title.Suggested_Price	  = '0.00'
+
 
     MetadataXml.Title.Provider_QA_Contact = 'www.claxson.com'
 
-    
     #
     # Metadata especifica del lenguage
     # 
 
-    MetadataXml.Title.Title_Brief	= MetadataLanguage.title_brief
+    MetadataXml.Title.Title_Brief	= MetadataLanguage.title_brief[:19]
     MetadataXml.Title.Title_Sort_Name	= MetadataLanguage.title_sort_name
     MetadataXml.Title.Title		= MetadataLanguage.title
     MetadataXml.Title.Contract_Name	= MetadataLanguage.title
@@ -471,7 +479,6 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     #
     # Metadata Variable por Cliente
     #
-    
     MetadataXml.Title.Preview_Period		= Package.customer.preview_period
     MetadataXml.Title.Rating       		= Package.customer.rating_display.name
     MetadataXml.Title.Maximum_Viewing_Length 	= Package.customer.maximum_viewing_length
@@ -487,12 +494,17 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     # 
     # Campos inventados por el cliente ???
     # 
-    # - DESCOMENTAR -
     CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer)
-    for CustomMetadata in CustomeMetadataList:
+    for CustomMetadata in CustomMetadataList:
     	Metatadata.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
     
     
+    #
+    # Puede que Aca exista un problema con la fecha de activacion
+    #
+    ##############################################################
+    # REVISAR
+    ##############################################################
     MetadataXml.Title.Licensing_Window_Start = str(Package.date_published + timedelta(days=15))
     MetadataXml.Title.Licensing_Window_End   = str(Package.date_published + timedelta(days=15) + timedelta(days=License_Days))
 
@@ -501,6 +513,10 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
 	MetadataXml.Title.Licensing_Window_Start = MetadataXml.Title.Licensing_Window_Start + 'T00:00:00'
 	MetadataXml.Title.Licensing_Window_End   = MetadataXml.Title.Licensing_Window_End   + 'T23:59:59'
 
+
+    #
+    # Busca la categoria de acuerdo con el cliente
+    #
     try:
         CategoryRelation = models.CategoryRelation.objects.get(category=Package.item.category,customer=Package.customer)
         CustomCategory = CategoryRelation.custom_category
@@ -510,7 +526,11 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
 
     CategoryPath = 'Adults' + MetadataXml.Title.Studio + VideoRendition.video_profile.format + '/' + CustomCategory.name
 
-    MetadataXml.Title.Category	= CategoryPath.replace(' ', '')
+    if Package.customer.category_with_spaces == 'Y':
+	MetadataXml.Title.Category	= CategoryPath.replace(' ', '')
+    else:
+	MetadataXml.Title.Category	= CategoryPath
+	
     MetadataXml.Title.Genre 	= CustomCategory.name
 
 
@@ -525,7 +545,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
         MetadataXml.Movie.Resolution	= VideoRendition.video_profile.resolution
         MetadataXml.Movie.Frame_Rate	= VideoRendition.video_profile.frame_rate
         MetadataXml.Movie.Codec		= VideoRendition.video_profile.codec
-	MetadataXml.Movie.Bit_Rate		= VideoRendition.video_profile.bit_rate
+	MetadataXml.Movie.Bit_Rate	= VideoRendition.video_profile.bit_rate
 
 
     MetadataXml.Movie.Screen_Format	= VideoRendition.screen_format
@@ -545,7 +565,6 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
     # Defaults values
     #
     MetadataXml.Movie.Viewing_Can_Be_Resumed    = Package.customer.viewing_can_be_resumed
-#    MetadataXml.Movie.Viewing_Can_Be_Resumed 	= 'N'
     MetadataXml.Movie.Copy_Protection		= 'N'
     MetadataXml.Movie.Watermarking		= 'N'
 
@@ -559,20 +578,20 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=[]):
 
 	MetadataXml.StillImage.AMS.Asset_ID	  = MakeAssetId('image', VideoRendition.id, Package.id)
 
-	MetadataXml.StillImage.Content_CheckSum   = ImageRendition[0].checksum
-        MetadataXml.StillImage.Content_FileSize   = str(ImageRendition[0].file_size)
+	MetadataXml.StillImage.Content_CheckSum   = ImageRendition.checksum
+        MetadataXml.StillImage.Content_FileSize   = str(ImageRendition.file_size)
 
 
 	#
 	# Nombre del file de imagen
 	# 
-	if ImageRendition[0].image_profile.file_extension.startswith('.'):
-	    MetadataXml.StillImage.Content_Value  = MetadataXml.AMS.Asset_Name +  ImageRendition[0].image_profile.file_extension
+	if ImageRendition.image_profile.file_extension.startswith('.'):
+	    MetadataXml.StillImage.Content_Value  = MetadataXml.AMS.Asset_Name +  ImageRendition.image_profile.file_extension
 	else:
-    	    MetadataXml.StillImage.Content_Value  = MetadataXml.AMS.Asset_Name + '.' + ImageRendition[0].image_profile.file_extension
+    	    MetadataXml.StillImage.Content_Value  = MetadataXml.AMS.Asset_Name + '.' + ImageRendition.image_profile.file_extension
 
 
-        MetadataXml.StillImage.Image_Aspect_Ratio = ImageRendition[0].image_profile.image_aspect_ratio
+        MetadataXml.StillImage.Image_Aspect_Ratio = ImageRendition.image_profile.image_aspect_ratio
 
 
 
@@ -628,15 +647,35 @@ def main():
 		#
 		# Genera el XML
 		#
+
+		#
+		# Si el Video es HD, deberia buscar de la ImageRendition List, todas las que son HD y pasar esa lista
+		# filtrada o en su defecto, enviar uno solo
+		#
+		ImageRendition = []
+	    
+		for IRendition in ImageRenditionList:
+		    if IRendition.image_profile.format == VideoRendition.video_profile.format:
+			ImageRendition.append(IRendition)
+			
+			
+		if ImageRendition == []:
+		    logging.error("Cannot find properly Image Profile for the export")
+		    logging.error("Cannot export " + VideoRendition.video_profile.format + " format for this package")
+		    Package.status = 'E'
+		    Package.error  = "Cannot find properly Image Profile for the export"
+		    Package.save()
+		    break
+
 		logging.info("main(): Making Package for VideoRendition: %s" % VideoRendition.file_name)
-		MetadataXml 	= MakeAdiXmlCablelabs(Package, VideoRendition, ImageRenditionList)
+		MetadataXml 	= MakeAdiXmlCablelabs(Package, VideoRendition, ImageRendition[0])
 		if MetadataXml is None:
 		    #
 		    # ??? Y el error
 		    #
 		    Package.status = 'E'
 		    Package.save()
-		    continue
+		    break
 
 		#
 		# Arma el nombre del Path de Exportacion
@@ -662,7 +701,7 @@ def main():
 			Package.status = 'E'
 			Package.save()
 			logging.error = ('main(): %s' % ErrorString)
-			continue
+			break
     
     
 		#
@@ -697,6 +736,8 @@ def main():
 		# Intenta crear los links
 		#
 		try:
+		    if os.path.isfile(PackagePath + MetadataXml.Movie.Content_Value):
+			os.remove(PackagePath + MetadataXml.Movie.Content_Value)
 		    # Video
 		    os.link(video_local_path + VideoRendition.file_name, PackagePath + MetadataXml.Movie.Content_Value)
 		    
@@ -706,22 +747,30 @@ def main():
 		    logging.error('main(): %s' % ErrorString)
 		    Package.status = 'E'
 		    Package.save()
-		    continue
+		    break
 
-		for ImageRendition in ImageRenditionList:
-		    try:
-			# Imagen
-			os.link(image_local_path + ImageRendition.file_name, PackagePath + MetadataXml.StillImage.Content_Value)
+    		try:
+    		    if os.path.isfile(PackagePath + MetadataXml.StillImage.Content_Value):
+    			os.remove(PackagePath + MetadataXml.StillImage.Content_Value)
+		# Imagen
+		    os.link(image_local_path + ImageRendition[0].file_name, PackagePath + MetadataXml.StillImage.Content_Value)
 			
-		    except OSError as e:
-			ErrorString    = 'Error creating Image Hard Link -> Catch: ' + e.strerror
-			Package.error  = ErrorString
-		        logging.error('main(): %s' % ErrorString)
-		        Package.status = 'E'
-		        Package.save()
-		        break;
+		except OSError as e:
+		    ErrorString    = 'Error creating Image Hard Link -> Catch: ' + e.strerror
+		    Package.error  = ErrorString
+		    logging.error('main(): %s' % ErrorString)
+		    Package.status = 'E'
+		    Package.save()
+		    break;
 
-		
+		#
+		# Si tiene dos profiles de imagen, exporta el otro aunque no este linkeado al XML
+		#
+		if len(ImageRendition[1:]) == 1:
+		    if os.path.isfile(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage.Content_Value):
+			os.remove(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage.Content_Value)
+		    os.link(image_local_path + ImageRendition[1].file_name, PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage.Content_Value)
+		    
 		logging.info("main(): END PACKAGE -------------")
 		Package.error  = ''
 		Package.status = 'P'

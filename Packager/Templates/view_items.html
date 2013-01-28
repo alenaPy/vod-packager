@@ -15,21 +15,19 @@
 		$('#iconography *').tooltip();
 	});
 </script>
-
 <table id="hor-zebra">
 	<thead>
 		<tr>
 			<th scope="col" width="20px"><!-- <input type="checkbox" name="your-group" value="unit-in-group" /> --></th>
 			<th scope="col" class="center" width="20px"></th>
 			<th scope="col">Name</th>
-			<th scope="col">MAM</th>
-			<th scope="col" class="center">Creation</th>
-			<th scope="col" class="center">Kill</th>
+			<th scope="col" width="25px">MAM</th>
+			<th scope="col" width="140px" class="center">Creation</th>
+			<th scope="col" width="140px" class="center">Kill</th>
 		</tr>
 	</thead>
 	<tbody>
-
-{% for item in items %}
+		{% for item in items %}
 		<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
 			<td class="display_check"><input type="checkbox" name="entrycheck" value="{{item.id}}"/></td>
 			<td class="display_icon"><span class="status_{{item.status}}" /></td>
@@ -38,10 +36,9 @@
 			<td class="center">{{ item.creation_date }}</td>
 			<td class="center">{{ item.kill_date }}</td>
 		</tr>
-{% endfor %}
+		{% endfor %}
 	</tbody>
 </table>
-
 <!-- VIEW'S ICONOGRAPHY -->
 <hr />
 <fieldset id="iconography">
@@ -63,7 +60,6 @@
 {% endblock %}
 
 {% block action_bar %}
-
 {% if items.has_previous %}
 <a href="?page={{ items.previous_page_number }}" class="bttn prev">Previous</a>
 {% endif %}
@@ -72,5 +68,4 @@
 {% if items.has_next %}
 <a href="?page={{ items.next_page_number }}" class="bttn next">Next</a>
 {% endif %}
-
 {% endblock %}

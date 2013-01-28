@@ -9,18 +9,6 @@ var Dajaxice = {
     
     Packager_app: {
     
-    force_to_be_done: function(callback_function, argv, custom_settings){
-        Dajaxice.call('Packager_app.force_to_be_done', 'POST', callback_function, argv, custom_settings);
-    },
-
-    package_group_save: function(callback_function, argv, custom_settings){
-        Dajaxice.call('Packager_app.package_group_save', 'POST', callback_function, argv, custom_settings);
-    },
-
-    export_item: function(callback_function, argv, custom_settings){
-        Dajaxice.call('Packager_app.export_item', 'POST', callback_function, argv, custom_settings);
-    },
-
     dajaxice_example: function(callback_function, argv, custom_settings){
         Dajaxice.call('Packager_app.dajaxice_example', 'POST', callback_function, argv, custom_settings);
     },
@@ -31,6 +19,14 @@ var Dajaxice = {
 
     bulk_export: function(callback_function, argv, custom_settings){
         Dajaxice.call('Packager_app.bulk_export', 'POST', callback_function, argv, custom_settings);
+    },
+
+    package_group_save: function(callback_function, argv, custom_settings){
+        Dajaxice.call('Packager_app.package_group_save', 'POST', callback_function, argv, custom_settings);
+    },
+
+    export_item: function(callback_function, argv, custom_settings){
+        Dajaxice.call('Packager_app.export_item', 'POST', callback_function, argv, custom_settings);
     }
 
 

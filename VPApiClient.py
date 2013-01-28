@@ -22,6 +22,7 @@ def ItemMetadata():
 		 ('year', ''),
 		 ('director', ''),
 		 ('studio_name', ''),
+		 ('group', ''),
 		 ('mam_id', '')])
 
 

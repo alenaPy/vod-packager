@@ -19,59 +19,62 @@
 <div class="grid_6" style="color: #fff; padding-top: 5px;">
 	<h1 class="formTitle">Item</h1>
 	<table class="tblFormView">
-		<tr class="trFieldLabel">
-			<td width="150px">Name</td>
+		<tr>
+			<td class="tdFieldLabel" width="150px">Name</td>
 			<td><input type="text" name="name" readonly value="{{item.name}}" style="width: 280px;" /></td>
 		</tr>
 		<tr>
-			<td>Kill date</td>
+			<td class="tdFieldLabel">Kill date</td>
 			<td><input type="text" name="kill_date" readonly value="{{item.creation_date}}" style="width: 150px;" /></td>
 		</tr>
 		<tr>
-			<td>Status</td>
+			<td class="tdFieldLabel">Status</td>
 			<td><input type="text" id="status" readonly value="{{item.status}}" /></td>
+			
 		</tr>
 		<tr>
-			<td>Episode</td>
+			<td class="tdFieldLabel">Episode</td>
 			<td><input type="text" id="episode_name" readonly value="{{item.episode_name}}" /></td>
 		</tr>
 		<tr>
-			<td>Rating</td>
+			<td class="tdFieldLabel">Rating</td>
 			<td><input type="text" id="rating" readonly value="{{item.rating}}" /></td>
 		</tr>
 		<tr>
-			<td>Genres</td>
+			<td class="tdFieldLabel">Genres</td>
 			<td><input type="text" id="genres" readonly value="{{item.genres}}" style="width: 150px;" /></td>
 		</tr>
 		<tr>
-			<td>Actors</td>
+			<td class="tdFieldLabel">Actors</td>
 			<td><input type="text" id="actors" readonly value="{{item.actors}}" style="width: 280px;" /></td>
 		</tr>
 		<tr>
-			<td>Origin country</td>
+			<td class="tdFieldLabel">Origin country</td>
 			<td><input type="text" id="country_of_origin" readonly value="{{item.country_of_origin}}" style="width: 200px;" /></td>
 		</tr>
 		<tr>
-			<td>Year</td>
+			<td class="tdFieldLabel">Year</td>
 			<td><input type="text" id="year" readonly value="{{item.year}}" /></td>
 		</tr>
 		<tr>
-			<td>Director</td>
+			<td class="tdFieldLabel">Director</td>
 			<td><input type="text" id="director" readonly value="{{item.director}}" style="width: 200px;" /></td>
 		</tr>
 		<tr>
-			<td>Studio name</td>
+			<td class="tdFieldLabel">Studio name</td>
 			<td><input type="text" id="studio_name" readonly value="{{item.studio_name}}" style="width: 200px;" /></td>
 		</tr>
 		<tr>
-			<td>Format</td>
+			<td class="tdFieldLabel">Format</td>
 			<td><input type="text" id="format" readonly value="{{item.format}}" /></td>
 		</tr>
 		<tr>
-			<td>MAM id</td>
+			<td class="tdFieldLabel">MAM id</td>
 			<td><input type="text" id="mam_id" readonly value="{{item.mam_id}}" /></td>
 		</tr>
 	</table>
+	<a href="#" class="bttn icon fork" onclick="javascript:actionForceToBeDoneItem();">Force to be Done</a>
+	<br /><br />
 </div>
 <div class="grid_3" style="padding-top: 5px;">
 	<table class="tblItemExport">

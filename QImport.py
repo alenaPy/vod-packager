@@ -346,7 +346,7 @@ def main():
 	# Duerme 60 Segundos
 	#
 	logging.info("main(): No more work... Sleep")
-	time.sleep(10)
+	time.sleep(300)
 
 class main_daemon(Daemon):
     def run(self):

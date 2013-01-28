@@ -1,0 +1,72 @@
+{% extends "base_views.html" %}
+
+{% block title %}Delivery{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="/css/dashboard.css" />
+<script type="text/javascript" src="/js/delivery.js"></script>
+<!-- TOOLTIPS -->
+<link rel="stylesheet" href="/css/jquery.tooltip.css" />
+<script src="/js/jquery.bgiframe.js" type="text/javascript"></script>
+<script src="/js/jquery.dimensions.js" type="text/javascript"></script>
+<script src="/js/jquery.tooltip.js" type="text/javascript"></script>
+<script src="/js/chili-1.7.pack.js" type="text/javascript"></script>
+<!-- DAJAXICE -->
+<script src="/js/xx10.js" type="text/javascript" charset="utf-8"></script>
+<span class="dashboardTitle">Group:
+    <select id="item_group" name="item_group" class="slctPkgGrp" onchange="javascript:onChangeItemGroup();">
+	{% for it in item_groups %}
+	<option value="{{it.id}}">{{it.name}}</option>
+	{% endfor %}
+    </select>
+</span>
+<form id="bulk_export">{% csrf_token %}
+<fieldset id="tblDelivery">
+<table class="tblDashboard" id="tblDashboard">
+    <tbody>
+	<tr brand="upperRow">
+	    <th class="thUpperLeft">
+		Brand<br />
+		<select id="brandForSelection" name="brandForSelection" class="slctPkgGrp">
+		    <option value="all">All</option>
+		</select>
+	    </th>
+	    {% for customer in customers %}
+	    <th style="border: 1px solid white;">
+		<div class="verticalText">
+		    <a href="javascript:selectCustomerAndBrandForExport('{{customer.name}}');">{{customer.name}}</a>
+		</div>
+	    </th>
+	    {% endfor %}
+	</tr>
+	{% for item in items %}
+	    <tr id="item_{{item.id}}" brand="{{item.brand}}" class="trItemTitle">
+	        <td class="tdItemTitle">
+	    	    <a href="javascript: selectItemFormExport('{{item.id}}');">{{item.name}}</a>
+	    	</td>
+	        {% for customer in customers %}
+	    	    <td class="tdPackageStatus" style="text-align:right; padding-right: 3px;">
+    		    <input type="checkbox" name="it_{{item.id}}_cr_{{customer.id}}" id="it_{{item.id}}_cr_{{customer.id}}" item="{{item.id}}" customer="{{customer}}" brand="{{item.brand}}" title="{{item.brand}} - {{customer}}  - {{item.name}}" value="1">
+		</td>
+		{% endfor %}
+	    </tr>
+	{% endfor %}
+    </tbody>
+</table>
+</fieldset>
+<!-- HIDDEN FIELDS -->
+<input type="hidden" name="item_group" id="item_group" value="{{item_group.key}}" />
+<input type="hidden" name="total_customers" id="total_customers" value="{{customers|length}}" /> 
+</form>
+<a href="#" class="bttn icon fork" onclick="javascript:actionBulkExport();">Export</a>
+<a href="#" onclick="javascript:actionRefreshView();" class="bttn icon refresh">Refresh</a>
+<a href="#" class="bttn" onclick="javascript:actionResetForm();">Reset</a>
+<script>
+    var json_pkgs_string = "{\"packages\": [ {% for pkg in packages %} {\"customer\": {{pkg.customer.id}},\"item\": {{pkg.item.id}},\"status\": \"{{pkg.status}}\",\"error\": \"{{pkg.error}}\"}, {% endfor %} {\"customer\": 0,\"item\": 0,\"status\": \"\",\"error\": \"\"}]}";
+    var json_items_string = "{ {% for item in items %} \"{{item.id}}\": \"{{item.status}}\", {% endfor %} \"0\": \"0\" }";
+</script>
+{% endblock %}
+
+{% block action_bar %}
+<!-- <a href="#" onclick="javascript:actionRefreshView();" class="bttn icon refresh">Refresh<a> -->
+{% endblock %}

@@ -27,8 +27,10 @@ p {
   text-align: center;
 }
 .formTitle {
- font-family: 'Anaheim', sans-serif;
+ font-family: 'Carrois Gothic', sans-serif;
  text-align: left;
+ font-weight: bold;
+ color: #eee;
 }
 .container_12,
 .container_16,
@@ -77,6 +79,11 @@ input[type=submit] {
 }
 .trFieldLabel > td {
  font-family: 'Anaheim', sans-serif;
+ color: #f87a0b;
+}
+.tdFieldLabel {
+ font-family: 'Anaheim', sans-serif;
+ color: #eee;
 }
 .tblViewTitle {
  width: 100%;
@@ -84,9 +91,10 @@ input[type=submit] {
  margin-bottom: 0px;
 }
 .tdViewTitle {
- font-family: 'Anaheim', sans-serif;
+ font-family: 'Carrois Gothic', sans-serif;
  width: 100%;
  font-size: 20px;
+ font-weight: bold;
  padding-top: 5px;
  color: #fff;
 }
@@ -94,7 +102,7 @@ input[type=submit] {
  background-color: #fff;
 }
 #hor-zebra {
- font-family: 'Anaheim', sans-serif;
+ font-family: 'Gafata', sans-serif;
 }
 #hor-zebra > thead > tr > th {
  font-size: 13px;
@@ -129,7 +137,7 @@ input[type=search] {
  vertical-align: middle;
 }
 div#navbar {  
- height: 500px;
+ height: 650px;
  text-align: center;
 }
 div#video_rendition {
@@ -159,6 +167,20 @@ span.status_P {
 span.status_D {
  display: block;
  background-image: url(/images/icons/tick.png);
+ background-repeat:no-repeat;
+ width: 16px;
+ height: 16px;
+}
+span.status_daemon_R {
+display: block;
+ background-image: url(/images/icons/tick.png);
+ background-repeat:no-repeat;
+ width: 16px;
+ height: 16px;
+}
+span.status_daemon_N {
+display: block;
+ background-image: url(/images/icons/exclamation.png);
  background-repeat:no-repeat;
  width: 16px;
  height: 16px;
@@ -331,10 +353,15 @@ select {
 }
 .slctCusFE {
  width: 100%;
+ height: 120px;
 }
 .actbarTd {
  padding-top: 5px;
  text-align: right;
+}
+.actbarTd2 {
+ padding-top: 10px;
+ text-align: left;
 }
 #tblIconography {
  width: 100%;
@@ -354,7 +381,7 @@ select {
 .headerTitle {
  text-align: left;
  padding-left: 88px;
- font-family: 'Anaheim', sans-serif;
+ font-family: 'Carrois Gothic', sans-serif;
  font-size: 37px;
  font-weight: normal;
 }
@@ -376,4 +403,22 @@ select {
 }
 .font {
  font-family: 'Anaheim', sans-serif;
+}
+.tdUserInfo {
+ text-align: right;
+ font-family: 'Anaheim', sans-serif;
+}
+.customMessage {
+ color: #fff;
+ padding-top: 27px;
+ font-family: 'Anaheim', sans-serif;
+}
+.tblDaemonsStatus {
+ width: 100%;
+ color: #fff;
+ font-family: 'Gafata', sans-serif;
+}
+.processDescription {
+ font-family: 'Anaheim', sans-serif;
+ font-size: 13px;
 }

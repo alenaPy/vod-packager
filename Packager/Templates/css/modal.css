@@ -1,37 +1,36 @@
 body {
-  background: #282A30;
-  color: #fff;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  /*font-family: 'Anaheim', sans-serif;*/
-  font-size: 16px;
-  height: auto;
-  padding-bottom: 20px;
+ background: #282A30;
+ color: #fff;
+ font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+ font-size: 16px;
+ height: auto;
+ padding-bottom: 20px;
 }
 a {
-  color: #fff;
-  text-decoration: none;
+ color: #fff;
+ text-decoration: none;
 }
 a:hover {
-  text-decoration: underline;
+ text-decoration: underline;
 }
 h1 {
- font-family: 'Anaheim', sans-serif;
-  font-weight: normal;
-  padding-top: 20px;
-  text-align: center;
+ font-family: 'Carrois Gothic', sans-serif;
+ font-weight: normal;
+ padding-top: 20px;
+ text-align: center;
 }
 h2 {
-font-family: 'Anaheim', sans-serif;
-  padding-top: 20px;
-  text-align: center;
+ font-family: 'Carrois Gothic', sans-serif;
+ padding-top: 20px;
+ text-align: center;
 }
 td {
-font-family: 'Anaheim', sans-serif;
+ font-family: 'Anaheim', sans-serif;
 }
 p {
-  overflow: hidden;
-  padding: 10px 0;
-  text-align: center;
+ overflow: hidden;
+ padding: 10px 0;
+ text-align: center;
 }
 input[type="text"] {
  /* background: #e8e6a2; */

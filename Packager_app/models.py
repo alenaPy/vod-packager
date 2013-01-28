@@ -16,7 +16,13 @@ FORMAT = (
 )	
 
 
+class ItemGroup(models.Model):
+	key						= models.CharField(max_length=6)
+	name						= models.CharField(max_length=50)
 
+	def __unicode__(self):
+	    return self.name
+	
 
 class Country(models.Model):
 	code						= models.CharField(max_length=2)
@@ -24,7 +30,6 @@ class Country(models.Model):
 
 	def __unicode__(self):
 	    return self.country
-
 
 class Language(models.Model):
 	code 						= models.CharField(max_length=2)
@@ -78,6 +83,13 @@ class Customer(models.Model):
 		('box cover', 'Box Cover'),
 	)
 
+	PATH_STYLE = (
+		('DLA', 'DLA Style'),
+		('BFC', 'Brand Format / Category'),
+		('BPC', 'Brand / Category'),
+		('FPC', 'Format / Category'),
+	)
+	
 	name 						= models.CharField(max_length=256)
 	vod_active 					= models.BooleanField(default=True)
 	
@@ -93,20 +105,20 @@ class Customer(models.Model):
 	rating_display					= models.ForeignKey('Rating')
 	product_type					= models.CharField(max_length=4, choices=PRODUCT_TYPE)
 	viewing_can_be_resumed				= models.CharField(max_length=1, choices=(('Y', 'Yes'),('N', 'No')), default='N')
-	sugested_price_longform_sd			= models.CharField(max_length=10)
-	sugested_price_longform_hd			= models.CharField(max_length=10)
-	sugested_price_shortform_sd			= models.CharField(max_length=10)
-	sugested_price_shortform_hd			= models.CharField(max_length=10)
+	suggested_price_longform_sd			= models.CharField(max_length=10, default='0')
+	suggested_price_longform_hd			= models.CharField(max_length=10, default='0')
+	suggested_price_shortform_sd			= models.CharField(max_length=10, default='0')
+	suggested_price_shortform_hd			= models.CharField(max_length=10, default='0')
 #
 #	Quitar rental period del siguiente cambio de la base de datos
 #
 	billing_id					= models.CharField(max_length=10, blank=True)
-#	rental_period_shortform				= models.CharField(max_length=10)
-#	rental_period_longform				= models.CharField(max_length=10)
 	license_window					= models.CharField(max_length=3, default='90')
 	preview_period					= models.CharField(max_length=4, default='0', blank=True)
 	maximum_viewing_length				= models.CharField(max_length=8, default='00:24:00', blank=True)
 	extended_video_information			= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')))
+	category_with_spaces				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	category_path_style				= models.CharField(max_length=3, default='DLA', choices=PATH_STYLE)
 	
 	def __unicode__(self):
 		return self.name
@@ -117,7 +129,7 @@ class MetadataLanguage(models.Model):
 	language					= models.ForeignKey('Language')
 	item						= models.ForeignKey('Item')
 	title_sort_name 				= models.CharField(max_length=22)
-	title_brief 					= models.CharField(max_length=19)
+	title_brief 					= models.CharField(max_length=30)
 	title 						= models.CharField(max_length=128)
 	episode_name					= models.CharField(max_length=256, blank=True)
 	summary_long 					= models.CharField(max_length=4096)
@@ -146,8 +158,8 @@ class Item(models.Model):
 	#
 	# Si es Short form o long form!
 	#
-
 	material_type			= models.CharField(max_length=2, choices=(('SF', 'Short Form'), ('LF', 'Long Form')))
+
 	'''
 	A string representing a period of time and 
 	the maximum number of views over the 
@@ -157,7 +169,7 @@ class Item(models.Model):
 	maximum views.
 	'''
 	subscriber_view_limit		= models.CharField(max_length=30, blank=True)
-	
+
 	'''
 	Digital Object Identifier (DOI) from the 
 	Entertainment ID Registry [EIDR]
@@ -170,7 +182,6 @@ class Item(models.Model):
 	'''
 	isan				= models.CharField(max_length=30, blank=True)
 
-
 	closed_captioning		= models.CharField(max_length=1, choices=(('Y', 'Yes'),('N', 'No')), default='N')
 	run_time			= models.CharField(max_length=8)
 	display_run_time		= models.CharField(max_length=5)
@@ -180,9 +191,7 @@ class Item(models.Model):
 	# Hacer las modificaciones
 	#
 	actors				= models.CharField(max_length=35, blank=True)
-	actors_display			= models.CharField(max_length=512, blank=True)
-		
-
+	actors_display			= models.CharField(max_length=512, blank=True)		
 
 	episode_name			= models.CharField(max_length=255, blank=True)
 	episode_id			= models.CharField(max_length=60, blank=True)
@@ -201,10 +210,12 @@ class Item(models.Model):
 	rating				= models.CharField(max_length=32)
 	genres				= models.CharField(max_length=32)
 	director 			= models.CharField(max_length=128)
+
+	group				= models.ForeignKey('ItemGroup')
+	brand				= models.CharField(max_length=64, blank=True)
 	studio				= models.CharField(max_length=64)
 	studio_name 			= models.CharField(max_length=128)
 	mam_id 				= models.CharField(max_length=64)
-
 
 	def __unicode__(self):
 		return self.name
@@ -244,7 +255,7 @@ class VideoRendition(models.Model):
 	file_size 				= models.BigIntegerField(default=0)
 	checksum 				= models.CharField(max_length=32)
 	
-	error					= models.CharField(max_length=512)
+	error					= models.CharField(max_length=512, blank=True)
 	screen_format				= models.CharField(max_length=64)
 
 	def __unicode__(self):
@@ -304,7 +315,7 @@ class Package(models.Model):
 
 class TranscodingServer(models.Model):
 	
-	host_name 					= models.CharField(max_length=256)
+	name	 					= models.CharField(max_length=256)
 	ip_address 					= models.CharField(max_length=15)
 	status 						= models.CharField(max_length=1, choices=ACTIVE_STATUS)
 	
@@ -352,6 +363,7 @@ class ImageProfile(models.Model):
 	sufix 						= models.CharField(max_length=32)
 	file_extension 					= models.CharField(max_length=32)
 	status 						= models.CharField(max_length=1, choices=ACTIVE_STATUS)
+	format 						= models.CharField(max_length=2, choices=FORMAT)
 	regex 						= models.CharField(max_length=512, blank=True)
 	image_aspect_ratio				= models.CharField(max_length=24)
 	type 						= models.CharField(max_length=1, choices=IMAGE_TYPE)

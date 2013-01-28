@@ -7,24 +7,24 @@
 		<script src="/js/xxx9.js" type="text/javascript" charset="utf-8"></script>	
 		<script>
 			function closeWindow() {
-				parent.$.fancybox.close();
+			    parent.$.fancybox.close();
 			}
 			
 			function actionSave() {
-				data = $('#new_package_group').serialize();
-				Dajaxice.Packager_app.package_group_save(message_callback, {'data':data});
+			    data = $('#new_package_group').serialize();
+			    Dajaxice.Packager_app.package_group_save(message_callback, {'data':data});
 			}
 			
 			function message_callback(data) {
-    			if (data.message == null) {
-    				window.parent.clbkNewPackageGroup(data);
-    			} else {
-    				alert(data.message);
-    			}
+			    if (data.message == null) {
+				window.parent.clbkNewPackageGroup(data);
+			    } else {
+				alert(data.message);
+			    }
 			}
 			
 			$(document).ready(function() {
-				
+			    // DOM ready	
 			});
 		</script>
 	</head>

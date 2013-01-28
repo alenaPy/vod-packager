@@ -26,6 +26,24 @@ import ApiSettings
 from daemon import Daemon
 import logging
 import sys
+import re
+
+
+Meses = { '01' : 'Enero',
+	  '02' : 'Febrero',
+	  '03' : 'Marzo',
+	  '04' : 'Abril',
+	  '05' : 'Mayo',
+	  '06' : 'Junio',
+	  '07' : 'Julio',
+	  '08' : 'Agosto',
+	  '09' : 'Septiembre',
+	  '10' : 'Octubre',
+	  '11' : 'Noviembre',
+	  '12' : 'Diciembre' }
+
+
+
 
 def TestApiVersion(remote_api_version):
     global API_VERSION
@@ -54,6 +72,29 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     Item.name 			= ItemMetadata["name"]
     Item.format 		= ItemMetadata["format"]
     Item.material_type		= ItemMetadata["material_type"]
+    
+    
+    try:
+	ItemGroup = models.ItemGroup.objects.get(key=ItemMetadata["group"])
+    except:
+	ItemGroup = models.ItemGroup()
+	ItemGroup.key  = ItemMetadata["group"]
+	
+	result = re.match("([0-9][0-9][0-9][0-9])([0-1][0-9])", ItemGroup.key)
+	print result
+	if result:
+	    print result.group(1)
+	    print result.group(2)
+	    if int(result.group(2)) <= 12:
+	
+		ItemGroup.name = Meses[result.group(2)] + ', ' + result.group(1)		
+	    print Meses[result.group(2)] + ', ' + result.group(1)
+	    
+	ItemGroup.save()
+    	
+    Item.group = ItemGroup  
+    
+    
     
     logging.info("Item Name: " + Item.name)
     logging.info("Item Format: " + Item.format)
@@ -124,12 +165,14 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     Item.episode_name		= ItemMetadata["episode_name"]
     Item.rating 		= ItemMetadata["rating"]
     Item.genres 		= ItemMetadata["genres"]
-    Item.actors_display		= ItemMetadata["actors"]
+    Item.actors_display		= ItemMetadata["actors_display"]
     Item.year 			= ItemMetadata["year"]
     Item.director		= ItemMetadata["director"]
     Item.studio_name 		= ItemMetadata["studio_name"]
     Item.studio			= ItemMetadata["studio_name"]
+    Item.brand			= ItemMetadata["studio_name"]
     Item.mam_id 		= ItemMetadata["mam_id"]
+
 
     if ItemMetadata["show_type"].upper() == 'MOVIE':
 	Item.show_type		= 'Movie'

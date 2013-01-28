@@ -272,7 +272,7 @@ def main():
 	    continue
 
 	CheckItemStatus()
-	time.sleep(60)
+	time.sleep(300)
 
 class main_daemon(Daemon):
     def run(self):

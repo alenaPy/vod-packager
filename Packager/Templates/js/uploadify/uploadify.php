@@ -26,7 +26,7 @@ if (!empty($_FILES)) {
 		$fileSuffix = substr($fileName, $pos);
 //echo "SUFFIX: ".$fileSuffix."\n";
 	} else {
-		// hay que trapear el error y no tificarlo por pantalla
+		// hay que trapear el error y notificarlo por pantalla
 	}
 	// Processing file parts
 	if (in_array($fileParts['extension'],$fileTypes)) {

@@ -46,6 +46,18 @@ function actionExportItem() {
 	}
 }
 
+
+function actionForceToBeDoneItem() {
+	var jsonObj = {'item_id':$('#item_id').val()};
+	Dajaxice.Packager_app.force_to_be_done(clbkForceToBeDone, jsonObj);
+
+}
+
+function clbkForceToBeDone(data) {
+	alert(data.message);
+	window.location.reload();
+}
+
 function clbkExportItem(data) {
 	alert(data.message);
 }

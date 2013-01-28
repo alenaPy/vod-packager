@@ -7,6 +7,7 @@ import json
 import logging
 import models
 import sys
+import re
 
 @dajaxice_register
 def dajaxice_example(request):
@@ -19,11 +20,54 @@ def args_example(request, text):
 #dajaxice_functions.register(args_example)
 
 @dajaxice_register
+def bulk_export(request, data):
+    try:
+	ddata = urlparse.parse_qs(data)
+	#file = open('/opt/packager/app/vod-packager/log/ajax.py', 'w')
+	#file.write(str(ddata.keys()))
+	#file.close()
+	item_group = ddata['item_group'][0]
+	for checkbox in ddata.keys():
+	    match 		= re.match("it_(.+)_cr_(.+)", checkbox)
+	    if match:
+		item_id 	= int(match.group(1))
+		customer_id	= int(match.group(2))
+		item 		= models.Item.objects.get(id=item_id)
+		customer 	= models.Customer.objects.get(id=customer_id)
+		package_group 	= models.PackageGroup.objects.get(name=item_group)
+		try:
+		    models.Package.objects.get(item=item, customer=customer)
+		except:
+		    package = models.Package()
+		    package.customer = customer
+		    package.item = item
+		    package.status = "Q"
+		    package.group = package_group
+		    package.error = ""
+		    package.save()
+
+	return simplejson.dumps({'message': 'La exportacion masiva se ha procesado con exito.'})
+    except:
+	return simplejson.dumps({'message': 'Hubo inconvenientes creando el grupo de paquetes.'})
+	
+	
+@dajaxice_register
+def force_to_be_done(request, item_id):
+	try:
+	        item = models.Item.objects.get(id=int(item_id))
+		item.status = 'D'
+		item.save()
+		return simplejson.dumps({'message': " *** ATENCION *** \n " + item.name + " fue forzado a status Done \n POSIBLES ERRORES"})
+	except:
+		return simplejson.dumps({'message': "No se pudo cambiar el status a Done"})
+	
+
+@dajaxice_register
 def export_item(request, item_id, selected_customers, package_group):
 
 	try:
 		item 			= models.Item.objects.get(id=int(item_id))
-		package_group 	= models.PackageGroup.objects.get(id=int(package_group))
+		package_group 		= models.PackageGroup.objects.get(id=int(package_group))
 #		logging.basicConfig(format='%(asctime)s - ajax.py -[%(levelname)s]: %(message)s', filename='../log/Ajax.log',level=logging.INFO)
 #		logging.info("Esto es un log!")
 		if selected_customers is not None:

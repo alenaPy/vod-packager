@@ -14,13 +14,17 @@ from Packager_app import models
 file = open('etc/ImageProfiles', 'r')
 for line in file.readlines():
     IProfile = models.ImageProfile()
-    name,type,sufix,ext,dim = line.split(',')
+    print line
+    name,type,sufix,ext,format,dim = line.split(',')
 
     IProfile.name 		= name
     IProfile.sufix 		= sufix
     IProfile.file_extension 	= ext
-    IProfile.status 		= 'E'
+    IProfile.status		= 'E'
+    IProfile.format		= format
     IProfile.image_aspect_ratio	= dim.rstrip('\n')
     IProfile.type 		= type
 
     IProfile.save()
+
+

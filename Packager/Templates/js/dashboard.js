@@ -1,9 +1,9 @@
 $(document).ready(function() {
-	
 	// Seteo el valor del combo package_group
 	$("#package_group").val($("#package_group_id").val());
 	// Despliego los iconos correspondientes a los estados de cada paquete
 	var json_object = JSON.parse(json_string);
+	var json_items_object = JSON.parse(json_items_string);
 	$.each(json_object.items, function(indexa, value) {
 		if (json_object.items[indexa].item != 0) {
 			var item_id = json_object.items[indexa].item;
@@ -25,13 +25,42 @@ $(document).ready(function() {
 				}
 			});
 		}
-	});
-	
+	});	
 	// Enabling tooltips
 	$('#iconography *').tooltip();
 	$('#dashboardicons *').tooltip();
-
+	// Inserto separadores por marca
+	insertBrandSeparators(json_items_object)
+	// Highlight table rows on hover
+	$(".trItemTitle").hover(
+		function () {
+			$(this).css("background","#ff9");
+			$(this).css("color","#333");
+			$(this).css("font-weight","bold");
+		},
+		function () {
+			$(this).css("background","");
+			$(this).css("color","#fff");
+			$(this).css("font-weight","normal");
+		}
+	);
 });
+
+function selectBrandForExport(brand) {
+    alert(brand);
+}
+
+function insertBrandSeparators(json_items_object) {
+    var brand = "upperRow";
+    var total_customers = $("#total_customers").val();
+    $('#tblDashboard > tbody  > tr').each(function() {
+        // Corte de control sobre la marca
+        if (brand != $(this).attr("brand")) {
+            brand = $(this).attr("brand");
+            $(this).before("<tr><td colspan=\"" + total_customers  + "\"><a href=\"#\" class=\"trBrandSeparator\">" + brand + "</a></td></tr>");
+        }
+    }); 
+}
 
 function findPackageStatus(json_object, item_id, customer_id) {
 	var output = "ZZZ";
