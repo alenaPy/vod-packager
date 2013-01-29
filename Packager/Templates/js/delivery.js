@@ -121,6 +121,7 @@ function onChangeItemGroup() {
 
 function actionBulkExport() {
     data = $('#bulk_export').serialize();
+    //alert(data);
     Dajaxice.Packager_app.bulk_export(message_callback, {'data':data});
 }
 

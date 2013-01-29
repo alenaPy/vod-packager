@@ -421,7 +421,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     MetadataXml.Title.Closed_Captioning = 'N'
     MetadataXml.Title.Year		= Package.item.year
     MetadataXml.Title.Actors		= Package.item.actors
-    MetadataXml.Title.Actors_Display	= Package.item.actors
+    MetadataXml.Title.Actors_Display	= Package.item.actors_display
     MetadataXml.Title.Director		= Package.item.director
     MetadataXml.Title.Directors_Display	= Package.item.director
     MetadataXml.Title.Box_Office	= '0'

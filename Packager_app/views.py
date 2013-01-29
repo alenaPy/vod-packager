@@ -178,7 +178,7 @@ def bulk_delivery(request):
     	    package_group.description = item_group.name
     	    package_group.save()
         packages = models.Package.objects.filter(group=package_group)
-        return render_to_response('view_bulk_delivery.html', {'item_groups': item_groups, 'customers': customers, 'items': items, 'package_group': package_group, 'packages': packages}, context_instance=RequestContext(request))
+        return render_to_response('view_bulk_delivery.html', {'item_groups': item_groups, 'item_group': item_group, 'customers': customers, 'items': items, 'package_group': package_group, 'packages': packages}, context_instance=RequestContext(request))
     except:
 	error_msg = "Ha surgido un error mientras se intentaba desplegar la vista bulk_delivery. Por favor contacte al administrador del sistema."
 	return render_to_response('view_custom_error.html', {'error_msg': error_msg}, context_instance=RequestContext(request))
@@ -237,7 +237,7 @@ def daemons(request):
 			 'VPApiServer_status' : 'N' }
 
 	for daemon in DaemonList:
-		pidfile =pidpath + '/' + daemon + '.pid'
+		pidfile = pidpath + '/' + daemon + '.pid'
 
 		# Get the pid from the pidfile
 		try:

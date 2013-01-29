@@ -8,6 +8,7 @@ import logging
 import models
 import sys
 import re
+import traceback
 
 @dajaxice_register
 def dajaxice_example(request):
@@ -47,9 +48,9 @@ def bulk_export(request, data):
 		    package.save()
 
 	return simplejson.dumps({'message': 'La exportacion masiva se ha procesado con exito.'})
-    except:
-	return simplejson.dumps({'message': 'Hubo inconvenientes creando el grupo de paquetes.'})
-	
+    except Exception, e:
+	#return simplejson.dumps({'message': 'Hubo inconvenientes creando el grupo de paquetes: ' + traceback.print_exc()})
+	return simplejson.dumps({'message': 'Hubo inconvenientes creando el grupo de paquetes:  %s' % e})
 	
 @dajaxice_register
 def force_to_be_done(request, item_id):
