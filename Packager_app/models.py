@@ -416,8 +416,14 @@ def GetVideoProfiles(format='ALL'):
     return vp_list
 
 
-def GetImageProfile():
-    return ImageProfile.objects.filter(status='E')
+def GetImageProfile(format='ALL'):
+    if format == 'ALL':
+	return ImageProfile.objects.filter(status='E')
+    elif format == 'SD':
+	return ImageProfile.objects.filter(status='E', format='SD')
+    elif format == 'HD':
+	return ImageProfile.objects.filter(status='E', format='HD')
+	
 
 def GetTranscodingServer():
     return TranscodingServer.objects.filter(status='E')

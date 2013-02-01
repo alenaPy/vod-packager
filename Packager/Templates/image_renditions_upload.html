@@ -28,6 +28,7 @@
 				'uploader' : '/js/uploadify/uploadify.php?item_id='+$("#item_id").val(),
 				'onQueueComplete' : function(queueData) {
 					alert(queueData.uploadsSuccessful + ' files were successfully uploaded.');
+					window.location = '/vod/item/'+$("#item_id").val()
 				}
 			});
 		});

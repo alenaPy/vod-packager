@@ -49,7 +49,6 @@ def bulk_export(request, data):
 
 	return simplejson.dumps({'message': 'La exportacion masiva se ha procesado con exito.'})
     except Exception, e:
-	#return simplejson.dumps({'message': 'Hubo inconvenientes creando el grupo de paquetes: ' + traceback.print_exc()})
 	return simplejson.dumps({'message': 'Hubo inconvenientes creando el grupo de paquetes:  %s' % e})
 	
 @dajaxice_register

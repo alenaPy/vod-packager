@@ -109,8 +109,10 @@ def MakeImageRenditions(RenditionTask=None):
     #
     # Trae la lista de profiles activos
     #
-    IProfileList = models.GetImageProfile()
-    
+    if Item.format == 'HD':
+        IProfileList = models.GetImageProfile()
+    else:
+	IProfileList = models.GetImageProfile('SD')
     #
     # Por cada image profile debe crear el image rendition
     #

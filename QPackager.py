@@ -496,7 +496,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     # 
     CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer)
     for CustomMetadata in CustomMetadataList:
-    	Metatadata.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
+    	MetadataXml.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
     
     
     #
@@ -526,7 +526,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 
     CategoryPath = 'Adults' + MetadataXml.Title.Studio + VideoRendition.video_profile.format + '/' + CustomCategory.name
 
-    if Package.customer.category_with_spaces == 'Y':
+    if Package.customer.category_with_spaces == 'N':
 	MetadataXml.Title.Category	= CategoryPath.replace(' ', '')
     else:
 	MetadataXml.Title.Category	= CategoryPath
