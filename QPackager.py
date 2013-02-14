@@ -16,14 +16,20 @@ from daemon import Daemon
 
 import xml.etree.ElementTree as ET
 
-import os, time, sys
+import string
+import os, time, sys, re
 import logging
+
+from unicodedata import normalize
+
+def normalize_string(unicode_string):
+    return normalize('NFKD', unicode_string).encode('ASCII', 'ignore')
 
 
 ErrorString = ''
 
 
-def MakeAssetId(asset_type='package', asset_id = 0, package_id = 0):
+def MakeAssetId(asset_type='package', asset_id = 0, package_id = 0, reduced = False):
 
     first = '4'
 
@@ -43,7 +49,10 @@ def MakeAssetId(asset_type='package', asset_id = 0, package_id = 0):
         zero = zero + '0'
         i = i + 1
 
-    return 'PBLA' + first + zero + str_id
+    if reduced:
+	return 'PBLA' + first + str_id
+    else:
+	return 'PBLA' + first + zero + str_id
 
 
 
@@ -399,13 +408,21 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	#
 	return None
 
-    MetadataXml = ADIXml.Package(Provider      = 'PBTVLA',
+    Asset_Name_Normalized = normalize_string(MetadataLanguage.title_brief)
+    Asset_Name_Normalized = Asset_Name_Normalized.translate(None, string.punctuation)
+
+    if Package.customer.id_len_reduced == 'Y':
+	Asset_ID	= MakeAssetId('package', VideoRendition.id, Package.id, True)
+    else:
+	Asset_ID	= MakeAssetId('package', VideoRendition.id, Package.id)
+	
+    MetadataXml = ADIXml.Package(Provider      = 'PLAYBOY',
                 		 Product       = Package.customer.product_type,
-                		 Asset_Name    = MetadataLanguage.title_brief.replace(' ', '_'),
+                		 Asset_Name    = Asset_Name_Normalized.replace(' ', '_'),
                 		 Description   = MetadataLanguage.title_brief,
                 		 Creation_Date = str(Package.date_published),
-                		 Provider_ID   = 'playboytvla.com',
-                		 Asset_ID      = MakeAssetId('package', VideoRendition.id, Package.id),
+                		 Provider_ID   = 'PLAYBOY.COM',
+                		 Asset_ID      = Asset_ID,
                 		 App_Data_App  = Package.customer.product_type)
 
 
@@ -415,15 +432,51 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     
 
     MetadataXml.AddTitle()
-    MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', VideoRendition.id, Package.id)
+    if Package.customer.id_len_reduced == 'Y':
+	MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', VideoRendition.id, Package.id, True)
+    else:	
+	MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', VideoRendition.id, Package.id)
 
     
     MetadataXml.Title.Closed_Captioning = 'N'
     MetadataXml.Title.Year		= Package.item.year
-    MetadataXml.Title.Actors		= Package.item.actors
-    MetadataXml.Title.Actors_Display	= Package.item.actors_display
+
+    Actors	= Package.item.actors_display.split(',')
+
+    if Package.customer.actor_display == 'B':
+	MetadataXml.Title.Actors_Display	= Package.item.actors_display
+	
+	for actor in Actors:
+	    while actor.startswith(' '):
+		actor = actor[1:]
+	
+
+	    actor_name = actor.split(' ')
+	    if len(actor_name) >= 2:
+		(name, surname) = actor_name[0], actor_name[1]
+	    else:
+		continue
+		
+	    MetadataXml.Title.AddCustomMetadata('Actors', name + ',' + surname)
+	    
+    elif Package.customer.actor_display == 'Y':
+	for actor in Actors:
+	    while actor.startswith(' '):
+		actor = actor[1:]
+	
+	    	
+	    actor_name = actor.split(' ')
+	    if len(actor_name) >= 2:
+		(name, surname) = actor_name[0], actor_name[1]	
+	    else:
+		continue		    
+	    MetadataXml.Title.AddCustomMetadata('Actors', name + ',' + surname)
+    elif Package.customer.actor_display == 'N':
+	MetadataXml.Title.Actors_Display	= Package.item.actors_display	    
+
     MetadataXml.Title.Director		= Package.item.director
-    MetadataXml.Title.Directors_Display	= Package.item.director
+        
+    
     MetadataXml.Title.Box_Office	= '0'
     if Package.customer.billing_id	!= '':
 	MetadataXml.Title.Billing_ID	= Package.customer.billing_id
@@ -435,7 +488,16 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     MetadataXml.Title.Studio		= Package.item.studio_name #.split(' '))[0]
     MetadataXml.Title.Studio_Name	= Package.item.studio_name
     MetadataXml.Title.Show_Type		= Package.item.show_type
-    MetadataXml.Title.Run_Time		= Package.item.run_time
+    
+
+    if Package.customer.runtype_display == 'S':
+	re_result				= re.match("([0-9][0-9]):([0-9][0-9]):([0-9][0-9])", Package.item.run_time)
+	if re_result:
+	    MetadataXml.Title.Run_Time		= str((int(re_result.group(1)) * 60 * 60) + (int(re_result.group(2)) * 60) + int(re_result.group(3)))
+    else:
+	MetadataXml.Title.Run_Time		= Package.item.run_time
+
+
     MetadataXml.Title.Display_Run_Time	= Package.item.display_run_time
 
 
@@ -467,12 +529,21 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     # Metadata especifica del lenguage
     # 
 
-    MetadataXml.Title.Title_Brief	= MetadataLanguage.title_brief[:19]
-    MetadataXml.Title.Title_Sort_Name	= MetadataLanguage.title_sort_name
-    MetadataXml.Title.Title		= MetadataLanguage.title
+    if Package.customer.titles_in_capital_letter == 'Y':
+	MetadataXml.Title.Title_Brief		= MetadataLanguage.title_brief[:19].upper()
+        MetadataXml.Title.Title_Sort_Name	= MetadataLanguage.title_sort_name.upper()
+        MetadataXml.Title.Title			= MetadataLanguage.title.upper()
+    else:
+	MetadataXml.Title.Title_Brief	= MetadataLanguage.title_brief[:19]
+        MetadataXml.Title.Title_Sort_Name	= MetadataLanguage.title_sort_name
+        MetadataXml.Title.Title		= MetadataLanguage.title
+        
     MetadataXml.Title.Contract_Name	= MetadataLanguage.title
     MetadataXml.Title.Episode_Name	= MetadataLanguage.episode_name
-    MetadataXml.Title.Summary_Long	= MetadataLanguage.summary_long
+
+    if Package.customer.summary_long == 'Y':
+	MetadataXml.Title.Summary_Long	= MetadataLanguage.summary_long
+
     MetadataXml.Title.Summary_Short	= MetadataLanguage.summary_short
     MetadataXml.Title.Summary_Medium	= MetadataLanguage.summary_medium
     
@@ -491,14 +562,6 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	License_Days = 90
 
     
-    # 
-    # Campos inventados por el cliente ???
-    # 
-    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer)
-    for CustomMetadata in CustomMetadataList:
-    	MetadataXml.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
-    
-    
     #
     # Puede que Aca exista un problema con la fecha de activacion
     #
@@ -508,6 +571,11 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     MetadataXml.Title.Licensing_Window_Start = str(Package.date_published + timedelta(days=15))
     MetadataXml.Title.Licensing_Window_End   = str(Package.date_published + timedelta(days=15) + timedelta(days=License_Days))
 
+    #
+    # Borrar
+    #
+    MetadataXml.Title.Licensing_Window_Start = '2013-03-01'
+    MetadataXml.Title.Licensing_Window_End   = '2013-06-01'
     
     if Package.customer.license_date_format == 'DT':
 	MetadataXml.Title.Licensing_Window_Start = MetadataXml.Title.Licensing_Window_Start + 'T00:00:00'
@@ -536,7 +604,18 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 
 
     MetadataXml.AddMovie()
-    MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id, Package.id)
+    if Package.customer.id_len_reduced == 'Y':
+	MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id, Package.id, True)
+    else:
+	MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id, Package.id)
+
+
+    if Package.customer.use_hdcontent_var == 'Y':
+	if VideoRendition.video_profile.format == 'HD':
+	    MetadataXml.Movie.AddCustomMetadata('HDContent', 'Y')
+	else:
+	    MetadataXml.Movie.AddCustomMetadata('HDContent', 'N')
+
 
     MetadataXml.Movie.Content_FileSize 	= str(VideoRendition.file_size)
     MetadataXml.Movie.Content_CheckSum 	= VideoRendition.checksum
@@ -552,14 +631,24 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     MetadataXml.Movie.Languages		= Package.item.content_language.code
 
 
+    if VideoRendition.video_profile.format == 'HD':
+	suffix = '_HD'
+    else:
+	suffix = '_SD'
+
     #
     # Nombre del file se Video
     #
-    if VideoRendition.video_profile.file_extension.startswith('.'):
-        MetadataXml.Movie.Content_Value	= MetadataXml.AMS.Asset_Name + VideoRendition.video_profile.file_extension
+    if Package.customer.limit_content_value == 'N':
+	if VideoRendition.video_profile.file_extension.startswith('.'):
+    	    MetadataXml.Movie.Content_Value	= MetadataXml.AMS.Asset_Name + suffix + VideoRendition.video_profile.file_extension
+	else:
+	    MetadataXml.Movie.Content_Value	= MetadataXml.AMS.Asset_Name + suffix + '.' + VideoRendition.video_profile.file_extension
     else:
-	MetadataXml.Movie.Content_Value	= MetadataXml.AMS.Asset_Name + '.' + VideoRendition.video_profile.file_extension
-
+	if VideoRendition.video_profile.file_extension.startswith('.'):
+    	    MetadataXml.Movie.Content_Value	= MetadataXml.AMS.Asset_Name[:12] + suffix + VideoRendition.video_profile.file_extension
+	else:
+	    MetadataXml.Movie.Content_Value	= MetadataXml.AMS.Asset_Name[:12] + suffix + '.' + VideoRendition.video_profile.file_extension
 
     #
     # Defaults values
@@ -575,8 +664,10 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	else:
 	    MetadataXml.AddBoxCover()
 
-
-	MetadataXml.StillImage.AMS.Asset_ID	  = MakeAssetId('image', VideoRendition.id, Package.id)
+	if Package.customer.id_len_reduced == 'Y':
+	    MetadataXml.StillImage.AMS.Asset_ID	  = MakeAssetId('image', VideoRendition.id, Package.id, True)
+	else:
+	    MetadataXml.StillImage.AMS.Asset_ID	  = MakeAssetId('image', VideoRendition.id, Package.id)
 
 	MetadataXml.StillImage.Content_CheckSum   = ImageRendition.checksum
         MetadataXml.StillImage.Content_FileSize   = str(ImageRendition.file_size)
@@ -585,13 +676,33 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	#
 	# Nombre del file de imagen
 	# 
-	if ImageRendition.image_profile.file_extension.startswith('.'):
-	    MetadataXml.StillImage.Content_Value  = MetadataXml.AMS.Asset_Name +  ImageRendition.image_profile.file_extension
+	
+	if Package.customer.limit_content_value == 'N':
+	    if ImageRendition.image_profile.file_extension.startswith('.'):
+		MetadataXml.StillImage.Content_Value  = MetadataXml.AMS.Asset_Name + suffix + ImageRendition.image_profile.file_extension
+	    else:
+    		MetadataXml.StillImage.Content_Value  = MetadataXml.AMS.Asset_Name + suffix + '.' + ImageRendition.image_profile.file_extension
 	else:
-    	    MetadataXml.StillImage.Content_Value  = MetadataXml.AMS.Asset_Name + '.' + ImageRendition.image_profile.file_extension
+	    if ImageRendition.image_profile.file_extension.startswith('.'):
+		MetadataXml.StillImage.Content_Value  = MetadataXml.AMS.Asset_Name[:12] + suffix + ImageRendition.image_profile.file_extension
+	    else:
+    		MetadataXml.StillImage.Content_Value  = MetadataXml.AMS.Asset_Name[:12] + suffix + '.' + ImageRendition.image_profile.file_extension
+
+	if Package.customer.image_aspect_ratio == 'Y':
+    	    MetadataXml.StillImage.Image_Aspect_Ratio = ImageRendition.image_profile.image_aspect_ratio
 
 
-        MetadataXml.StillImage.Image_Aspect_Ratio = ImageRendition.image_profile.image_aspect_ratio
+    # 
+    # Campos inventados por el cliente ???
+    # 
+    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer)
+    for CustomMetadata in CustomMetadataList:
+	if CustomMetadata.apply_to == 'T':
+    	    MetadataXml.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
+	elif CustmoMetadata.apply_to == 'V':
+	    MetadataXml.Movie.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
+	elif CustmoMetadata.apply_to == 'I':
+	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
 
 
 
@@ -677,6 +788,11 @@ def main():
 		    Package.save()
 		    break
 
+		if VideoRendition.video_profile.format == 'HD':
+		    suffix = '_HD'
+		else:
+		    suffix = '_SD' 
+
 		#
 		# Arma el nombre del Path de Exportacion
 		#
@@ -687,7 +803,7 @@ def main():
 		#
 		# Arma el nombre del Xml de Metadata
 		#
-		PackageXmlFileName = MetadataXml.AMS.Asset_Name + '.xml'
+		PackageXmlFileName = MetadataXml.AMS.Asset_Name + suffix + '.xml'
 		logging.info("main(): Xml Metadata FileName: %s" % PackageXmlFileName)
 		#
 		# Intenta crear el Path de exportacion
@@ -708,7 +824,11 @@ def main():
 		# Exporta el XML en la carpeta
 		#
 #		try:
-		ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName, '1.1')
+
+		if Package.customer.doctype == 'Y':
+		    ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName, '1.1', "<!DOCTYPE ADI SYSTEM \"ADI.DTD\">")
+		else:
+		    ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName, '1.1')
 #		except:
 #		    e = sys.exc_info()[0]
 #		    logging.error('main(): Error creating CablelabsXml: Catch: %s' % str(e))

@@ -12,7 +12,7 @@ from os.path import isfile, join
 
 import json
 import models
-import os
+import os, sys
 
 from Packager_app.search import *
 
@@ -112,8 +112,14 @@ def package_group(request, package_group_id):
     #try:
 	packages_groups = models.PackageGroup.objects.all().order_by('-name')
 	package_group = models.PackageGroup.objects.get(id=package_group_id)
-	item_group = models.ItemGroup.objects.get(key=package_group.name)
-	items = models.Item.objects.filter(group=item_group).order_by('brand')
+
+	#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	# No siempre un grupo de exportacion se corresponde a un item group
+	#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	#item_group = models.ItemGroup.objects.get(key=package_group.name)
+	#items = models.Item.objects.filter(group=item_group).order_by('brand')
+
+	items = models.Item.objects.all()
 	customers = models.Customer.objects.all().order_by('name') 
 	try:
 	    packages = models.Package.objects.filter(group=package_group.id).order_by('item', 'customer')
@@ -126,7 +132,9 @@ def package_group(request, package_group_id):
 	for pkg in packages:
 		if item_id != pkg.item.id:
 			contItems = contItems + 1
-			litem = [int(pkg.item.id), str(pkg.item.name), pkg.item.brand]
+			enc_item_name = str(pkg.item.name)
+			enc_item_name = enc_item_name.encode('ascii', 'ignore')
+			litem = [int(pkg.item.id), enc_item_name, pkg.item.brand]
 			matriz.append((litem, []))
 		item_id = pkg.item.id
 		while item_id == pkg.item.id:
@@ -210,7 +218,9 @@ def dashboard(request):
 	for pkg in packages:
 		if item_id != pkg.item.id:
 			contItems = contItems + 1
-			litem = [int(pkg.item.id), str(pkg.item.name), pkg.item.brand]
+			enc_item_name = pkg.item.name
+			enc_item_name = enc_item_name.encode('ascii', 'ignore')
+			litem = [int(pkg.item.id), enc_item_name, pkg.item.brand]
 			matriz.append((litem, []))
 		item_id = pkg.item.id
 		while item_id == pkg.item.id:
@@ -220,7 +230,7 @@ def dashboard(request):
 
 	return render_to_response('view_dashboard.html', {'packages_group_list': packages_groups_list, 'packages_groups': packages_groups, 'packages': packages, 'customers': customers, 'matriz': matriz}, context_instance=RequestContext(request))
     except:
-	error_msg = "Ha surgido un error mientras se intentaba desplegar la vista dashboard. Por favor contacte al administrador del sistema."
+	error_msg = "Ha surgido un error mientras se intentaba desplegar la vista dashboard. Por favor contacte al administrador del sistema." + str(sys.exc_info()[0])
 	return render_to_response('view_custom_error.html', {'error_msg': error_msg}, context_instance=RequestContext(request))
 
 

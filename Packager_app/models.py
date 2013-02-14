@@ -51,6 +51,7 @@ class Rating(models.Model):
 #
 class CustomMetadata(models.Model):
 	customer					= models.ForeignKey('Customer')
+	apply_to					= models.CharField(max_length=1, default='T', choices=(('I', 'Image'),('T', 'Title'),('V', 'Video')))
 	name						= models.CharField(max_length=256)
 	value						= models.CharField(max_length=256)
 
@@ -58,6 +59,7 @@ class CustomMetadata(models.Model):
 class Customer(models.Model):
 
 	PRODUCT_TYPE = (
+		('TVOD', 'True Video on Demand'),
 		('SVOD', 'Subscription Video On Demand'),
 		('MOD', 'Movie On Demand'),
 	)
@@ -119,7 +121,15 @@ class Customer(models.Model):
 	extended_video_information			= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')))
 	category_with_spaces				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 	category_path_style				= models.CharField(max_length=3, default='DLA', choices=PATH_STYLE)
-	
+	titles_in_capital_letter			= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	use_hdcontent_var				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	doctype						= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	summary_long					= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')))
+	image_aspect_ratio				= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')))
+	actor_display					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No'),('B','Both')))
+	limit_content_value				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	id_len_reduced					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+		
 	def __unicode__(self):
 		return self.name
 

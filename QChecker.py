@@ -75,6 +75,7 @@ def CheckItemStatus():
 
 	ir_total   	= len(IRenditionList)
 	ir_unfilled 	= 0
+	ir_filled	= 0
 	ir_done	   	= 0
 	ir_error   	= 0
 

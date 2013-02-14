@@ -9,7 +9,7 @@ class CustomerAdmin(admin.ModelAdmin):
 	fieldsets = [
 	    ('General info',    {'fields': ['name','vod_active', 'product_type']}),
 	    ('Rental period',   {'fields': ['suggested_price_longform_sd', 'suggested_price_longform_hd', 'suggested_price_shortform_sd', 'suggested_price_shortform_hd', 'billing_id', 'license_window', 'preview_period', 'maximum_viewing_length']}),
-	    ('Media and Metadata Profile',   {'fields': ['video_profile', 'image_profile', 'image_type', 'metadata_profile', 'runtype_display', 'license_date_format', 'rating_display', 'viewing_can_be_resumed', 'extended_video_information', 'category_with_spaces', 'category_path_style']}),
+	    ('Media and Metadata Profile',   {'fields': ['video_profile', 'image_profile', 'image_type', 'metadata_profile', 'runtype_display', 'license_date_format', 'rating_display', 'viewing_can_be_resumed', 'extended_video_information', 'category_with_spaces', 'category_path_style','titles_in_capital_letter', 'use_hdcontent_var', 'doctype', 'summary_long', 'image_aspect_ratio', 'actor_display', 'limit_content_value', 'id_len_reduced']}),
 	    ('Exportation rules',    {'fields': ['export_language','export_format', 'export_folder']}), 
 	]
 	
