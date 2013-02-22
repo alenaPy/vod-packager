@@ -129,6 +129,8 @@ class Customer(models.Model):
 	actor_display					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No'),('B','Both')))
 	limit_content_value				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 	id_len_reduced					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	use_genres_category				= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')))
+	custom_genres					= models.CharField(max_length=20, default='',  blank=True) 
 		
 	def __unicode__(self):
 		return self.name

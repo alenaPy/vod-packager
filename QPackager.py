@@ -11,6 +11,7 @@ setup_environ(settings)
 from Packager_app import models
 
 from cablelabsadi import ADIXml
+from cablelabsadi import RiGHTvAsset
 from datetime import datetime, timedelta
 from daemon import Daemon
 
@@ -34,13 +35,13 @@ def MakeAssetId(asset_type='package', asset_id = 0, package_id = 0, reduced = Fa
     first = '4'
 
     if asset_type == 'package':
-	first = '0'
-    elif asset_type == 'title':
-	first = '1'
-    elif asset_type == 'movie':
 	first = '2'
-    elif asset_type == 'image':
+    elif asset_type == 'title':
 	first = '3'
+    elif asset_type == 'movie':
+	first = '1'
+    elif asset_type == 'image':
+	first = '4'
 
     str_id = str(asset_id) + str(package_id)
     zero = ''
@@ -388,7 +389,100 @@ def GetMetadataLanguage(Item, Language):
 	return None
 
 
+def MakeAdiXmlRiGHTvAsset(Package=None, VideoRendition=None, ImageRendition=None):
+    
+    if Package is None or VideoRendition is None or ImageRendition is None:
+	#
+	# Error
+	#
+	return None
+    
+    MetadataLanguage = GetMetadataLanguage(Package.item, Package.customer.export_language)
+    if MetadataLanguage is None:
+	#
+	# No hay metadata asociada al item
+	#
+	return None
+    
+    MetadataXml = RiGHTvAsset.RiGHTvAssets()
+    #
+    # Se carga el ID
+    #
+    MetadataXml.VideoAssets.ID		= MakeAssetId('package', VideoRendition.id, Package.id)
+    MetadataXml.VideoAssets.ProviderID  = 'PLAYBOY.COM'
+    
+    
+    MetadataXml.VideoAssets.Title	= MetadataLanguage.title
+    MetadataXml.VideoAssets.Description = MetadataLanguage.summary_medium
 
+
+    Asset_Name_Normalized = normalize_string(MetadataLanguage.title)
+    Asset_Name_Normalized = Asset_Name_Normalized.translate(None, string.punctuation)
+    Asset_Name_Normalized = Asset_Name_Normalized.replace(' ', '_')
+
+    #
+    # Metadata Fija
+    #
+    MetadataXml.VideoAssets.ParentalRating	= 'XXX'
+    MetadataXml.VideoAssets.Advisories		= 'Advisories'
+    MetadataXml.VideoAssets.LicensingWindow.StartDateTime
+    MetadataXml.VideoAssets.LicensingWindow.EndDateTime
+
+
+    if VideoRendition.video_profile.format == 'HD':
+	suffix = '_HD'
+    else:
+	suffix = '_SD'
+
+
+
+    MetadataXml.VideoAssets.PosterFiles.Name		= MetadataLanguage.title
+    MetadataXml.VideoAssets.PosterFiles.Description	= MetadataLanguage.title
+    if ImageRendition.image_profile.file_extension.startswith('.'):
+	MetadataXml.VideoAssets.PosterFiles.FileName	= Asset_Name_Normalized + suffix + ImageRendition.image_profile.file_extension
+    else:
+	MetadataXml.VideoAssets.PosterFiles.FileName	= Asset_Name_Normalized + suffix + '.' + ImageRendition.image_profile.file_extension
+
+
+   #
+    # Busca la categoria de acuerdo con el cliente
+    #
+    try:
+        CategoryRelation = models.CategoryRelation.objects.get(category=Package.item.category,customer=Package.customer)
+        CustomCategory = CategoryRelation.custom_category
+    except:
+        CustomCategory = Package.item.category
+        
+	
+    MetadataXml.VideoAssets.AMSPath = CustomCategory.name
+
+    MetadataXml.VideoAssets.addExtraFields('Cast', Package.item.actors_display)
+    MetadataXml.VideoAssets.addExtraFields('Director', Package.item.director)
+    MetadataXml.VideoAssets.addExtraFields('Year', Package.item.year)
+
+    #
+    # Nombre del file se Video
+    #
+    if VideoRendition.video_profile.file_extension.startswith('.'):
+    	    MetadataXml.VideoAssets.MediaFiles.FileName	= Asset_Name_Normalized + suffix + VideoRendition.video_profile.file_extension
+    else:
+	    MetadataXml.VideoAssets.MediaFiles.FileName = Asset_Name_Normalized + suffix + '.' + VideoRendition.video_profile.file_extension
+	    
+    MetadataXml.VideoAssets.MediaFiles.TransferURL = MetadataXml.VideoAssets.MediaFiles.FileName
+    MetadataXml.VideoAssets.MediaFiles.RunTime	   = Package.item.run_time
+    MetadataXml.VideoAssets.MediaFiles.Encryption  = 'none'
+    MetadataXml.VideoAssets.MediaFiles.Encoding    = VideoRendition.video_profile.codec
+    MetadataXml.VideoAssets.MediaFiles.DisplayType = VideoRendition.screen_format 
+    MetadataXml.VideoAssets.MediaFiles.BitRate	   = VideoRendition.video_profile.bit_rate
+    
+    MetadataXml.VideoAssets.MediaFiles.ServiceDistribution.Name = "VOD"
+    MetadataXml.VideoAssets.MediaFiles.ServiceDistribution.Density.Type = "RELATIVE"
+    MetadataXml.VideoAssets.MediaFiles.ServiceDistribution.Density.Value = "100"
+    
+    return MetadataXml
+
+        
+    
 def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 
     if Package is None or VideoRendition is None or ImageRendition is None:
@@ -421,7 +515,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
                 		 Asset_Name    = Asset_Name_Normalized.replace(' ', '_'),
                 		 Description   = MetadataLanguage.title_brief,
                 		 Creation_Date = str(Package.date_published),
-                		 Provider_ID   = 'PLAYBOY.COM',
+                		 Provider_ID   = 'playboy.com',
                 		 Asset_ID      = Asset_ID,
                 		 App_Data_App  = Package.customer.product_type)
 
@@ -598,10 +692,11 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	MetadataXml.Title.Category	= CategoryPath.replace(' ', '')
     else:
 	MetadataXml.Title.Category	= CategoryPath
-	
-    MetadataXml.Title.Genre 	= CustomCategory.name
 
-
+    if Package.customer.use_genres_category == 'Y':
+        MetadataXml.Title.Genre 	= CustomCategory.name
+    else:
+	MetadataXml.Title.Genre		= Package.customer.custom_genres
 
     MetadataXml.AddMovie()
     if Package.customer.id_len_reduced == 'Y':
@@ -779,8 +874,10 @@ def main():
 		    break
 
 		logging.info("main(): Making Package for VideoRendition: %s" % VideoRendition.file_name)
-		MetadataXml 	= MakeAdiXmlCablelabs(Package, VideoRendition, ImageRendition[0])
-		if MetadataXml is None:
+		MetadataXml 	   = MakeAdiXmlCablelabs(Package, VideoRendition, ImageRendition[0])
+		MetadataXmlRiGHT   = MakeAdiXmlRiGHTvAsset(Package,VideoRendition,ImageRendition[0])
+		
+		if MetadataXml is None or MetadataXmlRiGHT is None:
 		    #
 		    # ??? Y el error
 		    #
@@ -800,11 +897,8 @@ def main():
 		PackagePath		= PackagePath + '/' if not PackagePath.endswith('/') else PackagePath
 		
 		logging.info("main(): Package Path: %s" % PackagePath)
-		#
-		# Arma el nombre del Xml de Metadata
-		#
-		PackageXmlFileName = MetadataXml.AMS.Asset_Name + suffix + '.xml'
-		logging.info("main(): Xml Metadata FileName: %s" % PackageXmlFileName)
+		
+		
 		#
 		# Intenta crear el Path de exportacion
 		#
@@ -818,25 +912,27 @@ def main():
 			Package.save()
 			logging.error = ('main(): %s' % ErrorString)
 			break
-    
-    
+		
+		
 		#
-		# Exporta el XML en la carpeta
+		# Arma el nombre del Xml de Metadata
 		#
-#		try:
-
-		if Package.customer.doctype == 'Y':
-		    ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName, '1.1', "<!DOCTYPE ADI SYSTEM \"ADI.DTD\">")
+		if Package.customer.metadata_profile.key == 'RiGHTvAsset5.1':
+		    PackageXmlFileName = MetadataXml.AMS.Asset_Name + suffix + '.ast.xml'
+		    RiGHTvAsset.toAdiFile(MetadataXmlRiGHT, PackagePath + PackageXmlFileName)
+		    
 		else:
-		    ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName, '1.1')
-#		except:
-#		    e = sys.exc_info()[0]
-#		    logging.error('main(): Error creating CablelabsXml: Catch: %s' % str(e))
-#		    Package.status = 'E'
-#		    Package.error = 'main(): Error creating CablelabsXml: Catch: %s' % str(e)
-#		    Package.save()
-#		    continue
-
+		    PackageXmlFileName = MetadataXml.AMS.Asset_Name + suffix + '.xml'
+		    
+		    if Package.customer.doctype == 'Y':
+			ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName, '1.1', "<!DOCTYPE ADI SYSTEM \"ADI.DTD\">")
+		    else:
+			ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName, '1.1')
+		    
+		logging.info("main(): Xml Metadata FileName: %s" % PackageXmlFileName)
+	
+		    
+		    
 		video_local_path = models.GetPath('video_local_path') 
 		image_local_path = models.GetPath('image_local_path')
 

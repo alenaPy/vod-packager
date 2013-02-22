@@ -132,8 +132,9 @@ def package_group(request, package_group_id):
 	for pkg in packages:
 		if item_id != pkg.item.id:
 			contItems = contItems + 1
-			enc_item_name = str(pkg.item.name)
-			enc_item_name = enc_item_name.encode('ascii', 'ignore')
+#			enc_item_name = str(pkg.item.name)
+#			enc_item_name = enc_item_name.encode('ascii', 'ignore')
+			enc_item_name = pkg.item.name.encode('ascii', 'ignore')
 			litem = [int(pkg.item.id), enc_item_name, pkg.item.brand]
 			matriz.append((litem, []))
 		item_id = pkg.item.id
