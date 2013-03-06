@@ -58,7 +58,7 @@ def index(request):
 @csrf_protect
 def items(request):
 
-	items_list = models.Item.objects.all()
+	items_list = models.Item.objects.all().order_by('-creation_date')
 	paginator = Paginator(items_list, 10)
 	
 	page = request.GET.get('page')

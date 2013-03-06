@@ -86,6 +86,7 @@ class Customer(models.Model):
 	)
 
 	PATH_STYLE = (
+		('APC', 'Adultos / Brand / Category'),
 		('DLA', 'DLA Style'),
 		('BFC', 'Brand Format / Category'),
 		('BPC', 'Brand / Category'),
@@ -131,6 +132,7 @@ class Customer(models.Model):
 	id_len_reduced					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 	use_genres_category				= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')))
 	custom_genres					= models.CharField(max_length=20, default='',  blank=True) 
+	empty_product_type				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 		
 	def __unicode__(self):
 		return self.name

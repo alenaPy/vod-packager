@@ -30,6 +30,28 @@ def normalize_string(unicode_string):
 ErrorString = ''
 
 
+def DateCalc(Year = None, Month = None, MonthToAdd = None):
+    if Year is not None and Month is not None and MonthToAdd is not None:
+        tmp   = int((Month + MonthToAdd) / 13)
+        year  = Year + tmp
+        month = int((Month + MonthToAdd) % 12)
+        month = 12 if month == 0 else month
+
+        return year, month
+    return None, None
+
+def GetStartDate(DateStr=''):
+    if DateStr != '':
+
+        result = re.match('([0-9]{4})([0][1-9]|[1][0-2])', DateStr)
+        if result:
+            return result.group(1), result.group(2)
+
+    return None, None		
+    	
+MonthSpanish = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']    	
+    	
+
 def MakeAssetId(asset_type='package', asset_id = 0, package_id = 0, reduced = False):
 
     first = '4'
@@ -409,7 +431,7 @@ def MakeAdiXmlRiGHTvAsset(Package=None, VideoRendition=None, ImageRendition=None
     # Se carga el ID
     #
     MetadataXml.VideoAssets.ID		= MakeAssetId('package', VideoRendition.id, Package.id)
-    MetadataXml.VideoAssets.ProviderID  = 'PLAYBOY.COM'
+    MetadataXml.VideoAssets.ProviderID  = 'Claxson'
     
     
     MetadataXml.VideoAssets.Title	= MetadataLanguage.title
@@ -423,10 +445,33 @@ def MakeAdiXmlRiGHTvAsset(Package=None, VideoRendition=None, ImageRendition=None
     #
     # Metadata Fija
     #
-    MetadataXml.VideoAssets.ParentalRating	= 'XXX'
+    MetadataXml.VideoAssets.ParentalRating	= 'AO'
     MetadataXml.VideoAssets.Advisories		= 'Advisories'
-    MetadataXml.VideoAssets.LicensingWindow.StartDateTime
-    MetadataXml.VideoAssets.LicensingWindow.EndDateTime
+    
+    
+    try:
+	License_Months = int(Package.customer.license_window)
+    except:
+	License_Months = 3
+
+    
+    
+    year, month = GetStartDate(Package.group.name)
+    if year is None or month is None:
+	MetadataXml.VideoAssets.LicensingWindow.StartDateTime   = str(Package.date_published + timedelta(days=15))
+	MetadataXml.VideoAssets.LicensingWindow.EndDateTime     = str(Package.date_published + timedelta(days=15) + timedelta(days=License_Months))
+    else:
+    	MetadataXml.VideoAssets.LicensingWindow.StartDateTime	= year + '-' + month + '-01'
+    	end_year, end_month = DateCalc(int(year), int(month), License_Months)
+    	if end_year is not None and end_month is not None:
+    	    MetadataXml.VideoAssets.LicensingWindow.EndDateTime	= str(end_year) + '-' + (str(end_month) if len(str(end_month)) == 2 else '0'+str(end_month)) +'-01'
+        
+    if Package.customer.license_date_format == 'DT':
+	MetadataXml.VideoAssets.LicensingWindow.StartDateTime  =  MetadataXml.VideoAssets.LicensingWindow.StartDateTime + 'T00:00:00.00Z'
+	MetadataXml.VideoAssets.LicensingWindow.EndDateTime    =  MetadataXml.VideoAssets.LicensingWindow.EndDateTime   + 'T00:00:00.00Z'
+
+    
+    MetadataXml.VideoAssets.AMSPath = 'CLAXSON'
 
 
     if VideoRendition.video_profile.format == 'HD':
@@ -449,12 +494,12 @@ def MakeAdiXmlRiGHTvAsset(Package=None, VideoRendition=None, ImageRendition=None
     #
     try:
         CategoryRelation = models.CategoryRelation.objects.get(category=Package.item.category,customer=Package.customer)
-        CustomCategory = CategoryRelation.custom_category
+        CustomCategory   = CategoryRelation.custom_category
     except:
         CustomCategory = Package.item.category
         
 	
-    MetadataXml.VideoAssets.AMSPath = CustomCategory.name
+#    MetadataXml.VideoAssets.AMSPath = CustomCategory.name
 
     MetadataXml.VideoAssets.addExtraFields('Cast', Package.item.actors_display)
     MetadataXml.VideoAssets.addExtraFields('Director', Package.item.director)
@@ -467,17 +512,26 @@ def MakeAdiXmlRiGHTvAsset(Package=None, VideoRendition=None, ImageRendition=None
     	    MetadataXml.VideoAssets.MediaFiles.FileName	= Asset_Name_Normalized + suffix + VideoRendition.video_profile.file_extension
     else:
 	    MetadataXml.VideoAssets.MediaFiles.FileName = Asset_Name_Normalized + suffix + '.' + VideoRendition.video_profile.file_extension
+
 	    
-    MetadataXml.VideoAssets.MediaFiles.TransferURL = MetadataXml.VideoAssets.MediaFiles.FileName
+    if month is None:
+	month = '01'	    
+    MetadataXml.VideoAssets.MediaFiles.TransferURL = '/contenidos/claxson/' + MonthSpanish[int(month)-1] + '/' + MetadataXml.VideoAssets.MediaFiles.FileName
     MetadataXml.VideoAssets.MediaFiles.RunTime	   = Package.item.run_time
-    MetadataXml.VideoAssets.MediaFiles.Encryption  = 'none'
+    MetadataXml.VideoAssets.MediaFiles.Encryption  = 'Verimatrix'
     MetadataXml.VideoAssets.MediaFiles.Encoding    = VideoRendition.video_profile.codec
-    MetadataXml.VideoAssets.MediaFiles.DisplayType = VideoRendition.screen_format 
-    MetadataXml.VideoAssets.MediaFiles.BitRate	   = VideoRendition.video_profile.bit_rate
+    if VideoRendition.video_profile.format == 'HD':
+	MetadataXml.VideoAssets.MediaFiles.DisplayType = '16:9'
+    else:
+	MetadataXml.VideoAssets.MediaFiles.DisplayType = '4:3'
+	
+    MetadataXml.VideoAssets.MediaFiles.BitRate	   = str(int(VideoRendition.video_profile.bit_rate)*1000)
     
     MetadataXml.VideoAssets.MediaFiles.ServiceDistribution.Name = "VOD"
     MetadataXml.VideoAssets.MediaFiles.ServiceDistribution.Density.Type = "RELATIVE"
     MetadataXml.VideoAssets.MediaFiles.ServiceDistribution.Density.Value = "100"
+    
+
     
     return MetadataXml
 
@@ -511,7 +565,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	Asset_ID	= MakeAssetId('package', VideoRendition.id, Package.id)
 	
     MetadataXml = ADIXml.Package(Provider      = 'PLAYBOY',
-                		 Product       = Package.customer.product_type,
+                		 Product       = Package.customer.product_type if Package.customer.empty_product_type == 'N' else '',
                 		 Asset_Name    = Asset_Name_Normalized.replace(' ', '_'),
                 		 Description   = MetadataLanguage.title_brief,
                 		 Creation_Date = str(Package.date_published),
@@ -651,25 +705,19 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     # Licencia de Visualizacion
     # 
     try:
-	License_Days = int(Package.customer.license_window)
+	License_Months = int(Package.customer.license_window)
     except:
-	License_Days = 90
+	License_Months = 3
 
-    
-    #
-    # Puede que Aca exista un problema con la fecha de activacion
-    #
-    ##############################################################
-    # REVISAR
-    ##############################################################
-    MetadataXml.Title.Licensing_Window_Start = str(Package.date_published + timedelta(days=15))
-    MetadataXml.Title.Licensing_Window_End   = str(Package.date_published + timedelta(days=15) + timedelta(days=License_Days))
-
-    #
-    # Borrar
-    #
-    MetadataXml.Title.Licensing_Window_Start = '2013-03-01'
-    MetadataXml.Title.Licensing_Window_End   = '2013-06-01'
+    year, month = GetStartDate(Package.group.name)
+    if year is None or month is None:
+	MetadataXml.Title.Licensing_Window_Start   = str(Package.date_published + timedelta(days=15))
+	MetadataXml.Title.Licensing_Window_End     = str(Package.date_published + timedelta(days=15) + timedelta(days=License_Months))
+    else:
+    	MetadataXml.Title.Licensing_Window_Start	= year + '-' + month + '-01'
+    	end_year, end_month = DateCalc(int(year), int(month), License_Months)
+    	if end_year is not None and end_month is not None:
+    	    MetadataXml.Title.Licensing_Window_End	= str(end_year) + '-' + (str(end_month) if len(str(end_month)) == 2 else '0'+str(end_month)) +'-01'
     
     if Package.customer.license_date_format == 'DT':
 	MetadataXml.Title.Licensing_Window_Start = MetadataXml.Title.Licensing_Window_Start + 'T00:00:00'
@@ -686,7 +734,11 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
         CustomCategory = Package.item.category
 
 
-    CategoryPath = 'Adults' + MetadataXml.Title.Studio + VideoRendition.video_profile.format + '/' + CustomCategory.name
+    if Package.customer.category_path_style == 'APC':
+	CategoryPath = 'Adultos' + '/' + MetadataXml.Title.Studio + VideoRendition.video_profile.format + '/' + CustomCategory.name
+    elif Package.customer.category_path_style == 'DLA':
+	CategoryPath = 'Adults' + MetadataXml.Title.Studio + VideoRendition.video_profile.format + '/' + CustomCategory.name
+
 
     if Package.customer.category_with_spaces == 'N':
 	MetadataXml.Title.Category	= CategoryPath.replace(' ', '')
@@ -697,6 +749,9 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
         MetadataXml.Title.Genre 	= CustomCategory.name
     else:
 	MetadataXml.Title.Genre		= Package.customer.custom_genres
+
+
+
 
     MetadataXml.AddMovie()
     if Package.customer.id_len_reduced == 'Y':

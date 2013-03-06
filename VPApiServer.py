@@ -201,9 +201,9 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	    MetadataLanguage.title_brief 	= ItemMetadataLan["title_brief"]
 	    MetadataLanguage.title 		= ItemMetadataLan["title"]
 	    MetadataLanguage.episode_title 	= ItemMetadataLan["episode_title"]
-	    MetadataLanguage.summary_long 	= ItemMetadataLan["summary_long"]
-	    MetadataLanguage.summary_medium 	= ItemMetadataLan["summary_short"]
-	    MetadataLanguage.summary_short 	= ItemMetadataLan["summary_short"]
+	    MetadataLanguage.summary_long 	= Item.brand.upper() + ' - ' + ItemMetadataLan["summary_long"]
+	    MetadataLanguage.summary_medium 	= Item.brand.upper() + ' - ' + ItemMetadataLan["summary_short"]
+	    MetadataLanguage.summary_short 	= Item.brand.upper() + ' - ' + ItemMetadataLan["summary_short"]
 	    MetadataLanguage.save()
 	    
 	except:
