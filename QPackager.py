@@ -434,7 +434,7 @@ def MakeAdiXmlRiGHTvAsset(Package=None, VideoRendition=None, ImageRendition=None
     MetadataXml.VideoAssets.ProviderID  = 'Claxson'
     
     
-    MetadataXml.VideoAssets.Title	= MetadataLanguage.title
+    MetadataXml.VideoAssets.Title	= MetadataLanguage.title.upper()
     MetadataXml.VideoAssets.Description = MetadataLanguage.summary_medium
 
 
@@ -480,16 +480,18 @@ def MakeAdiXmlRiGHTvAsset(Package=None, VideoRendition=None, ImageRendition=None
 	suffix = '_SD'
 
 
-
-    MetadataXml.VideoAssets.PosterFiles.Name		= MetadataLanguage.title
-    MetadataXml.VideoAssets.PosterFiles.Description	= MetadataLanguage.title
-    if ImageRendition.image_profile.file_extension.startswith('.'):
-	MetadataXml.VideoAssets.PosterFiles.FileName	= Asset_Name_Normalized + suffix + ImageRendition.image_profile.file_extension
-    else:
-	MetadataXml.VideoAssets.PosterFiles.FileName	= Asset_Name_Normalized + suffix + '.' + ImageRendition.image_profile.file_extension
+# Sacar Poster File
 
 
-   #
+#    MetadataXml.VideoAssets.PosterFiles.Name		= MetadataLanguage.title
+#    MetadataXml.VideoAssets.PosterFiles.Description	= MetadataLanguage.title
+#    if ImageRendition.image_profile.file_extension.startswith('.'):
+#	MetadataXml.VideoAssets.PosterFiles.FileName	= Asset_Name_Normalized + suffix + ImageRendition.image_profile.file_extension
+#    else:
+#	MetadataXml.VideoAssets.PosterFiles.FileName	= Asset_Name_Normalized + suffix + '.' + ImageRendition.image_profile.file_extension
+
+
+    #
     # Busca la categoria de acuerdo con el cliente
     #
     try:
@@ -516,16 +518,19 @@ def MakeAdiXmlRiGHTvAsset(Package=None, VideoRendition=None, ImageRendition=None
 	    
     if month is None:
 	month = '01'	    
-    MetadataXml.VideoAssets.MediaFiles.TransferURL = '/contenidos/claxson/' + MonthSpanish[int(month)-1] + '/' + MetadataXml.VideoAssets.MediaFiles.FileName
+
+#    MetadataXml.VideoAssets.MediaFiles.TransferURL = '/contenidos/claxson/' + MonthSpanish[int(month)-1] + '/' + MetadataXml.VideoAssets.MediaFiles.FileName
+    MetadataXml.VideoAssets.MediaFiles.TransferURL = '/contenidos/claxson/' + MetadataXml.VideoAssets.MediaFiles.FileName
     MetadataXml.VideoAssets.MediaFiles.RunTime	   = Package.item.run_time
     MetadataXml.VideoAssets.MediaFiles.Encryption  = 'Verimatrix'
-    MetadataXml.VideoAssets.MediaFiles.Encoding    = VideoRendition.video_profile.codec
+    MetadataXml.VideoAssets.MediaFiles.Encoding    = 'MPEG-4'
     if VideoRendition.video_profile.format == 'HD':
 	MetadataXml.VideoAssets.MediaFiles.DisplayType = '16:9'
     else:
 	MetadataXml.VideoAssets.MediaFiles.DisplayType = '4:3'
 	
-    MetadataXml.VideoAssets.MediaFiles.BitRate	   = str(int(VideoRendition.video_profile.bit_rate)*1000)
+    MetadataXml.VideoAssets.MediaFiles.BitRate	   = '2345235'	
+#    MetadataXml.VideoAssets.MediaFiles.BitRate	   = str(int(VideoRendition.video_profile.bit_rate)*1000)
     
     MetadataXml.VideoAssets.MediaFiles.ServiceDistribution.Name = "VOD"
     MetadataXml.VideoAssets.MediaFiles.ServiceDistribution.Density.Type = "RELATIVE"
@@ -843,9 +848,20 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 
 
     # 
-    # Campos inventados por el cliente ???
+    # Campos inventados por el cliente sin dependencia de marca o formato
     # 
-    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer)
+    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition='', format_condition='')
+    for CustomMetadata in CustomMetadataList:
+	if CustomMetadata.apply_to == 'T':
+    	    MetadataXml.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
+	elif CustmoMetadata.apply_to == 'V':
+	    MetadataXml.Movie.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
+	elif CustmoMetadata.apply_to == 'I':
+	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
+
+
+     
+    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition=Package.item.brand, format_condition=VideoRendition.video_profile.format)
     for CustomMetadata in CustomMetadataList:
 	if CustomMetadata.apply_to == 'T':
     	    MetadataXml.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)

@@ -53,6 +53,8 @@ class CustomMetadata(models.Model):
 	customer					= models.ForeignKey('Customer')
 	apply_to					= models.CharField(max_length=1, default='T', choices=(('I', 'Image'),('T', 'Title'),('V', 'Video')))
 	name						= models.CharField(max_length=256)
+	brand_condition					= models.CharField(max_length=30, blank=True)
+	format_condition				= models.CharField(max_length=2, choices=FORMAT, blank=True)
 	value						= models.CharField(max_length=256)
 
 
@@ -164,7 +166,7 @@ class Item(models.Model):
 	name				= models.CharField(max_length=256)
 	creation_date			= models.DateTimeField(auto_now_add=True)
 	modification_date		= models.DateTimeField(auto_now=True)	
-	kill_date 			= models.DateTimeField(default=datetime.now()+timedelta(days=45))
+	kill_date 			= models.DateTimeField(default=datetime.now()+timedelta(days=60))
 	format				= models.CharField(max_length=2, choices=FORMAT)
 	status 				= models.CharField(max_length=2, choices=ITEM_STATUS)
 	content_language		= models.ForeignKey('Language')

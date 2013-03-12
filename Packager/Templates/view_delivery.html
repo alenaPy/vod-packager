@@ -42,7 +42,8 @@
 	{% for item in items %}
 	    <tr id="item_{{item.id}}" brand="{{item.brand}}" class="trItemTitle">
 	        <td class="tdItemTitle">
-	    	    <a href="javascript: selectItemFormExport('{{item.id}}');">{{item.name}}</a>
+		    <a href="http://10.3.0.166/vod/item/{{item.id}}">{{item.name}}</a>
+<!--	    	    <a href="javascript: selectItemFormExport('{{item.id}}');">{{item.name}}</a> -->
 	    	</td>
 	        {% for customer in customers %}
 	    	    <td class="tdPackageStatus" style="text-align:right; padding-right: 3px;">
