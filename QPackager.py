@@ -633,8 +633,6 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     MetadataXml.Title.Box_Office	= '0'
     if Package.customer.billing_id	!= '':
 	MetadataXml.Title.Billing_ID	= Package.customer.billing_id
-    else:
-	MetadataXml.Title.Billing_ID	= '00001'
 
     MetadataXml.Title.Episode_ID	= Package.item.episode_id
     MetadataXml.Title.Country_of_Origin = Package.item.country_of_origin.code
@@ -743,7 +741,9 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	CategoryPath = 'Adultos' + '/' + MetadataXml.Title.Studio + VideoRendition.video_profile.format + '/' + CustomCategory.name
     elif Package.customer.category_path_style == 'DLA':
 	CategoryPath = 'Adults' + MetadataXml.Title.Studio + VideoRendition.video_profile.format + '/' + CustomCategory.name
-
+    elif Package.customer.category_path_style == 'AM':
+	CategoryPath = 'Adultos' + '/' + MetadataXml.Title.Studio + VideoRendition.video_profile.format
+	
 
     if Package.customer.category_with_spaces == 'N':
 	MetadataXml.Title.Category	= CategoryPath.replace(' ', '')

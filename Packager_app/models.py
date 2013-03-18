@@ -93,6 +93,7 @@ class Customer(models.Model):
 		('BFC', 'Brand Format / Category'),
 		('BPC', 'Brand / Category'),
 		('FPC', 'Format / Category'),
+		('AM',  'Adultos / Brand'),
 	)
 	
 	name 						= models.CharField(max_length=256)
@@ -365,7 +366,8 @@ class VideoProfile(models.Model):
 	frame_rate					= models.CharField(max_length=2)
 	codec						= models.CharField(max_length=64)
 	bit_rate					= models.CharField(max_length=64)
-
+	need_to_be_checked				= models.CharField(max_length=1, choices=(('T', 'True'),('F', 'False')))
+	
 	def __unicode__(self):
 		return self.name
 

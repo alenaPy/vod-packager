@@ -197,6 +197,8 @@ def CheckVideoRenditionStatus():
 	logging.info("CheckVideoRenditionStatus(): Transcoding Server: " + VRendition.transcoding_server.ip_address)
 	logging.info("CheckVideoRenditionStatus(): Job GUID: " + VRendition.transcoding_job_guid)
 	
+	
+	
 	JobState = GetJobState(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 	
 	if JobState == 'NEX_JOB_COMPLETED':
@@ -206,33 +208,39 @@ def CheckVideoRenditionStatus():
 	    # Comprueba la existencia del File
 	    #
 	    logging.info("CheckVideoRenditionStatus(): Video Rendition finish transcoding: " + VRendition.file_name)
+	
+	    if VRendition.video_profile.need_to_be_checked == 'T': 
+	
 	    
-	    if FileExist(video_local_path, VRendition.file_name):
-		#
-		# Si el archivo existe
-		#
-		# - Calcula su checksum
-		# - Calcula su filesize
-		# - Establece su Status en F -> Finished
+		if FileExist(video_local_path, VRendition.file_name):
+		    #
+		    # Si el archivo existe
+		    #
+		    # - Calcula su checksum
+		    # - Calcula su filesize
+		    # - Establece su Status en F -> Finished
 	    
-	        VRendition.checksum = md5checksum.md5_checksum(video_local_path + VRendition.file_name)
-		logging.debug("CheckVideoRenditionStatus(): Video Rendition Checksum: " + VRendition.file_name + "," + VRendition.checksum)	
+	    	    VRendition.checksum = md5checksum.md5_checksum(video_local_path + VRendition.file_name)
+		    logging.debug("CheckVideoRenditionStatus(): Video Rendition Checksum: " + VRendition.file_name + "," + VRendition.checksum)	
 		
-		VRendition.file_size = os.stat(video_local_path + VRendition.file_name).st_size
-		logging.debug("CheckVideoRenditionStatus(): Video Rendition FileSize: " + VRendition.file_name + "," + str(VRendition.file_size))
+		    VRendition.file_size = os.stat(video_local_path + VRendition.file_name).st_size
+		    logging.debug("CheckVideoRenditionStatus(): Video Rendition FileSize: " + VRendition.file_name + "," + str(VRendition.file_size))
 		
-		VRendition.status   = 'F'
-		VRendition.save()
+		    VRendition.status   = 'F'
+		    VRendition.save()
 		
-		logging.info("CheckVideoRenditionStatus(): Video Rendition finish all procesing: " + VRendition.file_name)
+		    logging.info("CheckVideoRenditionStatus(): Video Rendition finish all procesing: " + VRendition.file_name)
+		else:
+		    #
+		    # Si el archivo no existe es porque se produjo un error
+		    #
+		    logging.error("CheckVideoRenditionStatus(): Video Rendition not exist: [FILE]-> " + VRendition.file_name + ", [PATH]-> " + video_local_path)
+		    VRendition.status   = 'E'
+		    VRendition.error    = "Video Rendition not exist: [FILE]-> " + VRendition.file_name + ", [PATH]-> " + video_local_path
+		    VRendition.save()    
 	    else:
-		#
-		# Si el archivo no existe es porque se produjo un error
-		#
-		logging.error("CheckVideoRenditionStatus(): Video Rendition not exist: [FILE]-> " + VRendition.file_name + ", [PATH]-> " + video_local_path)
-		VRendition.status   = 'E'
-		VRendition.error    = "Video Rendition not exist: [FILE]-> " + VRendition.file_name + ", [PATH]-> " + video_local_path
-		VRendition.save()    
+		VRendition.status = 'F'
+		VRendition.save()
 	    
         else:
     	    if JobState == 'NEX_JOB_ERROR':
