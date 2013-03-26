@@ -262,6 +262,7 @@ class VideoRendition(models.Model):
 		('Q', 'Queued'),
 		('F', 'Finished'),
 		('E', 'Error'),
+		('C', 'Cancel'),
 	)
 	file_name				= models.CharField(max_length=256)
 	video_profile				= models.ForeignKey('VideoProfile')

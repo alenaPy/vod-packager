@@ -14,6 +14,8 @@ start() {
     python QPackager.py start
     echo "Starting Vod Packager Api Server"
     python VPApiServer.py start
+    echo "Starting Queue Purge Daemon"
+    python QPurge.py start
 }
 
 
@@ -26,6 +28,8 @@ stop() {
     python QPackager.py stop
     echo "Stopping Vod Packager Api Server"
     python VPApiServer.py stop
+    echo "Stopping Queue Purge Daemon"
+    python QPurge.py stop
 }
 
 
@@ -34,10 +38,12 @@ status() {
     python QImport.py status
     echo -n "Queue Checker Status: "
     python QChecker.py status
-    echo -n "Queue Packager Ststua: "
+    echo -n "Queue Packager Status: "
     python QPackager.py status
     echo -n "Vod Packager Api Server Status: "
     python VPApiServer.py status
+    echo -n "Queue Purge Status: "
+    python QPurge.py status
     
 }
 

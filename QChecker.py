@@ -47,6 +47,10 @@ def GetJobState(transcoder_ip, job_guid):
     
     return Job.GetState()
 
+def StopJob(transcoder_ip, job_guid):
+    carbon = CarbonSocketLayer(transcoder_ip)
+    Job = CarbonJob(carbon, job_guid)
+    Job.Stop()
 
 
 def CheckItemStatus():
@@ -166,6 +170,48 @@ def CheckImageRenditionStatus():
     return True
 
 
+
+def CancelVideoRenditions():
+    
+    logging.info("CancelVideoRendition(): Start Canceling Video Rendition")
+    
+    video_local_path = models.GetPath("video_local_path")
+
+
+    
+    if video_local_path is None:
+	logging.error("CanceVideoRenditions(): Config Error, video_local_path not defined")
+	return False
+
+    logging.debug("CancelVideoRenditions(): video_local_path: " + video_local_path)
+
+    #
+    # Agrega / si no es que exite al final
+    #
+    if not video_local_path.endswith('/'):
+	video_local_path = video_local_path + '/'
+    
+
+    for VRendition in models.VideoRendition.objects.filter(status='C'):
+    
+	JobState = GetJobState(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
+	
+	if JobState == 'NEX_JOB_COMPLETED':
+	    #
+	    # Si el Job termino de procesarse
+	    # 
+	    logging.info("CancelVideoRenditions(): Video Rendition finish transcoding: " + VRendition.file_name)
+	    os.unlink(video_local_path + VRendition.file_name)
+	
+	else:
+	    logging.info("Stopping Job " + VRendition.file_name)
+	    StopJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
+	        
+	VRendition.delete()
+	
+	
+	
+
 def CheckVideoRenditionStatus():
     
     logging.info("CheckVideoRenditionStatus(): Start Check Video Rendition Status")
@@ -271,6 +317,8 @@ def main():
     end = False
 
     while not end:
+	CancelVideoRenditions()
+    
 	if not CheckVideoRenditionStatus():
 	    logging.error("main(): Critical error, please check your config [SHUTDOWN]")
 	    end = True
@@ -281,7 +329,7 @@ def main():
 	    continue
 
 	CheckItemStatus()
-	time.sleep(300)
+	time.sleep(900)
 
 class main_daemon(Daemon):
     def run(self):
