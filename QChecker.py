@@ -200,11 +200,11 @@ def CancelVideoRenditions():
 	    #
 	    # Si el Job termino de procesarse
 	    # 
-	    logging.info("CancelVideoRenditions(): Video Rendition finish transcoding: " + VRendition.file_name)
+	    logging.info("CancelVideoRenditions(): Video Rendition finish transcoding: -> Unlink: " + VRendition.file_name)
 	    os.unlink(video_local_path + VRendition.file_name)
 	
 	else:
-	    logging.info("Stopping Job " + VRendition.file_name)
+	    logging.info("CancelVideoRenditions(): Stopping Job: " + VRendition.transcoding_job_guid + " Server: " + VRendition.transcoding_server_ip_address )
 	    StopJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 	        
 	VRendition.delete()

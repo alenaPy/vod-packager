@@ -568,13 +568,18 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	Asset_ID	= MakeAssetId('package', VideoRendition.id, Package.id, True)
     else:
 	Asset_ID	= MakeAssetId('package', VideoRendition.id, Package.id)
+
+    if Package.customer.provider_id_with_brand == 'Y':
+	Provider_ID = 'playboy.' + Package.item.brand.replace(' ', '').upper()
+    else:
+	Provider_ID = 'playboy.com'
 	
     MetadataXml = ADIXml.Package(Provider      = 'PLAYBOY',
                 		 Product       = Package.customer.product_type if Package.customer.empty_product_type == 'N' else '',
                 		 Asset_Name    = Asset_Name_Normalized.replace(' ', '_'),
                 		 Description   = MetadataLanguage.title_brief,
                 		 Creation_Date = str(Package.date_published),
-                		 Provider_ID   = 'playboy.com',
+                		 Provider_ID   = Provider_ID,
                 		 Asset_ID      = Asset_ID,
                 		 App_Data_App  = Package.customer.product_type)
 
@@ -635,7 +640,12 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	MetadataXml.Title.Billing_ID	= Package.customer.billing_id
 
     MetadataXml.Title.Episode_ID	= Package.item.episode_id
-    MetadataXml.Title.Country_of_Origin = Package.item.country_of_origin.code
+
+    if Package.customer.use_three_chars_country == 'Y':
+	MetadataXml.Title.Country_of_Origin = Package.item.country_of_origin.code_three_chars
+    else:
+	MetadataXml.Title.Country_of_Origin = Package.item.country_of_origin.code
+
     MetadataXml.Title.Studio		= Package.item.studio_name #.split(' '))[0]
     MetadataXml.Title.Studio_Name	= Package.item.studio_name
     MetadataXml.Title.Show_Type		= Package.item.show_type
@@ -692,11 +702,16 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     MetadataXml.Title.Contract_Name	= MetadataLanguage.title
     MetadataXml.Title.Episode_Name	= MetadataLanguage.episode_name
 
-    if Package.customer.summary_long == 'Y':
-	MetadataXml.Title.Summary_Long	= MetadataLanguage.summary_long
+    if Package.customer.brand_in_synopsis == 'Y':
+	PreSynopsis = Package.item.brand.upper() + ' - '
+    else:
+	PreSynopsis = ''
 
-    MetadataXml.Title.Summary_Short	= MetadataLanguage.summary_short
-    MetadataXml.Title.Summary_Medium	= MetadataLanguage.summary_medium
+    if Package.customer.summary_long == 'Y':
+	MetadataXml.Title.Summary_Long	= PreSynopsis + MetadataLanguage.summary_long
+
+    MetadataXml.Title.Summary_Short	= PreSynopsis + MetadataLanguage.summary_short
+    MetadataXml.Title.Summary_Medium	= PreSynopsis + MetadataLanguage.summary_medium
     
     #
     # Metadata Variable por Cliente
@@ -993,7 +1008,10 @@ def main():
 		    RiGHTvAsset.toAdiFile(MetadataXmlRiGHT, PackagePath + PackageXmlFileName)
 		    
 		else:
-		    PackageXmlFileName = MetadataXml.AMS.Asset_Name + suffix + '.xml'
+		    if Package.customer.use_xml_adi_filename == 'Y':
+			PackageXmlFileName = 'adi.xml'
+		    else:
+			PackageXmlFileName = MetadataXml.AMS.Asset_Name + suffix + '.xml'
 		    
 		    if Package.customer.doctype == 'Y':
 			ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName, '1.1', "<!DOCTYPE ADI SYSTEM \"ADI.DTD\">")

@@ -26,6 +26,7 @@ class ItemGroup(models.Model):
 
 class Country(models.Model):
 	code						= models.CharField(max_length=2)
+	code_three_chars				= models.CharField(max_length=3, blank=True)
 	country						= models.CharField(max_length=255)
 
 	def __unicode__(self):
@@ -136,6 +137,10 @@ class Customer(models.Model):
 	use_genres_category				= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')))
 	custom_genres					= models.CharField(max_length=20, default='',  blank=True) 
 	empty_product_type				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	use_xml_adi_filename				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	use_three_chars_country				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	provider_id_with_brand				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	brand_in_synopsis				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 		
 	def __unicode__(self):
 		return self.name

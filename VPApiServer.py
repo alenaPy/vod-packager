@@ -146,7 +146,9 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     # Busca el Country of Origin
     #
     try:
+	print ItemMetadata["country_of_origin"].upper()
 	Country	= models.Country.objects.get(code=ItemMetadata["country_of_origin"].upper())
+	
     except:
 	#
 	# Si no existe hay un error, pero por default busca US y lo asigna, y sino, lo crea
@@ -201,9 +203,9 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	    MetadataLanguage.title_brief 	= ItemMetadataLan["title_brief"]
 	    MetadataLanguage.title 		= ItemMetadataLan["title"]
 	    MetadataLanguage.episode_title 	= ItemMetadataLan["episode_title"]
-	    MetadataLanguage.summary_long 	= Item.brand.upper() + ' - ' + ItemMetadataLan["summary_long"]
-	    MetadataLanguage.summary_medium 	= Item.brand.upper() + ' - ' + ItemMetadataLan["summary_short"]
-	    MetadataLanguage.summary_short 	= Item.brand.upper() + ' - ' + ItemMetadataLan["summary_short"]
+	    MetadataLanguage.summary_long 	= ItemMetadataLan["summary_long"]
+	    MetadataLanguage.summary_medium 	= ItemMetadataLan["summary_short"]
+	    MetadataLanguage.summary_short 	= ItemMetadataLan["summary_short"]
 	    MetadataLanguage.save()
 	    
 	except:
