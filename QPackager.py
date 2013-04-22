@@ -12,8 +12,10 @@ from Packager_app import models
 
 from cablelabsadi import ADIXml
 from cablelabsadi import RiGHTvAsset
+from cablelabsadi import NepeXml
 from datetime import datetime, timedelta
 from daemon import Daemon
+
 
 import xml.etree.ElementTree as ET
 
@@ -410,6 +412,91 @@ def GetMetadataLanguage(Item, Language):
     except:
 	return None
 
+
+
+def MakeAdiXmlNepe(Package=None, VideoRendition=None, ImageRendition=None):
+
+    if Package is None or VideoRendition is None or ImageRendition is None:
+	#
+	# Error
+	#
+	return None
+    
+    MetadataLanguage = GetMetadataLanguage(Package.item, Package.customer.export_language)
+    if MetadataLanguage is None:
+	#
+	# No hay metadata asociada al item
+	#
+	return None
+
+    MetadataXml = NepeXml.NepeXml()
+
+    MetadataXml.ItemID = Package.item.mam_id
+    
+    
+    try:
+	License_Months = int(Package.customer.license_window)
+    except:
+	License_Months = 3
+    
+    year, month = GetStartDate(Package.group.name)
+    if year is None or month is None:
+	MetadataXml.StartWindow = str(Package.date_published + timedelta(days=15))
+	MetadataXml.EndWindow   = str(Package.date_published + timedelta(days=15) + timedelta(days=License_Months))
+    else:
+    	MetadataXml.StartWindow = year + '-' + month + '-01'
+    	end_year, end_month = DateCalc(int(year), int(month), License_Months)
+    	if end_year is not None and end_month is not None:
+    	    MetadataXml.EndWindow = str(end_year) + '-' + (str(end_month) if len(str(end_month)) == 2 else '0'+str(end_month)) +'-01'
+    
+    #
+    # Busca la categoria de acuerdo con el cliente
+    #
+    try:
+        CategoryRelation = models.CategoryRelation.objects.get(category=Package.item.category,customer=Package.customer)
+        CustomCategory   = CategoryRelation.custom_category
+    except:
+        CustomCategory = Package.item.category
+    
+    MetadataXml.ExportDate  = str(Package.date_published)
+    MetadataXml.Distributor = "Playboy"
+    MetadataXml.ContentType = 'Movie'
+    MetadataXml.Title = MetadataLanguage.title
+    MetadataXml.OriginalTitle = Package.item.name 
+    MetadataXml.ShotDescription = MetadataLanguage.summary_short
+    MetadataXml.LongDescription = MetadataLanguage.summary_long
+    MetadataXml.Country   = Package.item.country_of_origin.code
+    MetadataXml.Actors    = Package.item.actors_display
+    MetadataXml.Directors = Package.item.director
+    MetadataXml.Brand     = Package.item.brand
+    MetadataXml.Category  = CustomCategory.name
+    MetadataXml.Duration  = Package.item.run_time
+    MetadataXml.Standard  = VideoRendition.video_profile.format
+    MetadataXml.Rating    = 'XXX'
+    MetadataXml.AudioType = 'Stereo'
+    MetadataXml.VideoFormat = VideoRendition.video_profile.codec
+    
+    suffix = '_' + MetadataXml.Standard
+
+
+    Asset_Name_Normalized = normalize_string(MetadataLanguage.title)
+    Asset_Name_Normalized = Asset_Name_Normalized.translate(None, string.punctuation)
+    Asset_Name_Normalized = Asset_Name_Normalized.replace(' ', '_')
+
+    
+    if VideoRendition.video_profile.file_extension.startswith('.'):
+        MetadataXml.VideoFile	= Asset_Name_Normalized + suffix + VideoRendition.video_profile.file_extension
+    else:
+        MetadataXml.VideoFile	= Asset_Name_Normalized + suffix + '.' + VideoRendition.video_profile.file_extension
+    
+    if ImageRendition.image_profile.file_extension.startswith('.'):
+	MetadataXml.ImageFile   = Asset_Name_Normalized + suffix + ImageRendition.image_profile.file_extension
+    else:
+	MetadataXml.ImageFile   = Asset_Name_Normalized + suffix + '.' + ImageRendition.image_profile.file_extension
+	
+
+    return MetadataXml
+    
 
 def MakeAdiXmlRiGHTvAsset(Package=None, VideoRendition=None, ImageRendition=None):
     
@@ -962,6 +1049,7 @@ def main():
 		logging.info("main(): Making Package for VideoRendition: %s" % VideoRendition.file_name)
 		MetadataXml 	   = MakeAdiXmlCablelabs(Package, VideoRendition, ImageRendition[0])
 		MetadataXmlRiGHT   = MakeAdiXmlRiGHTvAsset(Package,VideoRendition,ImageRendition[0])
+		MetadataXmlNepe    = MakeAdiXmlNepe(Package,VideoRendition,ImageRendition[0])
 		
 		if MetadataXml is None or MetadataXmlRiGHT is None:
 		    #
@@ -1006,7 +1094,10 @@ def main():
 		if Package.customer.metadata_profile.key == 'RiGHTvAsset5.1':
 		    PackageXmlFileName = MetadataXml.AMS.Asset_Name + suffix + '.ast.xml'
 		    RiGHTvAsset.toAdiFile(MetadataXmlRiGHT, PackagePath + PackageXmlFileName)
-		    
+		
+		elif Package.customer.metadata_profile.key == 'NepeXml':
+		    PackageXmlFileName = MetadataXml.AMS.Asset_Name + suffix + '.nepe.xml'
+		    NepeXml.toAdiFile(MetadataXmlNepe, PackagePath + PackageXmlFileName)    
 		else:
 		    if Package.customer.use_xml_adi_filename == 'Y':
 			PackageXmlFileName = 'adi.xml'
