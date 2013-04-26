@@ -463,7 +463,7 @@ def MakeAdiXmlNepe(Package=None, VideoRendition=None, ImageRendition=None):
     MetadataXml.ContentType = 'Movie'
     MetadataXml.Title = MetadataLanguage.title
     MetadataXml.OriginalTitle = Package.item.name 
-    MetadataXml.ShotDescription = MetadataLanguage.summary_short
+    MetadataXml.ShortDescription = MetadataLanguage.summary_short
     MetadataXml.LongDescription = MetadataLanguage.summary_long
     MetadataXml.Country   = Package.item.country_of_origin.code
     MetadataXml.Actors    = Package.item.actors_display
