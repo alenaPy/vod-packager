@@ -363,7 +363,7 @@ class VideoProfile(models.Model):
 	sufix 						= models.CharField(max_length=32)
 	format 						= models.CharField(max_length=2, choices=FORMAT)
 	notes 						= models.CharField(max_length=512)
-
+	is_master					= models.CharField(max_length=1, choices=(('Y', 'Yes'),('N', 'No')), default='N')
 	#
 	# Cablelabs Metadata for Movie Item
 	#

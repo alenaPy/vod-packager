@@ -62,9 +62,19 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     #
     # Se crea un nuevo Item
     #
-    Item 			= models.Item()
+
+    try:
+	Item = models.Item.objects.get(name=ItemMetadata["name"])
+	RQueue = models.RenditionQueue.objects.get(item=Item)
+	RQueue.queue_status = 'Q'
+	RQueue.save() 
+	return True
+    except: 
+	Item 			= models.Item()
 
     logging.info("Creating new Item")
+
+    
 
     #
     # Se cargan los Datos Basicos
@@ -72,6 +82,8 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     Item.name 			= ItemMetadata["name"]
     Item.format 		= ItemMetadata["format"]
     Item.material_type		= ItemMetadata["material_type"]
+    
+    
     
     
     try:
