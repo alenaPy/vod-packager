@@ -217,6 +217,7 @@ class Item(models.Model):
 
 	episode_name			= models.CharField(max_length=255, blank=True)
 	episode_id			= models.CharField(max_length=60, blank=True)
+	especial			= models.CharField(max_length=1, choices=(('Y', 'Yes'),('N', 'No')), default='N')
 	category			= models.ForeignKey('Category')
 	audience			= models.CharField(max_length=32, blank=True, default='Adult')
 

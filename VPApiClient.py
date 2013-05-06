@@ -13,6 +13,7 @@ def ItemMetadata():
 		 ('display_runtime', ''),
 		 ('episode_name', ''),
 		 ('episode_id', ''),
+	         ('especial', ''),
 		 ('category', ''),
 		 ('show_type', ''),
 		 ('rating', ''),

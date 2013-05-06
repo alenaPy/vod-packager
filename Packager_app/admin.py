@@ -19,7 +19,7 @@ class ItemAdmin(admin.ModelAdmin):
 	fieldsets = [
 	    ('General info',	{'fields': ['name', 'status', 'group', 'format']}),
 	    ('Rental period',	{'fields': ['kill_date', 'subscriber_view_limit']}),
-	    ('Metadata info',	{'fields': ['content_language', 'material_type', 'eidr', 'isan', 'closed_captioning', 'run_time', 'display_run_time', 'year', 'country_of_origin', 'actors', 'actors_display', 'episode_name', 'episode_id', 'category', 'audience', 'show_type', 'rating', 'genres', 'director', 'brand', 'studio', 'studio_name', 'mam_id']}),
+	    ('Metadata info',	{'fields': ['content_language', 'material_type', 'eidr', 'isan', 'closed_captioning', 'run_time', 'display_run_time', 'year', 'country_of_origin', 'actors', 'actors_display', 'episode_name', 'episode_id', 'especial', 'category', 'audience', 'show_type', 'rating', 'genres', 'director', 'brand', 'studio', 'studio_name', 'mam_id']}),
 	]
 
 class ItemGroupAdmin(admin.ModelAdmin):

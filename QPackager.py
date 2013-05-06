@@ -1067,6 +1067,8 @@ def main():
 		#
 		# Arma el nombre del Path de Exportacion
 		#
+		if Package.item.especial == 'Y':
+		    ExportPath = ExportPath + 'Especial/'
 		PackagePath		= ExportPath + MetadataXml.Title.Category + '/' + MetadataXml.AMS.Asset_Name
 		PackagePath		= PackagePath + '/' if not PackagePath.endswith('/') else PackagePath
 		

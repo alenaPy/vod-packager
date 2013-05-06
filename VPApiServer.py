@@ -82,7 +82,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     Item.name 			= ItemMetadata["name"]
     Item.format 		= ItemMetadata["format"]
     Item.material_type		= ItemMetadata["material_type"]
-    
+    Item.especial		= ItemMetadata["especial"]
     
     
     
