@@ -845,7 +845,10 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	CategoryPath = 'Adults' + MetadataXml.Title.Studio + VideoRendition.video_profile.format + '/' + CustomCategory.name
     elif Package.customer.category_path_style == 'AM':
 	CategoryPath = 'Adultos' + '/' + MetadataXml.Title.Studio + VideoRendition.video_profile.format
-	
+    elif Package.customer.category_path_style == 'PEP':
+	CategoryPath = ''
+    elif Package.customer.category_path_style == 'CA':
+	CategoryPath = 'Adultos' + '/' + CustomCategory.name		
 
     if Package.customer.category_with_spaces == 'N':
 	MetadataXml.Title.Category	= CategoryPath.replace(' ', '')
@@ -972,6 +975,24 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	elif CustmoMetadata.apply_to == 'I':
 	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
 
+    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition='', format_condition=VideoRendition.video_profile.format)
+    for CustomMetadata in CustomMetadataList:
+	if CustomMetadata.apply_to == 'T':
+    	    MetadataXml.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
+	elif CustmoMetadata.apply_to == 'V':
+	    MetadataXml.Movie.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
+	elif CustmoMetadata.apply_to == 'I':
+	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
+
+    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition=Package.item.brand, format_condition='')
+    for CustomMetadata in CustomMetadataList:
+	if CustomMetadata.apply_to == 'T':
+    	    MetadataXml.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
+	elif CustmoMetadata.apply_to == 'V':
+	    MetadataXml.Movie.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
+	elif CustmoMetadata.apply_to == 'I':
+	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
+
 
 
     return MetadataXml
@@ -1069,7 +1090,14 @@ def main():
 		#
 		if Package.item.especial == 'Y':
 		    ExportPath = ExportPath + 'Especial/'
-		PackagePath		= ExportPath + MetadataXml.Title.Category + '/' + MetadataXml.AMS.Asset_Name
+
+		if Package.customer.category_path_style == 'PEP':
+		    PackagePath	= ExportPath
+		else: 
+		    PackagePath = ExportPath + MetadataXml.Title.Category + '/' + MetadataXml.AMS.Asset_Name
+		#
+		# Agrega la barra al final si no existe
+		#
 		PackagePath		= PackagePath + '/' if not PackagePath.endswith('/') else PackagePath
 		
 		logging.info("main(): Package Path: %s" % PackagePath)
@@ -1187,7 +1215,7 @@ class main_daemon(Daemon):
 	    sys.exit()	    
 
 if __name__ == "__main__":
-	daemon = main_daemon('./pid/QPackager.pid', stdout='./log/QPackager.err', stderr='./log/QPackafer.err')
+	daemon = main_daemon('./pid/QPackager.pid', stdout='./log/QPackager.err', stderr='./log/QPackager.err')
 	if len(sys.argv) == 2:
 		if 'start'     == sys.argv[1]:
 			daemon.start()

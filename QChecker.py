@@ -47,6 +47,18 @@ def GetJobState(transcoder_ip, job_guid):
     
     return Job.GetState()
 
+
+def RemoveJob(transcoder_ip, job_guid):
+    carbon = CarbonSocketLayer(transcoder_ip)
+    Job = CarbonJob(carbon, job_guid)
+    #
+    # DEBUG
+    #
+    logging.info("RemoveJob(): Job Removing: " + job_guid)
+
+    return Job.Remove()
+
+
 def StopJob(transcoder_ip, job_guid):
     carbon = CarbonSocketLayer(transcoder_ip)
     Job = CarbonJob(carbon, job_guid)
@@ -246,7 +258,6 @@ def CheckVideoRenditionStatus():
 	
 	
 	JobState = GetJobState(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
-	
 	if JobState == 'NEX_JOB_COMPLETED':
 	    #
 	    # Si el Job termino de procesarse correctamente
@@ -286,6 +297,7 @@ def CheckVideoRenditionStatus():
 		    VRendition.save()    
 	    else:
 		VRendition.status = 'F'
+		RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 		VRendition.save()
 	    
         else:
@@ -296,6 +308,7 @@ def CheckVideoRenditionStatus():
     		
     		VRendition.status = 'E'
 		VRendition.error  = "Rhozet Error"
+    		RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
     		VRendition.save()
 	    
 	    if JobState == 'NEX_JOB_STOPPED':
@@ -304,6 +317,12 @@ def CheckVideoRenditionStatus():
 		# 
 		VRendition.status = 'E'
 		VRendition.error  = "Stop Job"
+		RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
+		VRendition.save()
+
+	    if JobState == '':
+		VRendition.status = 'E'
+		VRendition.error  = "Job State Empty"
 		VRendition.save()
 
     logging.info("CheckVideoRenditionStatus(): End Check Video Rendition Status")

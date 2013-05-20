@@ -13,8 +13,8 @@ FORMAT = (
 	('SD', 'SD'),
 	('HD', 'HD'),
 	('3D', '3D'),
-)	
-
+	('', 'Empty'),
+)
 
 class ItemGroup(models.Model):
 	key						= models.CharField(max_length=6)
@@ -55,7 +55,7 @@ class CustomMetadata(models.Model):
 	apply_to					= models.CharField(max_length=1, default='T', choices=(('I', 'Image'),('T', 'Title'),('V', 'Video')))
 	name						= models.CharField(max_length=256)
 	brand_condition					= models.CharField(max_length=30, blank=True)
-	format_condition				= models.CharField(max_length=2, choices=FORMAT, blank=True)
+	format_condition				= models.CharField(max_length=2, choices=FORMAT, blank=True, default='')
 	value						= models.CharField(max_length=256)
 
 
@@ -89,12 +89,14 @@ class Customer(models.Model):
 	)
 
 	PATH_STYLE = (
+		('PEP', 'Plain Export Path'),
 		('APC', 'Adultos / Brand / Category'),
 		('DLA', 'DLA Style'),
 		('BFC', 'Brand Format / Category'),
 		('BPC', 'Brand / Category'),
 		('FPC', 'Format / Category'),
 		('AM',  'Adultos / Brand'),
+		('CA',  'Adultos / Category'),
 	)
 	
 	name 						= models.CharField(max_length=256)
@@ -141,6 +143,7 @@ class Customer(models.Model):
 	use_three_chars_country				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 	provider_id_with_brand				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 	brand_in_synopsis				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	export_complete_package				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 		
 	def __unicode__(self):
 		return self.name

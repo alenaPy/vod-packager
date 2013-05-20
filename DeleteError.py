@@ -32,6 +32,10 @@ from Packager_app import models
 
 def GetVideoRenditionError():
     return models.VideoRendition.objects.filter(status='E')
+
+
+def GetImageRenditionError():
+    return models.ImageRendition.objects.filter(status='E')
     
 
 def RequeueItems():
@@ -60,12 +64,29 @@ def DeleteVideoRendition(VideoRendition=None):
 	VideoRendition.delete()
 
 
+def DeleteImageRendition(ImageRendition=None):
+    if ImageRendition is not None:
+	
+	image_path     = models.GetPath("image_local_path")
+	
+
+        print ("DeleteImageRendition(): Delete Image rendition file Name: %s" % ImageRendition.file_name)
+        try:
+	    os.unlink(image_path + '/' + ImageRendition.file_name)
+	except:
+	    print ("ERROR: DeleteVideoRendition(): Unable to delete file: %s" % ImageRendition.file_name)
+	ImageRendition.delete()
+
 def main():
 
-    Errors = GetVideoRenditionError()
+    VideoErrors = GetVideoRenditionError()
     
-    for error in Errors:
+    for error in VideoErrors:
 	DeleteVideoRendition(error)
+
+    ImageErrors = GetImageRenditionError()
+    for error in ImageErrors:
+	DeleteImageRendition(error)
 
     RequeueItems()
 
