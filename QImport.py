@@ -393,7 +393,7 @@ def ReScheduleUnasignedRenditions(ForceSchedule=False):
 	    logging.info("ReSheduleUnasignedRenditions(): VideoRendition ID: %d" % VRendition.id)
 	    logging.info("ReSheduleUnasignedRenditions(): Item -> [%s], VideoProfile -> [%s]" % (VRendition.item.name, VRendition.video_profile.name))	
 	    TranscodeInfo = { 'd_guid'    : VRendition.video_profile.guid, 
-	                      'd_basename': VRendition.file_name, 
+	                      'd_basename': SplitExtension(VRendition.file_name), 
 	                      'd_path'    : models.GetPath("video_smb_path") }
 
 
