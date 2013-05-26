@@ -245,7 +245,10 @@ def daemons(request):
         DaemonStatus = { 'QChecker_status'    : 'N', 
 			 'QImport_status'     : 'N',
 			 'QPackager_status'   : 'N',
-			 'VPApiServer_status' : 'N' }
+			 'VPApiServer_status' : 'N',
+			 'QPull_status'	      : 'N',
+			 'QPurge_status'      : 'N' }
+
 
 	for daemon in DaemonList:
 		pidfile = pidpath + '/' + daemon + '.pid'
@@ -268,6 +271,10 @@ def daemons(request):
 					DaemonStatus['QPackager_status']   = 'R'
 				elif daemon == 'VPApiServer': 
 					DaemonStatus['VPApiServer_status'] = 'R'
+				elif daemon == 'QPurge': 
+					DaemonStatus['QPurge_status'] = 'R'
+				elif daemon == 'QPull': 
+					DaemonStatus['QPull_status'] = 'R'	
 	
 	return render_to_response('view_daemons.html', DaemonStatus, context_instance=RequestContext(request))		
 	    

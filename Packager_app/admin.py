@@ -47,7 +47,7 @@ class PathAdmin(admin.ModelAdmin):
 	list_display = ('key', 'location', 'description')
 
 class VideoProfileAdmin(admin.ModelAdmin):
-	list_display = ('name', 'file_extension', 'status', 'bit_rate', 'format', 'is_master', 'notes')
+	list_display = ('name', 'file_extension', 'status', 'bit_rate', 'format', 'notes')
 
 class ImageProfileAdmin(admin.ModelAdmin):
 	list_display = ('name', 'description', 'file_extension', 'image_aspect_ratio', 'type')

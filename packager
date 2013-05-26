@@ -6,6 +6,8 @@
 #
 
 start() {
+    echo "Starting Queue Pull Daemon"
+    python QPull.py start
     echo "Starting Queue Import Daemon"
     python QImport.py  start
     echo "Starting Queue Checker Daemon"
@@ -20,6 +22,8 @@ start() {
 
 
 stop() {
+    echo "Stopping Quueu Pull Daemon"
+    python QPull.py stop
     echo "Stopping Queue Import Daemon"
     python QImport.py stop
     echo "Stopping Queue Checker Daemon"
@@ -34,6 +38,8 @@ stop() {
 
 
 status() {
+    echo -n "Queue Pull Status: "
+    python QPull.py status
     echo -n "Queue Import Status: "
     python QImport.py status
     echo -n "Queue Checker Status: "
@@ -44,7 +50,6 @@ status() {
     python VPApiServer.py status
     echo -n "Queue Purge Status: "
     python QPurge.py status
-    
 }
 
 
