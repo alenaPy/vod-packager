@@ -1204,7 +1204,13 @@ def main():
 
 
 	logging.info("main(): Nothing to do... Sleep")
-	time.sleep(60)
+
+	if Settings.GLOBAL_SLEEP_TIME:
+	    time.sleep(Settings.SLEEP_TIME)
+	else:
+	    time.sleep(Settings.QPACKAGER_SLEEP)
+	
+
 
 
 class main_daemon(Daemon):

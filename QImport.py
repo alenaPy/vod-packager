@@ -20,66 +20,41 @@ from carbonapi.CarbonSched import *
 
 import logging
 import sys, time
-from daemon import Daemon
-
-ErrorString = ''
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Funciones - Utileria
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-def SplitExtension(filename=None):
-    
-    if filename is not None:
-	basename_tmp_list = filename.split('.')
-	i = 1
-	basename = basename_tmp_list[0]
-	while i < len(basename_tmp_list) -1:
-	    basename = basename + '.' + basename_tmp_list[i]
-	    i = i + 1
-	return basename
-    return None
+from Lib.Utils  import SplitExtension
+from Lib.Utils  import RenditionFileName
+from Lib.Utils  import PrefixStrId
+from Lib.Utils  import FileExist
+from Lib.daemon import Daemon
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Settings
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+import Settings
 
-def RenditionFileName(original_filename = None, sufix = None, ext = None):
-    
-    logging.debug("RenditionFileName(): FileName-> " + original_filename + " Sufix-> " + sufix + " Ext-> " + ext)
-    
-    if original_filename is not None and sufix is not None and ext is not None:
+
+def CreateDummyCarbon():
+    try:
+	TServer = models.TranscodingServer.objects.get(ip_address='(Dummy)')
+    except:
+	TServer = models.TranscodingServer()
+	TServer.hostname   = '(Dummy)'
+	TServer.ip_address = '(Dummy)'
+	TServer.status     = 'D'
+	TServer.save()
 	
-	# 1- Elimina la extension
-	# 2- Agrega Sufijo
-	# 3- Agrega extension
-	
-	basename = SplitExtension(original_filename)
-	if basename is None:
-	    return None
-    
-	if not sufix.startswith('_'):
-	    sufix = '_' +  sufix
 
-	if not ext.startswith('.'):
-	    ext = '.' + ext
-	    
-	basename = basename.upper() + sufix.upper() + ext
-	return basename
-    return None
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++    
-# Procedimientos
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++    
+ErrorString = ''
 
 def InitCarbonPool():
     #
     # Se crea el pool de Carbon
     #
-    CPool = CarbonPool()
-    #
-    # Se traen todos los transcoder server que estan Enabled
-    #
+    CPool       = CarbonPool()
     TServerList = models.GetTranscodingServer()
-    #
-    # Se agrega cada transcoder server al pool
-    #
-
+    
     if len(TServerList) == 0:
 	#
 	# No hay transcoding Servers
@@ -93,6 +68,8 @@ def InitCarbonPool():
 	    TServer.status = 'D'
 	    TServer.save()
 	    logging.warning("InitCarbonPool(): Carbon server [%s] fail to init -> Set Disable" % TServer.ip_address)
+	else:
+	    logging.info("InitCarbonPool(): Carbon server [%s] init OK" % TServer.ip_address)
     if CPool.poolLen() == 0:
 	return None
     
@@ -132,6 +109,7 @@ def MakeImageRenditions(RenditionTask=None):
 
     return True
 
+
 def CheckVideoRendition(Item=None, VProfile=None):
     VRlist = models.VideoRendition.objects.filter(item=Item, video_profile=VProfile)
     if len(VRlist) > 0:
@@ -146,18 +124,7 @@ def CheckImagenRendition(Item=None, IProfile=None):
     return True
 
 
-def PrefixStrId(itemid=0):
-    StrId = str(itemid)
-    Zero = ''
-    i = len(StrId)
-    while i <= 5:
-        Zero = Zero + '0'
-        i = i + 1
-
-    return 'PB' + Zero + StrId
-
-
-def MakeVideoRenditions(RenditionTask=None, CPool=None):   # CPool = CarbonPool()
+def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   # CPool = CarbonPool()
 
     global ErrorString
 
@@ -186,10 +153,27 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None):   # CPool = CarbonPool(
     elif Item.format == 'SD':
 	VProfileList = models.GetVideoProfiles('SD')
         
-        
-    Source = RenditionTask.svc_path
-    File   = RenditionTask.file_name
     
+    if RenditionTask.local_svc_path is not None and RenditionTask.local_svc_path != '':
+	logging.info("MakeVideoRenditions(): Try to use local_svc_path [%s]" % RenditionTask.local_svc_path)
+	local_master_path =  models.GetPath('local_master_path')
+	if local_master_path is not None:
+	    if not local_master_path.endswith('/'):
+		local_master_path = local_master_path + '/'
+	
+	    if FileExist(local_master_path,RenditionTask.file_name):
+		logging.info("MakeVideoRenditions(): File Exist in local_svc_path [%s]" % (local_master_path + RenditionTask.file_name))
+	    	Source = RenditionTask.local_svc_path
+	    else:
+		logging.info("MakeVideoRenditions(): Can not Find the file in local_svc_path [%s]" % (local_master_path + RenditionTask.file_name))
+		Source = RenditionTask.svc_path
+	else:
+	    Source = RenditionTask.svc_path
+
+    else:    
+	Source = RenditionTask.svc_path
+
+    File   = RenditionTask.file_name
     logging.debug("MakeVideoRenditions(): Source-> " + Source + " File-> " + File)    
     logging.debug("MakeVideoRenditions(): VProfileList len: " + str(len(VProfileList)))
     #
@@ -234,14 +218,13 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None):   # CPool = CarbonPool(
 	#	
 	TranscodeInfo = { 'd_guid'    : TranscodeGuid, 
 	                  'd_basename': DstBasename, 
-	                  #'d_path'    : models.Path.objects.get(key="video_smb_path").location }		
-			  'd_path'    : models.GetPath("video_smb_path") }
+	                  'd_path'    : models.GetPath("video_smb_path") }
 
 	logging.debug("MakeVideoRenditions(): Transcode Info: " +  str(TranscodeInfo))
-	
 	#
 	# Envia el Job a transcodificar
 	#
+
 	try:
 	    XmlJob    = CreateCarbonXMLJob(Source,File,[],[TranscodeInfo],None,None)
 	except:
@@ -254,43 +237,221 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None):   # CPool = CarbonPool(
 	    ErrorString = '01: Error making Carbon XML Job'
 	    return False
 
-	Job       = StartJobCarbonPool(CPool,XmlJob)
-	if Job is None:
-	    ErrorString = '02: Error sending Job'
-	    logging.error("MakeVideoRendition(): 02: Error sending Job")
-	    return False
+	JobReply       = StartJobCarbonPool(CPool,XmlJob, ForceSchedule)
+	if JobReply.Result == True:
+	    #
+	    # Crea el Video Rendition en el modelo
+	    #
+	    VRendition = models.VideoRendition()
+	    VRendition.file_name            = DstFilename
+	    VRendition.src_file_name	    = File
+	    VRendition.src_svc_path	    = Source
+	    VRendition.video_profile        = VProfile
+	    VRendition.transcoding_job_guid = JobReply.Job.GetGUID()
+	    VRendition.status               = 'Q'	# Queued
+	    VRendition.item		    = Item
 	
-	#
-	# Crea el Video Rendition en el modelo
-	#
-	VRendition = models.VideoRendition()
-	VRendition.file_name            = DstFilename
-	VRendition.video_profile        = VProfile
-	VRendition.transcoding_job_guid = Job.GetGUID()
-	VRendition.status               = 'Q'	# Queued
-	VRendition.item		 	= Item
 	
-	if Item.format == 'HD':
-	    if VProfile.format == 'HD':
-		VRendition.screen_format = 'Widescreen'
+	    if Item.format == 'HD':
+		if VProfile.format == 'HD':
+		    VRendition.screen_format = 'Widescreen'
+		else:
+		    VRendition.screen_format = 'Letterbox'
+	    elif Item.format == 'SD':
+		VRendition.screen_format = 'Standard'
+
+	    #+++++++++++++++++++++++++++++++++++++++++++++
+	    # TODO: Formato de Item Vs Formato de Brand
+	    #+++++++++++++++++++++++++++++++++++++++++++++
+
+	    try:
+		TServer = models.TranscodingServer.objects.get(ip_address=JobReply.Job.GetCarbonHostname())
+	        VRendition.transcoding_server = TServer
+		logging.info("MakeVideoRenditions(): Carbon Server ->" + VRendition.transcoding_server.ip_address)
+	    except:
+		logging.error("MakeVideoRenditions(): Can not find the Assigned Carbon Server -> " + JobReply.Job.GetCarbonHostname())
+	        return False	
+	
+		
+	    
+	else:
+	    if JobReply.Error == False and ForceSchedule == False:
+		#
+		# No lo pudo planificar porque no hay ningun Carbon Coder Disponible
+		#	
+		VRendition = models.VideoRendition()
+		VRendition.file_name            = DstFilename
+		VRendition.src_file_name	= File
+		VRendition.src_svc_path	        = Source
+	        VRendition.video_profile        = VProfile
+	        VRendition.transcoding_job_guid = ''
+	        VRendition.status               = 'U'	# Unasigned
+	        VRendition.item		    	= Item
+	
+		try:
+		    TServer = models.TranscodingServer.objects.get(ip_address='(Dummy)')
+	    	    VRendition.transcoding_server = TServer
+	    	    logging.info("MakeVideoRenditions(): Carbon Server ->" + VRendition.transcoding_server.ip_address)
+		except:
+		    logging.error("MakeVideoRenditions(): Can not find the Assigned Carbon Server -> " + JobReply.Job.GetCarbonHostname())
+	    	    return False
+	
+		logging.info("MakeVideoRenditions(): Can Not Assign Carbon Server (No one have slots )")
+	
+		if Item.format == 'HD':
+		    if VProfile.format == 'HD':
+			VRendition.screen_format = 'Widescreen'
+		    else:
+			VRendition.screen_format = 'Letterbox'
+		elif Item.format == 'SD':
+		    VRendition.screen_format     = 'Standard'
+
 	    else:
-		VRendition.screen_format = 'Letterbox'
-	elif Item.format == 'SD':
-	    VRendition.screen_format = 'Standard'
+		ErrorString = '02: Error sending Job'
+		logging.error("MakeVideoRendition(): 02: Error sending Job")
+	        return False
 
-
-	for TServer in models.GetTranscodingServer():
-	    if Job.GetCarbonHostname() == TServer.ip_address:
-		VRendition.transcoding_server = TServer
-		break
-	
-	logging.debug("MakeVideoRenditions(): Carbon Server ->" + VRendition.transcoding_server.ip_address)
+	print "Estoy Aca"
 	VRendition.save()
 
     return True	 
 
 
-def main():
+def MakeRenditions(ForceSchedule=True):
+
+    global ErrorString
+    ErrorString = ''
+
+    QueueList = models.GetRenditionQueue()
+    if len(QueueList) > 0:
+    
+	logging.info("MakeRenditions(): Init Transcoding server pool")
+	CPool = InitCarbonPool()
+        while CPool is None:
+	    logging.info("MakeRenditions(): No transcoding server configured in database... Sleep")
+	    time.sleep(10)
+	    CPool = InitCarbonPool()
+
+	for Queue in QueueList:
+	    #
+	    # Por cada elemento en la cola de Rendiciones
+	    #
+	    Queue.queue_status = 'D'			# Lo marca como Tomado
+	    Queue.save()			
+
+	    # Creo los video renditions
+	    if not MakeVideoRenditions(Queue,CPool,ForceSchedule):
+		Queue.error  = ErrorString
+		Queue.queue_status = 'E'
+		Queue.save()
+		continue
+
+	    # Creo los imagen rendition
+	    if not MakeImageRenditions(Queue):
+		Queue.error  = ErrorString
+		Queue.queue_status = 'E'
+		Queue.save()
+		continue
+
+	    Queue.item.status = 'P'
+	    Queue.item.save()
+
+    return True    
+
+
+def ReScheduleUnasignedRenditions(ForceSchedule=False):
+    global ErrorString
+    ErrorString = ''
+
+    logging.info("ReSheduleUnasignedRenditions(): Start Checking Unassingned Video Renditions")
+
+    #
+    # Trae todas las Video Renditions que no fueron Asignadas
+    #
+    UVRenditions = models.GetVideoRenditionUnassigned()
+
+
+    if len(UVRenditions) > 0:
+	#
+	# Si hay Elementos en la Cola
+	#
+	# 1- Inicia el carbon Pool
+	#
+	logging.info("ReSheduleUnasignedRenditions(): Init Transcoding server pool")
+	CPool = InitCarbonPool()
+        while CPool is None:
+	    logging.info("ReSheduleUnasignedRenditions(): No transcoding server configured in database... Sleep")
+	    time.sleep(10)
+	    CPool = InitCarbonPool()
+
+
+	for VRendition in UVRenditions: 
+	    #
+	    # Arma los parametros de transcodificacion
+	    #
+	    logging.info("ReSheduleUnasignedRenditions(): -----")
+	    logging.info("ReSheduleUnasignedRenditions(): VideoRendition ID: %d" % VRendition.id)
+	    logging.info("ReSheduleUnasignedRenditions(): Item -> [%s], VideoProfile -> [%s]" % (VRendition.item.name, VRendition.video_profile.name))	
+	    TranscodeInfo = { 'd_guid'    : VRendition.video_profile.guid, 
+	                      'd_basename': VRendition.file_name, 
+	                      'd_path'    : models.GetPath("video_smb_path") }
+
+
+	    logging.debug("ReSheduleUnasignedRenditions(): Transcode Info: " +  str(TranscodeInfo))
+	    #
+	    # Crea el XML con el Job de Transcodificacion
+	    #
+	    try:
+		XmlJob    = CreateCarbonXMLJob(VRendition.src_svc_path,VRendition.src_file_name,[],[TranscodeInfo],None,None)
+	    except:
+		e = sys.exc_info()[0]
+	        logging.error("ReSheduleUnasignedRenditions(): 01: Exception making Carbon XML Job. Catch: " + e)
+		ErrorString = '01: Exception making Carbon XML Job. Catch: ' + e 
+		return False
+
+	    if XmlJob is None:
+		logging.error("ReSheduleUnasignedRenditions(): 01: Error making Carbon XML Job")
+	        ErrorString = '01: Error making Carbon XML Job'
+	        return False
+
+	    JobReply       = StartJobCarbonPool(CPool,XmlJob, ForceSchedule)
+	    if JobReply.Result == True:
+		#
+		# Si puedo Asignarle un Transcoding Server
+		# 
+		# 1- Lo Marca como Encolado
+		# 2- Carga en Base de Datos el GUID del Job 
+		# 3- Carga el Transcoding Server Asignado
+		#
+		VRendition.status = 'Q'
+		VRendition.transcoding_job_guid = JobReply.Job.GetGUID()
+
+		try:
+		    TServer = models.TranscodingServer.objects.get(ip_address=JobReply.Job.GetCarbonHostname())
+		    logging.info("ReSheduleUnasignedRenditions(): Carbon Server ->" + TServer.ip_address)
+		except:
+		    #
+		    # Si no encuentra el transcoding Server Asignado
+		    #
+		    ErrorString = '02: Can not find the Assigned Carbon Server'
+		    logging.error("ReSheduleUnasignedRenditions(): Can not find the Assigned Carbon Server -> " + JobReply.Job.GetCarbonHostname())
+	    	    return False
+	    	    	
+		VRendition.transcoding_server = TServer
+		VRendition.save()
+	    else:
+		if JobReply.Error == False:
+		    logging.info("ReSheduleUnasignedRenditions(): Can Not Assign Carbon Server ( No one have slots )")	
+		    return True
+		else:
+		    ErrorString = '02: Error sending Job'
+		    logging.error("MakeVideoRendition(): 02: Error sending Job")
+	    	    return False
+
+    logging.info("ReSheduleUnasignedRenditions(): End Checking Unassingned Video Renditions")
+    return True
+
+def Main():
 
     global ErrorString
     ErrorString = ''
@@ -298,69 +459,69 @@ def main():
     #
     # Configura el Log 
     #
+    logging.basicConfig(format   ='%(asctime)s - QImport.py -[%(levelname)s]: %(message)s', 
+			filename ='./log/QImport.log',
+			level    =logging.INFO) 
 
-    logging.basicConfig(format='%(asctime)s - QImport.py -[%(levelname)s]: %(message)s', filename='./log/QImport.log',level=logging.INFO) 
+    #
+    # Crea un Dummy Carbon si no existe ya creado
+    #
+    CreateDummyCarbon()
+
+    logging.info("Main(): Enter in main loop")
     
-    #
-    # Inicializa el Carbon Pool 
-    #
-    logging.info("main(): Init Transcoding server pool")
-    CPool = InitCarbonPool()
-    while CPool is None:
-	logging.info("main(): No transcoding server configured in database... Sleep")
-	time.sleep(10)
-
-	CPool = InitCarbonPool()
-
-
-    logging.info("main(): Enter in main loop")
-    while True:
+    End = False
+    
+    while not End:
+    
 	#
-	# En el ciclo principal
-	#
-	QueueList = models.GetRenditionQueue()
-	logging.debug("main(): QueueLen = " + str(len(QueueList)))
-	for Queue in QueueList:
-	    #
-	    # Por cada elemento en la cola de importacion
-	    #
-	    Queue.queue_status = 'D'			# Lo marca como Tomado
-	    Queue.save()			
-
-	    # Creo los video renditions
-	    if not MakeVideoRenditions(Queue,CPool):
-		Queue.error  = ErrorString
-		Queue.status = 'E'
-		Queue.save()
-		continue
-
-	    # Creo los imagen rendition
-	    if not MakeImageRenditions(Queue):
-		Queue.error  = ErrorString
-		Queue.status = 'E'
-		Queue.save()
-		continue
-
-	    Queue.item.status = 'P'
-	    Queue.item.save()
+	# Reasignla las transcodificaciones
+	#    
+	if not ReScheduleUnasignedRenditions(Settings.FORCE_SCHEDULE):
+	    loggin.error("Main(): Error in ReSCheduleUnassignedRenditions [SHUTDOWN]")
+	    End = True
 
 	#
-	# Duerme 60 Segundos
+	# Crea las Video/Images Renditions
 	#
-	logging.info("main(): No more work... Sleep")
-	time.sleep(300)
+	if not MakeRenditions(Settings.FORCE_SCHEDULE):
+	    End = True
+	    loggin.error("Main(): Error in MakeRenditions [SHUTDOWN]")
+	    continue
+	
+	
+	    
+	if Settings.GLOBAL_SLEEP_TIME:
+	    time.sleep(Settings.SLEEP_TIME)
+	else:
+	    time.sleep(Settings.QIMPORT_SLEEP)
 
+
+    logging.info("Main(): Bye Bye")
+
+
+def StartMessage():
+    print "--------"
+    print "QImport Daemon"
+    print "--------"
+    print "Options:"
+    print "FORCE_SCHEDULE=" + str(Settings.FORCE_SCHEDULE)
+    print "SLEEP_TIME="     + str(Settings.SLEEP_TIME)
+    
+    
 class main_daemon(Daemon):
     def run(self):
         try:
-    	    main()
+    	    Main()
 	except KeyboardInterrupt:
 	    sys.exit()	    
 
 if __name__ == "__main__":
+	StartMessage()
 	daemon = main_daemon('./pid/QImport.pid', stdout='./log/QImport.err', stderr='./log/QImport.err')
 	if len(sys.argv) == 2:
 		if 'start'     == sys.argv[1]:
+			
 			daemon.start()
 		elif 'stop'    == sys.argv[1]:
 			daemon.stop()
@@ -370,7 +531,6 @@ if __name__ == "__main__":
 			daemon.run()
 		elif 'status'  == sys.argv[1]:
 			daemon.status()
-	    
 		else:
 			print "Unknown command"
 			sys.exit(2)

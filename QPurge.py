@@ -116,8 +116,12 @@ def main():
 	    DeleteVideoRendition(items)
 	    DeletePackage(items)
 	    items.delete()
-	
-	time.sleep(300)
+
+	if Settings.GLOBAL_SLEEP_TIME:
+	    time.sleep(Settings.SLEEP_TIME)
+	else:
+	    time.sleep(Settings.QPURGE_SLEEP)
+
 
 class main_daemon(Daemon):
     def run(self):

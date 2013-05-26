@@ -12,9 +12,21 @@ from carbonapi.CarbonSched import *
 import logging
 import os
 import time
-import md5checksum
 
-from daemon import Daemon
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Funciones - Utileria
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+from Lib.Utils  import SplitExtension
+from Lib.Utils  import RenditionFileName
+from Lib.Utils  import PrefixStrId
+from Lib.Utils  import FileExist
+from Lib.daemon import Daemon
+from Lib.CarbonLocal import GetJobState
+from Lib.CarbonLocal import RemoveJob
+from Lib.CarbonLocal import StopJob
+from Lib.md5checksum import md5_checksum
+
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Stand alone script
@@ -28,41 +40,6 @@ setup_environ(settings)
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 from Packager_app import models
 
-
-def FileExist(path, file):
-    if os.path.isfile(path+file):
-	return True
-
-    return False
-
-def GetJobState(transcoder_ip, job_guid):
-    
-    carbon = CarbonSocketLayer(transcoder_ip)
-    Job = CarbonJob(carbon, job_guid)
-    #
-    # DEBUG
-    #
-    logging.info("GetJobState(): Job Progress: " + str(Job.GetProgress()))
-    logging.info("GetJobState(): Job State: " + Job.GetState())
-    
-    return Job.GetState()
-
-
-def RemoveJob(transcoder_ip, job_guid):
-    carbon = CarbonSocketLayer(transcoder_ip)
-    Job = CarbonJob(carbon, job_guid)
-    #
-    # DEBUG
-    #
-    logging.info("RemoveJob(): Job Removing: " + job_guid)
-
-    return Job.Remove()
-
-
-def StopJob(transcoder_ip, job_guid):
-    carbon = CarbonSocketLayer(transcoder_ip)
-    Job = CarbonJob(carbon, job_guid)
-    Job.Stop()
 
 
 def CheckItemStatus():
@@ -158,7 +135,7 @@ def CheckImageRenditionStatus():
 	    # - Calcula su filesize
 	    # - Establece su Status en F -> Finished
 	    
-	    IRendition.checksum = md5checksum.md5_checksum(image_local_path + IRendition.file_name)
+	    IRendition.checksum = md5_checksum(image_local_path + IRendition.file_name)
 	    logging.debug("CheckImageoRenditionStatus(): Image Rendition Checksum: " + IRendition.file_name + "," + IRendition.checksum)	
 	    
 	    IRendition.file_size = os.stat(image_local_path + IRendition.file_name).st_size
@@ -206,8 +183,11 @@ def CancelVideoRenditions():
 
     for VRendition in models.VideoRendition.objects.filter(status='C'):
     
-	JobState = GetJobState(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
+	JobState, Progress = GetJobState(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 	
+	logging.info("GetJobState(): Job Progress: " + str(Progress))
+	logging.info("GetJobState(): Job State: " + JobState)
+
 	if JobState == 'NEX_JOB_COMPLETED':
 	    #
 	    # Si el Job termino de procesarse
@@ -220,8 +200,6 @@ def CancelVideoRenditions():
 	    StopJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 	        
 	VRendition.delete()
-	
-	
 	
 
 def CheckVideoRenditionStatus():
@@ -257,7 +235,10 @@ def CheckVideoRenditionStatus():
 	
 	
 	
-	JobState = GetJobState(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
+	JobState, Progress = GetJobState(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
+	logging.info("GetJobState(): Job Progress: " + str(Progress))
+	logging.info("GetJobState(): Job State: " + JobState)
+	
 	if JobState == 'NEX_JOB_COMPLETED':
 	    #
 	    # Si el Job termino de procesarse correctamente
@@ -277,7 +258,7 @@ def CheckVideoRenditionStatus():
 		    # - Calcula su filesize
 		    # - Establece su Status en F -> Finished
 	    
-	    	    VRendition.checksum = md5checksum.md5_checksum(video_local_path + VRendition.file_name)
+	    	    VRendition.checksum = md5_checksum(video_local_path + VRendition.file_name)
 		    logging.debug("CheckVideoRenditionStatus(): Video Rendition Checksum: " + VRendition.file_name + "," + VRendition.checksum)	
 		
 		    VRendition.file_size = os.stat(video_local_path + VRendition.file_name).st_size
@@ -297,6 +278,7 @@ def CheckVideoRenditionStatus():
 		    VRendition.save()    
 	    else:
 		VRendition.status = 'F'
+		logging.info("RemoveJob(): Job Removing: " + VRendition.transcoding_job_guid)
 		RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 		VRendition.save()
 	    
@@ -308,6 +290,7 @@ def CheckVideoRenditionStatus():
     		
     		VRendition.status = 'E'
 		VRendition.error  = "Rhozet Error"
+		logging.info("RemoveJob(): Job Removing: " + VRendition.transcoding_job_guid)
     		RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
     		VRendition.save()
 	    
@@ -317,6 +300,7 @@ def CheckVideoRenditionStatus():
 		# 
 		VRendition.status = 'E'
 		VRendition.error  = "Stop Job"
+		logging.info("RemoveJob(): Job Removing: " + VRendition.transcoding_job_guid)
 		RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 		VRendition.save()
 
@@ -348,7 +332,12 @@ def main():
 	    continue
 
 	CheckItemStatus()
-	time.sleep(900)
+
+	if Settings.GLOBAL_SLEEP_TIME:
+	    time.sleep(Settings.SLEEP_TIME)
+	else:
+	    time.sleep(Settings.QCHECKER_SLEEP)
+	    
 
 class main_daemon(Daemon):
     def run(self):
@@ -356,6 +345,8 @@ class main_daemon(Daemon):
     	    main()
 	except KeyboardInterrupt:
 	    sys.exit()	    
+
+
 
 if __name__ == "__main__":
 	daemon = main_daemon('./pid/QChecker.pid', stdout='./log/QChecker.err', stderr='./log/QChecker.err')

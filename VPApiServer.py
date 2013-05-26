@@ -22,6 +22,7 @@ from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
 from VPApiClient import ItemMetadata, ItemMetadataLanguage, API_VERSION
 
 import ApiSettings
+import Settings
 
 from daemon import Daemon
 import logging
@@ -228,8 +229,12 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     ImportQueue.item		= Item
     ImportQueue.file_name 	= FileName
     ImportQueue.svc_path	= SmbPath
-    ImportQueue.queue_status	= 'Q'
 
+    if Settings.PULL_FILES: 
+	ImportQueue.queue_status	= 'W'
+    else
+	ImportQueue.queue_status	= 'Q'
+	
     logging.info("New Rendition Queue: " + SmbPath + FileName  )
 
     ImportQueue.save()

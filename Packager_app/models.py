@@ -171,6 +171,7 @@ class Item(models.Model):
 		('P', 'Processing'),
 		('D', 'Done'),
 		('W', 'Warning'),
+		('E', 'Error'),
 	)
 	name				= models.CharField(max_length=256)
 	creation_date			= models.DateTimeField(auto_now_add=True)
@@ -246,8 +247,10 @@ class Item(models.Model):
 	def __unicode__(self):
 		return self.name
 
+
 class RenditionQueue(models.Model):
 	RENDITION_QUEUE_STATUS = (
+		('W', 'Waiting'),
 		('Q', 'Queued'),
 		('D', 'Dequeued'),
 		('E', 'Error'),
@@ -255,6 +258,7 @@ class RenditionQueue(models.Model):
 	item	          			= models.ForeignKey('Item')
 	file_name         			= models.CharField(max_length=256)
 	svc_path          			= models.CharField(max_length=256)
+	local_svc_path				= models.CharField(max_length=256, blank=True)
 	queue_status				= models.CharField(max_length=1,choices=RENDITION_QUEUE_STATUS)
 	creation_date				= models.DateTimeField(auto_now_add=True)
 	modification_date 			= models.DateTimeField(auto_now=True)
@@ -270,18 +274,20 @@ class VideoRendition(models.Model):
 	VIDEO_RENDITION_STATUS = (
 		('Q', 'Queued'),
 		('F', 'Finished'),
+		('U', 'Unasigned'),
 		('E', 'Error'),
 		('C', 'Cancel'),
 	)
 	file_name				= models.CharField(max_length=256)
 	video_profile				= models.ForeignKey('VideoProfile')
-	transcoding_server			= models.ForeignKey('TranscodingServer')
-	transcoding_job_guid			= models.CharField(max_length=256)
+	transcoding_server			= models.ForeignKey('TranscodingServer', blank=True, null=True)
+	transcoding_job_guid			= models.CharField(max_length=256, blank=True)
 	status 					= models.CharField(max_length=1, choices=VIDEO_RENDITION_STATUS)
 	item 					= models.ForeignKey('Item')
+	src_file_name         			= models.CharField(max_length=256)
+	src_svc_path          			= models.CharField(max_length=256)
 	file_size 				= models.BigIntegerField(default=0)
 	checksum 				= models.CharField(max_length=32)
-	
 	error					= models.CharField(max_length=512, blank=True)
 	screen_format				= models.CharField(max_length=64)
 
@@ -341,17 +347,17 @@ class Package(models.Model):
 		return str(self.date_published)
 
 class TranscodingServer(models.Model):
-	
 	name	 					= models.CharField(max_length=256)
 	ip_address 					= models.CharField(max_length=15)
 	status 						= models.CharField(max_length=1, choices=ACTIVE_STATUS)
+
 	
 	def __unicode__(self):
 		return self.ip_address
 
 class Path(models.Model):
 	
-	key 						= models.CharField(max_length=24,unique=True)
+	key 						= models.CharField(max_length=24, unique=True)
 	location 					= models.CharField(max_length=256)
 	description 					= models.CharField(max_length=256)
 	
@@ -367,7 +373,6 @@ class VideoProfile(models.Model):
 	sufix 						= models.CharField(max_length=32)
 	format 						= models.CharField(max_length=2, choices=FORMAT)
 	notes 						= models.CharField(max_length=512)
-	is_master					= models.CharField(max_length=1, choices=(('Y', 'Yes'),('N', 'No')), default='N')
 	#
 	# Cablelabs Metadata for Movie Item
 	#
@@ -434,6 +439,10 @@ class CategoryRelation(models.Model):
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Funciones - GET
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	    
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Trae todos los Video Profiles
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 def GetVideoProfiles(format='ALL'):
     if format == 'ALL':
 	vp_list = VideoProfile.objects.filter(status='E')
@@ -443,7 +452,9 @@ def GetVideoProfiles(format='ALL'):
 	vp_list = VideoProfile.objects.filter(status='E',format='HD')
     return vp_list
 
-
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Trae todos los Image Profiles
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 def GetImageProfile(format='ALL'):
     if format == 'ALL':
 	return ImageProfile.objects.filter(status='E')
@@ -452,9 +463,15 @@ def GetImageProfile(format='ALL'):
     elif format == 'HD':
 	return ImageProfile.objects.filter(status='E', format='HD')
 	
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Trae todo los Transcoding Servers Habilitados
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 def GetTranscodingServer():
     return TranscodingServer.objects.filter(status='E')
+
+def GetWaitingRenditionQueue():
+    return RenditionQueue.objects.filter(queue_status='W')
 
 def GetRenditionQueue():
     return RenditionQueue.objects.filter(queue_status='Q')
@@ -467,11 +484,17 @@ def GetPath(path=None):
 	    return None
     return None
 
+def GetVideoRenditionUnassigned():
+    return VideoRendition.objects.filter(status='U')
+
 def GetVideoRenditionQueue():
     return VideoRendition.objects.filter(status='Q')
 
 def GetImageRenditionQueue():
     return ImageRendition.objects.filter(status='F') 
+
+def GetNewItems():
+    return Item.objects.filter(status='N')        
 
 def GetProcessingItems():
     return Item.objects.filter(status='P')
