@@ -229,6 +229,8 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     ImportQueue.item		= Item
     ImportQueue.file_name 	= FileName
     ImportQueue.svc_path	= SmbPath
+    ImportQueue.local_file	= 'N'
+    
 
     if Settings.PULL_FILES: 
 	ImportQueue.queue_status	= 'W'

@@ -53,6 +53,16 @@ def DeleteRenditionQueue(item=None):
 	RenditionQueue = models.RenditionQueue.objects.filter(item=item)
 	
 	for RQueue in RenditionQueue:
+	    if RQueue.local_file == 'Y':
+		path = models.GetPath("local_master_path")
+		if not path.endswith('/'):
+		    path = path + '/'
+		
+		try:
+		    os.unlink(path + RQueue.file_name)
+		except:
+		    logging.error("DeleteRenditionQueue(): Unable to delete file: %s" % path + RQueue.file_name)
+		
 	    logging.info("DeleteRenditionQueue(): ID: " +  str(RQueue.id))
 	    RQueue.delete()
 	    

@@ -259,11 +259,11 @@ class RenditionQueue(models.Model):
 	file_name         			= models.CharField(max_length=256)
 	svc_path          			= models.CharField(max_length=256)
 	local_svc_path				= models.CharField(max_length=256, blank=True)
+	local_file				= models.CharField(max_length=1, choices=(('Y', 'Yes'), ('N', 'No')))
 	queue_status				= models.CharField(max_length=1,choices=RENDITION_QUEUE_STATUS)
 	creation_date				= models.DateTimeField(auto_now_add=True)
 	modification_date 			= models.DateTimeField(auto_now=True)
 	
-
 	error					= models.CharField(max_length=512, blank=True)
 
 	def __unicode__(self):

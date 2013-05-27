@@ -101,7 +101,8 @@ def ProcessWaitingRenditionQueue():
 			logging.info("ProcessWaitingRenditionQueue(): Pulling File -> [%s]" % Queue.file_name)
 			if PullFile(ExternRepositorySD, Queue.file_name, LocalRepository):
 			    Queue.local_svc_path = LocalSvcPath
-			    Queue.queue_status = 'Q'
+			    Queue.local_file     = 'Y'
+			    Queue.queue_status   = 'Q'
 			    Queue.save()
 			    logging.info("ProcessWaitingRenditionQueue(): Success")
 			else:
@@ -118,14 +119,16 @@ def ProcessWaitingRenditionQueue():
 				Queue.save()
 		    else:
 			logging.info("ProcessWaitingRenditionQueue(): Using Existing file [%s]" % (LocalRepository+Queue.file_name))
+			Queue.local_file     = 'Y'
 			Queue.local_svc_path = LocalSvcPath
-			Queue.queue_status = 'Q'
+			Queue.queue_status   = 'Q'
 			Queue.save()    
 		else:
 		    logging.info("ProcessWaitingRenditionQueue(): Pulling File -> [%s]" % Queue.file_name)
 		    if PullFile(ExternRepositorySD, Queue.file_name, LocalRepository):
 		        Queue.local_svc_path = LocalSvcPath
-		        Queue.queue_status = 'Q'
+		        Queue.local_file     = 'Y'
+		        Queue.queue_status   = 'Q'
 		        Queue.save()
 		        logging.info("ProcessWaitingRenditionQueue(): Success")
 		    else:
@@ -153,7 +156,8 @@ def ProcessWaitingRenditionQueue():
 			logging.info("ProcessWaitingRenditionQueue(): Pulling File -> [%s]" % Queue.file_name)
 			if PullFile(ExternRepositoryHD, Queue.file_name, LocalRepository):
 			    Queue.local_svc_path = LocalSvcPath
-			    Queue.queue_status = 'Q'
+			    Queue.local_file	 = 'Y'
+			    Queue.queue_status   = 'Q'
 			    Queue.save()
 			    logging.info("ProcessWaitingRenditionQueue(): Success")
 			else:
@@ -171,14 +175,16 @@ def ProcessWaitingRenditionQueue():
 		    else:
 			logging.info("ProcessWaitingRenditionQueue(): Using Existing file [%s]" % (LocalRepository+Queue.file_name))
 			Queue.local_svc_path = LocalSvcPath
-			Queue.queue_status = 'Q'
+			Queue.local_file     = 'Y'	
+			Queue.queue_status   = 'Q'
 			Queue.save()
 	    
 		else:
 		    logging.info("ProcessWaitingRenditionQueue(): Pulling File -> [%s]" % Queue.file_name)
 		    if PullFile(ExternRepositoryHD, Queue.file_name, LocalRepository):
 		        Queue.local_svc_path = LocalSvcPath
-		        Queue.queue_status = 'Q'
+		        Queue.local_file     = 'Y'
+		        Queue.queue_status   = 'Q'
 		        Queue.save()
 		        logging.info("ProcessWaitingRenditionQueue(): Success")
 		    else:

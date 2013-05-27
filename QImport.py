@@ -154,7 +154,8 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 	VProfileList = models.GetVideoProfiles('SD')
         
     
-    if RenditionTask.local_svc_path is not None and RenditionTask.local_svc_path != '':
+    if RenditionTask.local_file == 'Y' and RenditionTask.local_svc_path is not None and RenditionTask.local_svc_path != '':
+
 	logging.info("MakeVideoRenditions(): Try to use local_svc_path [%s]" % RenditionTask.local_svc_path)
 	local_master_path =  models.GetPath('local_master_path')
 	if local_master_path is not None:
