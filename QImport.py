@@ -322,6 +322,8 @@ def MakeRenditions(ForceSchedule=True):
     global ErrorString
     ErrorString = ''
 
+    logging.info("MakeRenditions(): Start Creating Video and Image Renditions")
+
     QueueList = models.GetRenditionQueue()
     if len(QueueList) > 0:
     
@@ -355,6 +357,8 @@ def MakeRenditions(ForceSchedule=True):
 
 	    Queue.item.status = 'P'
 	    Queue.item.save()
+
+    logging.info("MakeRenditions(): End Creating Video and Image Renditions")
 
     return True    
 
