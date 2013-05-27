@@ -81,7 +81,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     # Se cargan los Datos Basicos
     #
     Item.name 			= ItemMetadata["name"]
-    Item.format 		= ItemMetadata["format"]
+    
     Item.material_type		= ItemMetadata["material_type"]
     Item.especial		= ItemMetadata["especial"]
     
@@ -184,6 +184,10 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     Item.year 			= ItemMetadata["year"]
     Item.director		= ItemMetadata["director"]
     Item.studio_name 		= ItemMetadata["studio_name"]
+    if Item.studio_name == 'Private' or Item.studio_name == 'Sextreme' or Item.studio_name == 'For Man' or Item.studio_name == 'Sexy Hot':
+	Item.format = 'SD'
+    else:    
+	Item.format 		= ItemMetadata["format"]
     Item.studio			= ItemMetadata["studio_name"]
     Item.brand			= ItemMetadata["studio_name"]
     Item.mam_id 		= ItemMetadata["mam_id"]
