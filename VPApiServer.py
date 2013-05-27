@@ -238,7 +238,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 
     if Settings.PULL_FILES: 
 	ImportQueue.queue_status	= 'W'
-    else
+    else:
 	ImportQueue.queue_status	= 'Q'
 	
     logging.info("New Rendition Queue: " + SmbPath + FileName  )

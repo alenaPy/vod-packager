@@ -40,7 +40,7 @@ def CreateDummyCarbon():
 	TServer = models.TranscodingServer.objects.get(ip_address='(Dummy)')
     except:
 	TServer = models.TranscodingServer()
-	TServer.hostname   = '(Dummy)'
+	TServer.name   = '(Dummy)'
 	TServer.ip_address = '(Dummy)'
 	TServer.status     = 'D'
 	TServer.save()
@@ -522,7 +522,7 @@ class main_daemon(Daemon):
 	    sys.exit()	    
 
 if __name__ == "__main__":
-	StartMessage()
+#	StartMessage()
 	daemon = main_daemon('./pid/QImport.pid', stdout='./log/QImport.err', stderr='./log/QImport.err')
 	if len(sys.argv) == 2:
 		if 'start'     == sys.argv[1]:

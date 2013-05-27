@@ -12,8 +12,10 @@ from carbonapi.CarbonSched import *
 import logging
 import os
 import time
-import md5checksum
+import Settings
 from datetime import datetime, timedelta
+
+
 
 from daemon import Daemon
 

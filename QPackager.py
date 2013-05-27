@@ -22,6 +22,7 @@ import xml.etree.ElementTree as ET
 import string
 import os, time, sys, re
 import logging
+import Settings
 
 from unicodedata import normalize
 

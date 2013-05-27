@@ -43,7 +43,7 @@ def RequeueItems():
     for item in Items:
 	try:
 	    RQueue = models.RenditionQueue.objects.get(item=item)
-	    RQueue.queue_status = 'Q'
+	    RQueue.queue_status = 'W'
 	    RQueue.save()
 	except:
 	    print "Error"

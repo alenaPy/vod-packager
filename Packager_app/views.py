@@ -241,7 +241,7 @@ def daemons(request):
 
 	pidpath = '/opt/packager/app/vod-packager/pid'
 
-	DaemonList = [ 'QChecker', 'QImport', 'QPackager', 'VPApiServer' ]
+	DaemonList = [ 'QChecker', 'QImport', 'QPackager', 'VPApiServer', 'QPull', 'QPurge' ]
         DaemonStatus = { 'QChecker_status'    : 'N', 
 			 'QImport_status'     : 'N',
 			 'QPackager_status'   : 'N',
