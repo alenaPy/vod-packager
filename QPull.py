@@ -76,7 +76,7 @@ def ProcessWaitingRenditionQueue():
 
 	for Queue in QueueLst:
 
-	    logging.info("ProcessWaitingRenditionQueue(): Item -> [%s], File Name -> [%s]" % (Queue.item, Queue.file_name))
+	    logging.info("ProcessWaitingRenditionQueue(): Item -> [%s], File Name -> [%s]" % (Queue.item.name, Queue.file_name))
 
 	    #
 	    # Chequea que los repositorios esten OK
