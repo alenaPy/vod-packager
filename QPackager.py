@@ -14,7 +14,7 @@ from cablelabsadi import ADIXml
 from cablelabsadi import RiGHTvAsset
 from cablelabsadi import NepeXml
 from datetime import datetime, timedelta
-from daemon import Daemon
+from Lib.daemon import Daemon
 
 
 import xml.etree.ElementTree as ET

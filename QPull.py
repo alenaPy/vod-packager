@@ -91,7 +91,7 @@ def ProcessWaitingRenditionQueue():
 		    
 	    if FileExist(ExternRepositorySD,Queue.file_name):
 	    
-		logging.info("ProcessWaitingRenditionQueue(): File Exist in -> [%s]" % ExternRespositorySD)
+		logging.info("ProcessWaitingRenditionQueue(): File Exist in -> [%s]" % ExternRepositorySD)
 	    
 		if FileExist(LocalRepository,Queue.file_name):
 		    

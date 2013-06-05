@@ -24,7 +24,7 @@ from VPApiClient import ItemMetadata, ItemMetadataLanguage, API_VERSION
 import ApiSettings
 import Settings
 
-from daemon import Daemon
+from Lib.daemon import Daemon
 import logging
 import sys
 import re
