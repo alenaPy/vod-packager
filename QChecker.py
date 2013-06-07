@@ -26,6 +26,7 @@ from Lib.CarbonLocal import GetJobState
 from Lib.CarbonLocal import GetJobSpeed
 from Lib.CarbonLocal import RemoveJob
 from Lib.CarbonLocal import StopJob
+from Lib.CarbonLocal import GetJobError
 from Lib.md5checksum import md5_checksum
 
 
@@ -295,7 +296,7 @@ def CheckVideoRenditionStatus():
     		#
     		
     		VRendition.status = 'E'
-		VRendition.error  = "Rhozet Error"
+		VRendition.error  = GetJobError(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 		logging.info("RemoveJob(): Job Removing: " + VRendition.transcoding_job_guid)
     		#RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
     		VRendition.save()

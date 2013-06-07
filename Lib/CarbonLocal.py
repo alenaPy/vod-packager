@@ -23,6 +23,11 @@ def GetJobSpeed(transcoder_ip, job_guid):
     carbon = CarbonSocketLayer(transcoder_ip)
     Job = CarbonJob(carbon, job_guid)
     return Job.GetSpeed()
+    
+def GetJobError(transcoder_ip, job_guid):
+    carbon = CarbonSocketLayer(transcoder_ip)
+    Job = CarbonJob(carbon, job_guid)
+    return Job.GetError()    
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Remueve un Job
