@@ -88,13 +88,14 @@ def CheckItemStatus():
 	if vr_total <= vr_finished:
 	    try:
 		RQ = models.RenditionQueue.objects.get(item=Item)
-		if RQ.local_file == 'Y':
-		    master_path = models.GetPath("local_master_path")
-		    if not master_path.endswith('/'):
-			master_path == master_path + '/'
+	        if RQ.local_file == 'Y':
+	    	    master_path = models.GetPath("local_master_path")
+	    	    if not master_path.endswith('/'):
+	    		master_path = master_path + '/'
 		    
 		    logging.info("CheckItemStatus(): Deleting Master File: %s" % master_path+RQ.file_name)
-		    os.unlink(master_path+RQ.file_name)
+		    if FileExist(master_path,RQ.file_name):
+			os.unlink(master_path+RQ.file_name)
 		    RQ.local_file = 'N'
 		    RQ.local_svc_path = ''
 		    RQ.save()
