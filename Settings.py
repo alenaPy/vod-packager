@@ -45,4 +45,8 @@ PULL_ERROR=False
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 OVERWRITE_PULL_FILES=False
 
+PULL_LIMIT_AVAILABLE=True
+
+PULL_LIMIT="30M"
+
 

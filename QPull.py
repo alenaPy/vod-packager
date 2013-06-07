@@ -42,11 +42,18 @@ def PullFile(SrcPath=None,FileName=None,DstPath=None):
 	if not SrcPath.endswith('/'):
 	    SrcPath = SrcPath + '/'
 	    
+	if not DstPath.endswith('/'):
+	    DstPath = DstPath + '/'
+	    
 	if not FileExist(SrcPath,FileName):
 	    ErrorString = 'Unable to find File: %s' % SrcPath+FileName
 	    return False
 	try:	    
-	    shutil.copy(SrcPath+FileName, DstPath)	
+	    if Settings.PULL_LIMIT_AVAILABLE:
+		os.system("pv -L %s \'" % Settings.PULL_LIMIT + SrcPath+FileName + "\' > \'" + DstPath+FileName + "\'")
+	    else:
+		shutil.copy(SrcPath+FileName, DstPath)
+	    
 	    return True
 
 	except shutil.Error, exc:

@@ -19,6 +19,11 @@ def GetJobState(transcoder_ip, job_guid):
     Job = CarbonJob(carbon, job_guid)
     return Job.GetState(), str(Job.GetProgress())
 
+def GetJobSpeed(transcoder_ip, job_guid):
+    carbon = CarbonSocketLayer(transcoder_ip)
+    Job = CarbonJob(carbon, job_guid)
+    return Job.GetSpeed()
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Remueve un Job
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

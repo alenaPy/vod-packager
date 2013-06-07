@@ -290,7 +290,9 @@ class VideoRendition(models.Model):
 	checksum 				= models.CharField(max_length=32)
 	error					= models.CharField(max_length=512, blank=True)
 	screen_format				= models.CharField(max_length=64)
-
+	speed					= models.CharField(max_length=25, blank=True)
+	progress				= models.CharField(max_length=10, blank=True)
+	
 	def __unicode__(self):
 		return self.file_name
 

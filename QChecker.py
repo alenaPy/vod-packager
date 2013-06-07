@@ -23,6 +23,7 @@ from Lib.Utils  import PrefixStrId
 from Lib.Utils  import FileExist
 from Lib.daemon import Daemon
 from Lib.CarbonLocal import GetJobState
+from Lib.CarbonLocal import GetJobSpeed
 from Lib.CarbonLocal import RemoveJob
 from Lib.CarbonLocal import StopJob
 from Lib.md5checksum import md5_checksum
@@ -279,10 +280,15 @@ def CheckVideoRenditionStatus():
 	    else:
 		VRendition.status = 'F'
 		logging.info("RemoveJob(): Job Removing: " + VRendition.transcoding_job_guid)
-		RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
+		#RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 		VRendition.save()
 	    
         else:
+	    if JobState == 'NEX_JOB_STARTED':
+		VRendition.speed = GetJobSpeed(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
+		VRendition.progress = str(Progress)
+		VRendition.save()
+		
     	    if JobState == 'NEX_JOB_ERROR':
     		#
 		# Si el job termino con errores
@@ -291,7 +297,7 @@ def CheckVideoRenditionStatus():
     		VRendition.status = 'E'
 		VRendition.error  = "Rhozet Error"
 		logging.info("RemoveJob(): Job Removing: " + VRendition.transcoding_job_guid)
-    		RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
+    		#RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
     		VRendition.save()
 	    
 	    if JobState == 'NEX_JOB_STOPPED':
@@ -301,7 +307,7 @@ def CheckVideoRenditionStatus():
 		VRendition.status = 'E'
 		VRendition.error  = "Stop Job"
 		logging.info("RemoveJob(): Job Removing: " + VRendition.transcoding_job_guid)
-		RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
+		#RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 		VRendition.save()
 
 	    if JobState == '':
