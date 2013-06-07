@@ -56,6 +56,7 @@ def CheckItemStatus():
 
 	vr_total    = len(VRenditionList)
 	vr_queued   = 0
+	vr_unassig  = 0
 	vr_finished = 0
 	vr_error    = 0
 	for VRendition in VRenditionList:
@@ -83,6 +84,24 @@ def CheckItemStatus():
 		ir_done		= ir_done   + 1
 	    elif IRendition.status == 'E':
 		ir_error  	= ir_error  + 1
+
+	if vr_total <= vr_finished:
+	    try:
+		RQ = models.RenditionQueue.objects.get(item=Item)
+		if RQ.local_file == 'Y':
+		    master_path = models.GetPath("local_master_path")
+		    if not master_path.endswith('/'):
+			master_path == master_path + '/'
+		    
+		    logging.info("CheckItemStatus(): Deleting Master File: %s" % master_path+RQ.file_name)
+		    os.unlink(master_path+RQ.file_name)
+		    RQ.local_file = 'N'
+		    RQ.local_svc_path = ''
+		    RQ.save()
+		    
+	    except:
+		logging.error("CheckItemStatus(): Deleting Master File: %s" % master_path+RQ.file_name)
+
 
 	if vr_total == vr_finished and ir_total == ir_done:
 	    #
@@ -267,6 +286,7 @@ def CheckVideoRenditionStatus():
 		    logging.debug("CheckVideoRenditionStatus(): Video Rendition FileSize: " + VRendition.file_name + "," + str(VRendition.file_size))
 		
 		    VRendition.status   = 'F'
+		    VRendition.progress = '100'
 		    VRendition.save()
 		
 		    logging.info("CheckVideoRenditionStatus(): Video Rendition finish all procesing: " + VRendition.file_name)
@@ -280,6 +300,7 @@ def CheckVideoRenditionStatus():
 		    VRendition.save()    
 	    else:
 		VRendition.status = 'F'
+		VRendition.progress = '100'
 		logging.info("RemoveJob(): Job Removing: " + VRendition.transcoding_job_guid)
 		#RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 		VRendition.save()
@@ -345,6 +366,8 @@ def main():
 	else:
 	    time.sleep(Settings.QCHECKER_SLEEP)
 	    
+    
+    logging.info("main(): End loop")
 
 class main_daemon(Daemon):
     def run(self):
