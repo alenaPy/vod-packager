@@ -7,9 +7,9 @@ class CustomMetadataAdmin(admin.ModelAdmin):
 class CustomerAdmin(admin.ModelAdmin):
 	list_display = ('name', 'id', 'vod_active')
 	fieldsets = [
-	    ('General info',    {'fields': ['name','vod_active', 'product_type', 'empty_product_type']}),
+	    ('General info',    {'fields': ['name','vod_active', 'product_type', 'empty_product_type', ]}),
 	    ('Rental period',   {'fields': ['suggested_price_longform_sd', 'suggested_price_longform_hd', 'suggested_price_shortform_sd', 'suggested_price_shortform_hd', 'billing_id', 'license_window', 'preview_period', 'maximum_viewing_length']}),
-	    ('Media and Metadata Profile',   {'fields': ['video_profile', 'image_profile', 'image_type', 'metadata_profile', 'runtype_display', 'license_date_format', 'rating_display', 'viewing_can_be_resumed', 'extended_video_information', 'category_with_spaces', 'category_path_style','titles_in_capital_letter', 'use_hdcontent_var', 'doctype', 'summary_long', 'image_aspect_ratio', 'actor_display', 'limit_content_value', 'id_len_reduced', 'use_genres_category', 'custom_genres', 'use_xml_adi_filename', 'use_three_chars_country', 'provider_id_with_brand', 'brand_in_synopsis']}),
+	    ('Media and Metadata Profile',   {'fields': ['internal_brand', 'video_profile', 'image_profile', 'image_type', 'metadata_profile', 'runtype_display', 'license_date_format', 'rating_display', 'viewing_can_be_resumed', 'extended_video_information', 'category_with_spaces', 'category_path_style','titles_in_capital_letter', 'use_hdcontent_var', 'doctype', 'summary_long', 'image_aspect_ratio', 'actor_display', 'limit_content_value', 'id_len_reduced', 'use_genres_category', 'custom_genres', 'use_xml_adi_filename', 'use_three_chars_country', 'provider_id_with_brand', 'brand_in_synopsis']}),
 	    ('Exportation rules',    {'fields': ['export_language','export_format', 'export_folder', 'export_complete_package']}), 
 	]
 	
@@ -17,16 +17,19 @@ class CustomerAdmin(admin.ModelAdmin):
 class ItemAdmin(admin.ModelAdmin):
 	list_display = ('name', 'format', 'status')
 	fieldsets = [
-	    ('General info',	{'fields': ['name', 'status', 'group', 'format']}),
+	    ('General info',	{'fields': ['name', 'status', 'group', 'format', 'internal_brand']}),
 	    ('Rental period',	{'fields': ['kill_date', 'subscriber_view_limit']}),
 	    ('Metadata info',	{'fields': ['content_language', 'material_type', 'eidr', 'isan', 'closed_captioning', 'run_time', 'display_run_time', 'year', 'country_of_origin', 'actors', 'actors_display', 'episode_name', 'episode_id', 'especial', 'category', 'audience', 'show_type', 'rating', 'genres', 'director', 'brand', 'studio', 'studio_name', 'mam_id']}),
 	]
+	
+class InternalBrandAdmin(admin.ModelAdmin):
+	list_display = ('name', 'format')	
 
 class ItemGroupAdmin(admin.ModelAdmin):
         list_display = ('id', 'key',  'name')
 
 class RenditionQueueAdmin(admin.ModelAdmin):
-	list_display = ('file_name', 'item', 'queue_status')
+	list_display = ('id', 'file_name', 'item', 'queue_status')
 
 class VideoRenditionAdmin(admin.ModelAdmin):
 	list_display = ('id', 'file_name', 'item', 'video_profile', 'transcoding_server', 'status', 'speed', 'progress')
@@ -98,3 +101,4 @@ admin.site.register(MetadataLanguage, MetadataLanguageAdmin)
 admin.site.register(Language, LanguageAdmin)
 admin.site.register(Rating, RatingAdmin)
 admin.site.register(Country, CountryAdmin)
+admin.site.register(InternalBrand, InternalBrandAdmin)

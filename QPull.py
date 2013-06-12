@@ -26,12 +26,9 @@ from Packager_app import models
 
 import Settings
 
-
 ErrorString = ''
 
-
 def PullFile(SrcPath=None,FileName=None,DstPath=None):
-
 
     global ErrorString
 
@@ -68,16 +65,14 @@ def ProcessWaitingRenditionQueue():
     logging.info("ProcessWaitingRenditionQueue(): Start Processing Waiting Rendition Queue")
 
     LocalRepository    = models.GetPath('local_master_path')	
-    LocalSvcPath       = models.GetPath('local_master_smb')
     ExternRepositorySD = models.GetPath('remote_nfs_sd')
     ExternRepositoryHD = models.GetPath('remote_nfs_hd')
 
     logging.info("ProcessWaitingRenditionQueue(): Local Repository -> %s" % LocalRepository)
-    logging.info("ProcessWaitingRenditionQueue(): Locasl SVC Path  -> %s" % LocalSvcPath)
     logging.info("ProcessWaitingRenditionQueue(): Exter Repository SD -> %s" % ExternRepositorySD)
     logging.info("ProcessWaitingRenditionQueue(): Exter Repository HD -> %s" % ExternRepositoryHD)
 
-    if LocalRepository is not None and ExternRepositorySD is not None and ExternRepositoryHD is not None and LocalSvcPath is not None:
+    if LocalRepository is not None and ExternRepositorySD is not None and ExternRepositoryHD is not None:
 
 	QueueLst = models.GetWaitingRenditionQueue()
 
@@ -106,50 +101,39 @@ def ProcessWaitingRenditionQueue():
 		    logging.info("ProcessWaitingRenditionQueue(): Overwrite Policy   -> [%s]" % str(Settings.OVERWRITE_PULL_FILES))
 		    if Settings.OVERWRITE_PULL_FILES:
 			logging.info("ProcessWaitingRenditionQueue(): Pulling File -> [%s]" % Queue.file_name)
+			Queue.queue_status = 'P'
+			Queue.save()
 			if PullFile(ExternRepositorySD, Queue.file_name, LocalRepository):
-			    Queue.local_svc_path = LocalSvcPath
 			    Queue.local_file     = 'Y'
 			    Queue.queue_status   = 'Q'
 			    Queue.save()
 			    logging.info("ProcessWaitingRenditionQueue(): Success")
 			else:
 			    logging.error("ProcessWaitingRenditionQueue(): Pulling file -> [%s], Error -> [%s]" % (Queue.file_name, ErrorString))
-			    logging.info("ProcessWaitingRenditionQueue(): Pulling Error Policy -> [%s]" % str(Settings.PULL_ERROR))
-			    if Settings.PULL_ERROR:
-				Queue.queue_status = 'Q'
-				logging.info("ProcessWaitingRenditionQueue(): Put Queue [%d] in Queue State" % Queue.id)
-				Queue.save()
-			    else:
-				Queue.queue_status = 'E'
-				logging.info("ProcessWaitingRenditionQueue(): Put Queue [%d] in Error State" % Queue.id)
-				Queue.error = "Can not retrive file [%s] to local_master_path [%s] -> %s" % (Queue.file_name, LocalRepository, ErrorString)
-				Queue.save()
+			    Queue.queue_status = 'E'
+			    logging.info("ProcessWaitingRenditionQueue(): Put Queue [%d] in Error State" % Queue.id)
+			    Queue.error = "Can not retrive file [%s] to local_master_path [%s] -> %s" % (Queue.file_name, LocalRepository, ErrorString)
+			    Queue.save()
 		    else:
 			logging.info("ProcessWaitingRenditionQueue(): Using Existing file [%s]" % (LocalRepository+Queue.file_name))
 			Queue.local_file     = 'Y'
-			Queue.local_svc_path = LocalSvcPath
 			Queue.queue_status   = 'Q'
 			Queue.save()    
 		else:
 		    logging.info("ProcessWaitingRenditionQueue(): Pulling File -> [%s]" % Queue.file_name)
+		    Queue.queue_status = 'P'
+		    Queue.save()
 		    if PullFile(ExternRepositorySD, Queue.file_name, LocalRepository):
-		        Queue.local_svc_path = LocalSvcPath
 		        Queue.local_file     = 'Y'
 		        Queue.queue_status   = 'Q'
 		        Queue.save()
 		        logging.info("ProcessWaitingRenditionQueue(): Success")
 		    else:
 		        logging.error("ProcessWaitingRenditionQueue(): Pulling file -> [%s], Error -> [%s]" % (Queue.file_name, ErrorString))
-		        logging.info("ProcessWaitingRenditionQueue(): Pulling Error Policy -> [%s]" % str(Settings.PULL_ERROR))
-		        if Settings.PULL_ERROR:
-		    	    Queue.queue_status = 'Q'
-			    logging.info("ProcessWaitingRenditionQueue(): Put Queue [%d] in Queue State" % Queue.id)
-			    Queue.save()
-			else:
-			    Queue.queue_status = 'E'
-			    logging.info("ProcessWaitingRenditionQueue(): Put Queue [%d] in Error State" % Queue.id)
-			    Queue.error = "Can not retrive file [%s] to local_master_path [%s] -> %s" % (Queue.file_name, LocalRepository, ErrorString)
-			    Queue.save()
+			Queue.queue_status = 'E'
+			logging.info("ProcessWaitingRenditionQueue(): Put Queue [%d] in Error State" % Queue.id)
+			Queue.error = "Can not retrive file [%s] to local_master_path [%s] -> %s" % (Queue.file_name, LocalRepository, ErrorString)
+			Queue.save()
 	    
 	    elif FileExist(ExternRepositoryHD,Queue.file_name):
 		
@@ -161,51 +145,40 @@ def ProcessWaitingRenditionQueue():
 		    logging.info("ProcessWaitingRenditionQueue(): Overwrite Policy   -> [%s]" % str(Settings.OVERWRITE_PULL_FILES))
 		    if Settings.OVERWRITE_PULL_FILES:
 			logging.info("ProcessWaitingRenditionQueue(): Pulling File -> [%s]" % Queue.file_name)
+			Queue.queue_status = 'P'
+			Queue.save()
 			if PullFile(ExternRepositoryHD, Queue.file_name, LocalRepository):
-			    Queue.local_svc_path = LocalSvcPath
 			    Queue.local_file	 = 'Y'
 			    Queue.queue_status   = 'Q'
 			    Queue.save()
 			    logging.info("ProcessWaitingRenditionQueue(): Success")
 			else:
 			    logging.error("ProcessWaitingRenditionQueue(): Pulling file -> [%s], Error -> [%s]" % (Queue.file_name, ErrorString))
-			    logging.info("ProcessWaitingRenditionQueue(): Pulling Error Policy -> [%s]" % str(Settings.PULL_ERROR))
-			    if Settings.PULL_ERROR:
-				Queue.queue_status = 'Q'
-				logging.info("ProcessWaitingRenditionQueue(): Put Queue [%d] in Queue State" % Queue.id)
-				Queue.save()
-			    else:
-				Queue.queue_status = 'E'
-				logging.info("ProcessWaitingRenditionQueue(): Put Queue [%d] in Error State" % Queue.id)
-				Queue.error = "Can not retrive file [%s] to local_master_path [%s] -> %s" % (Queue.file_name, LocalRepository, ErrorString)
-				Queue.save()
+			    Queue.queue_status = 'E'
+			    logging.info("ProcessWaitingRenditionQueue(): Put Queue [%d] in Error State" % Queue.id)
+			    Queue.error = "Can not retrive file [%s] to local_master_path [%s] -> %s" % (Queue.file_name, LocalRepository, ErrorString)
+			    Queue.save()
 		    else:
 			logging.info("ProcessWaitingRenditionQueue(): Using Existing file [%s]" % (LocalRepository+Queue.file_name))
-			Queue.local_svc_path = LocalSvcPath
 			Queue.local_file     = 'Y'	
 			Queue.queue_status   = 'Q'
 			Queue.save()
 	    
 		else:
 		    logging.info("ProcessWaitingRenditionQueue(): Pulling File -> [%s]" % Queue.file_name)
+		    Queue.queue_status = 'P'
+		    Queue.save()
 		    if PullFile(ExternRepositoryHD, Queue.file_name, LocalRepository):
-		        Queue.local_svc_path = LocalSvcPath
 		        Queue.local_file     = 'Y'
 		        Queue.queue_status   = 'Q'
 		        Queue.save()
 		        logging.info("ProcessWaitingRenditionQueue(): Success")
 		    else:
 		        logging.error("ProcessWaitingRenditionQueue(): Pulling file -> [%s], Error -> [%s]" % (Queue.file_name, ErrorString))
-		        logging.info("ProcessWaitingRenditionQueue(): Pulling Error Policy -> [%s]" % str(Settings.PULL_ERROR))
-		        if Settings.PULL_ERROR:
-		    	    Queue.queue_status = 'Q'
-			    logging.info("ProcessWaitingRenditionQueue(): Put Queue [%d] in Queue State" % Queue.id)
-			    Queue.save()
-			else:
-			    Queue.queue_status = 'E'
-			    logging.info("ProcessWaitingRenditionQueue(): Put Queue [%d] in Error State" % Queue.id)
-			    Queue.error = "Can not retrive file [%s] to local_master_path [%s] -> %s" % (Queue.file_name, LocalRepository, ErrorString)
-			    Queue.save()
+			Queue.queue_status = 'E'
+			logging.info("ProcessWaitingRenditionQueue(): Put Queue [%d] in Error State" % Queue.id)
+			Queue.error = "Can not retrive file [%s] to local_master_path [%s] -> %s" % (Queue.file_name, LocalRepository, ErrorString)
+			Queue.save()
 	    
 	    
 	    else:

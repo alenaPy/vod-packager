@@ -69,11 +69,11 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	RQueue = models.RenditionQueue.objects.get(item=Item)
 	RQueue.queue_status = 'Q'
 	RQueue.save() 
+	logging.info("VPAddItem(): Reimport an existing Item")
 	return True
     except: 
 	Item 			= models.Item()
-
-    logging.info("Creating new Item")
+	logging.info("VPAddItem(): Creating new Item")
 
     
 
@@ -81,18 +81,20 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     # Se cargan los Datos Basicos
     #
     Item.name 			= ItemMetadata["name"]
-    
     Item.material_type		= ItemMetadata["material_type"]
     Item.especial		= ItemMetadata["especial"]
     
     
-    
+    #
+    # Si no existe el grupo lo crea
+    #     
     try:
 	ItemGroup = models.ItemGroup.objects.get(key=ItemMetadata["group"])
+	logging.info("VPAddItem(): Using and existing item group [%s]" % ItemGroup.key)
     except:
 	ItemGroup = models.ItemGroup()
 	ItemGroup.key  = ItemMetadata["group"]
-	
+	logging.info("VPAddItem(): Creating a new item group [%s]" % ItemGroup.key)
 	result = re.match("([0-9][0-9][0-9][0-9])([0-1][0-9])", ItemGroup.key)
 	print result
 	if result:
@@ -109,25 +111,25 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     
     
     
-    logging.info("Item Name: " + Item.name)
-    logging.info("Item Format: " + Item.format)
-    logging.info("Item Material Type: " + Item.material_type)
+    logging.info("VPAddItem(): Item Name:   " + Item.name)
+    logging.info("VPAddItem(): Item Format: " + Item.format)
+    logging.info("VPAddItem(): Item Material Type: " + Item.material_type)
     #
     # Busca el Lenguage
     #
     try:
 	Language = models.Language.objects.get(code=ItemMetadata["content_language"].lower())
     except:
-	logging.warning("Cannot find the specific language: " + ItemMetadata["content_language"].lower())
+	logging.warning("VPAddItem(): Cannot find the specific language: " + ItemMetadata["content_language"].lower())
 	try:
 	    Language = models.Language.objects.get(code='en')
 	except:
-	    logging.error("Cannot find English language")
+	    logging.error("VPAddItem(): Cannot find English language")
 	    Language = models.Language()
 	    Language.code = 'en'
 	    Language.name = 'English'
 	    Language.save()
-	    logging.info("English language created")
+	    logging.info("VPAddItem(): English language created")
 	#
 	# Si no encuentra el Lenguage falla
 	#
@@ -145,7 +147,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	#
 	# Si no existe la crea
 	#
-	logging.warning("New category for this item: " + ItemMetadata["category"] )
+	logging.warning("VPAddItem(): New category for this item: " + ItemMetadata["category"] )
 	Category = models.Category()
 	Category.name = ItemMetadata["category"]
 	Category.save()
@@ -189,8 +191,25 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     else:    
 	Item.format 		= ItemMetadata["format"]
     Item.studio			= ItemMetadata["studio_name"]
+
     Item.brand			= ItemMetadata["studio_name"]
     Item.mam_id 		= ItemMetadata["mam_id"]
+
+    #
+    # Agregado 7/6/2013
+    #
+    try:
+	InternalBrand		= models.InternalBrand.objects.get(name=Item.brand)
+    except:
+	InternalBrand		= models.InternalBrand()
+	InternalBrand.name	= Item.brand
+	InternalBrand.format	= Item.format
+	InternalBrand.save()
+	
+    Item.internal_brand = InternalBrand
+    #
+    # Fin Agregado 7/6/2013
+    #
 
 
     if ItemMetadata["show_type"].upper() == 'MOVIE':
@@ -232,16 +251,12 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     ImportQueue = models.RenditionQueue()
     ImportQueue.item		= Item
     ImportQueue.file_name 	= FileName
-    ImportQueue.svc_path	= SmbPath
     ImportQueue.local_file	= 'N'
     
 
-    if Settings.PULL_FILES: 
-	ImportQueue.queue_status	= 'W'
-    else:
-	ImportQueue.queue_status	= 'Q'
+    ImportQueue.queue_status	= 'W'
 	
-    logging.info("New Rendition Queue: " + SmbPath + FileName  )
+    logging.info("New Rendition Queue: " + FileName  )
 
     ImportQueue.save()
     return True

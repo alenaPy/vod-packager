@@ -16,6 +16,13 @@ FORMAT = (
 	('', 'Empty'),
 )
 
+BRAND_FORMAT = (
+	('SD', 'SD'),
+	('HD', 'HD'),
+	('3D', '3D'),
+)
+
+
 class ItemGroup(models.Model):
 	key						= models.CharField(max_length=6)
 	name						= models.CharField(max_length=50)
@@ -105,6 +112,7 @@ class Customer(models.Model):
 	image_type 					= models.CharField(max_length=128)
 	video_profile 					= models.ManyToManyField('VideoProfile')
 	image_profile 					= models.ManyToManyField('ImageProfile')
+	internal_brand					= models.ManyToManyField('InternalBrand')
 	metadata_profile 				= models.ForeignKey('MetadataProfile')
 	export_language					= models.ForeignKey('Language')
 	export_format					= models.CharField(max_length=4, choices=EXPORT_CUSTOMER_FORMAT)
@@ -240,6 +248,7 @@ class Item(models.Model):
 
 	group				= models.ForeignKey('ItemGroup')
 	brand				= models.CharField(max_length=64, blank=True)
+	internal_brand			= models.ForeignKey('InternalBrand')
 	studio				= models.CharField(max_length=64)
 	studio_name 			= models.CharField(max_length=128)
 	mam_id 				= models.CharField(max_length=64)
@@ -251,14 +260,13 @@ class Item(models.Model):
 class RenditionQueue(models.Model):
 	RENDITION_QUEUE_STATUS = (
 		('W', 'Waiting'),
+		('P', 'Pulling'),
 		('Q', 'Queued'),
 		('D', 'Dequeued'),
 		('E', 'Error'),
 	)
 	item	          			= models.ForeignKey('Item')
 	file_name         			= models.CharField(max_length=256)
-	svc_path          			= models.CharField(max_length=256)
-	local_svc_path				= models.CharField(max_length=256, blank=True)
 	local_file				= models.CharField(max_length=1, choices=(('Y', 'Yes'), ('N', 'No')))
 	queue_status				= models.CharField(max_length=1,choices=RENDITION_QUEUE_STATUS)
 	creation_date				= models.DateTimeField(auto_now_add=True)
@@ -268,6 +276,14 @@ class RenditionQueue(models.Model):
 
 	def __unicode__(self):
 		return self.file_name 
+
+class InternalBrand(models.Model):
+	name					= models.CharField(max_length=20)
+	format					= models.CharField(max_length=2, choices=BRAND_FORMAT)
+	
+
+	def __unicode__(self):
+		return self.name
 
 
 class VideoRendition(models.Model):
@@ -359,7 +375,7 @@ class TranscodingServer(models.Model):
 
 class Path(models.Model):
 	
-	key 						= models.CharField(max_length=24, unique=True)
+	key 						= models.CharField(max_length=24)
 	location 					= models.CharField(max_length=256)
 	description 					= models.CharField(max_length=256)
 	
@@ -464,6 +480,52 @@ def GetImageProfile(format='ALL'):
 	return ImageProfile.objects.filter(status='E', format='SD')
     elif format == 'HD':
 	return ImageProfile.objects.filter(status='E', format='HD')
+	
+	
+def GetImageProfilesBrand(IBrand=None):
+    ImageProfiles = []
+    if IBrand is not None:
+	try:
+	    Customers = models.Customer.objects.filter(internal_brand=IBrand)
+	    for customer in Customers:
+		if IBrand.format == 'HD':
+		    IProfiles = customer.image_profile.filter(status='E')
+		elif IBrand.format == 'SD':
+		    IProfiles = customer.image_profile.filter(status='E', format='SD')
+		elif IBrand.format == '3D':
+		    IProfiles = customer.image_profile.filter(status='E', format='3D')   
+
+		for iprofile in IProfiles:
+		    if iprofile not in ImageProfiles:
+			ImageProfiles.append(iprofile)
+	except:
+	    pass
+    return ImageProfiles
+
+
+def GetVideoProfilesBrand(IBrand=None):
+    
+    VideoProfiles = []
+    
+    if IBrand is not None:
+	try:
+	    Customers = models.Customer.objects.filter(internal_brand=IBrand)
+	    for customer in Customers:
+		if IBrand.format == 'HD':
+		    VProfiles = customer.video_profile.filter(status='E')
+		elif IBrand.format == 'SD':
+		    VProfiles = customer.video_profile.filter(status='E', format='SD')
+		elif IBrand.format == '3D':
+		    VProfiles = customer.video_profile.filter(status='E', format='3D')   
+		
+		for vprofile in VProfiles:
+		    if vprofile not in VideoProfiles:
+			VideoProfiles.append(vprofile)
+	except:
+	    pass	
+    
+    return VideoProfiles	
+	
 	
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Trae todo los Transcoding Servers Habilitados

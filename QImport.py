@@ -45,6 +45,22 @@ def CreateDummyCarbon():
 	TServer.status     = 'D'
 	TServer.save()
 	
+	
+Static_Counter = 0
+
+def GetSmbLocalPath():
+
+    global Static_Counter
+
+    LocalSmbPath = models.Path.objects.filter(key='local_master_smb')
+    
+    if len(LocalSmbPath) > 1 and Settings.LOCAL_SMB_PATH_ROUND_ROBIN == True:
+	Static_Counter = Static_Counter + 1
+	return LocalSmbPath[Static_Counter % len(LocalSmbPath)].location
+    elif len(LocalSmbPath) == 1 or Settings.LOCAL_SMB_PATH_ROUND_ROBIN == False:
+	return LocalSmbPath[0].location
+	
+    return None
 
 ErrorString = ''
 
@@ -83,13 +99,28 @@ def MakeImageRenditions(RenditionTask=None):
 
     Item = RenditionTask.item
     
-    #
-    # Trae la lista de profiles activos
-    #
-    if Item.format == 'HD':
-        IProfileList = models.GetImageProfile()
+    
+    if Settings.OPTIMIZE_PROFILES_WITH_BRAND:
+	IProfileList_pre = models.GetImageProfileBrand(Item.internal_brand)
+	if Item.internal_brand == 'HD' and Item.format == 'SD':
+	    logging.warning("MakeImageRenditions(): Internal Brand is HD but Item format is SD -> Eliminate HD Profiles")
+	    #
+	    # Hay que eliminar los HD
+	    #
+	    IProfileList = []
+	    for IProfile in IProfileList_pre:
+		if IProfile.format == 'SD':
+		    IProfileList.add(IProfile)
+	else:
+	    IProfileList = IProfileList_pre	    
     else:
-	IProfileList = models.GetImageProfile('SD')
+	#
+        # Trae la lista de profiles activos
+        #
+	if Item.format == 'HD':
+    	    IProfileList = models.GetImageProfile()
+	else:
+	    IProfileList = models.GetImageProfile('SD')
     #
     # Por cada image profile debe crear el image rendition
     #
@@ -144,19 +175,35 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 	return False
 
     logging.info("MakeVideoRenditions(): Creating video rendition for item: " + Item.name )
-    #
-    # Define que tipos de Video Profiles debe usar
-    # SD o HD
-    #
-    if Item.format == 'HD':
-	VProfileList = models.GetVideoProfiles()
-    elif Item.format == 'SD':
-	VProfileList = models.GetVideoProfiles('SD')
+
+
+    if Settings.OPTIMIZE_PROFILES_WITH_BRAND:
+	VProfileList_pre = models.GetVideoProfilesBrand(Item.internal_brand)
+	if Item.internal_brand == 'HD' and Item.format == 'SD':
+	    logging.warning("MakeVideoRenditions(): Internal Brand is HD but Item format is SD -> Eliminate HD Profiles")
+	    #
+	    # Hay que eliminar los HD
+	    #
+	    VProfileList = []
+	    for VProfile in VProfileList_pre:
+		if VProfile.format == 'SD':
+		    VProfileList.add(VProfile)
+	else:
+	    VProfileList = VProfileList_pre	    
+    else:
+
+        #
+	# Define que tipos de Video Profiles debe usar
+	# SD o HD
+        #
+	if Item.format == 'HD':
+	    VProfileList = models.GetVideoProfiles()
+	elif Item.format == 'SD':
+	    VProfileList = models.GetVideoProfiles('SD')
         
     
-    if RenditionTask.local_file == 'Y' and RenditionTask.local_svc_path is not None and RenditionTask.local_svc_path != '':
+    if RenditionTask.local_file == 'Y':
 
-	logging.info("MakeVideoRenditions(): Try to use local_svc_path [%s]" % RenditionTask.local_svc_path)
 	local_master_path =  models.GetPath('local_master_path')
 	if local_master_path is not None:
 	    if not local_master_path.endswith('/'):
@@ -164,15 +211,24 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 	
 	    if FileExist(local_master_path,RenditionTask.file_name):
 		logging.info("MakeVideoRenditions(): File Exist in local_svc_path [%s]" % (local_master_path + RenditionTask.file_name))
-	    	Source = RenditionTask.local_svc_path
-	    else:
-		logging.info("MakeVideoRenditions(): Can not Find the file in local_svc_path [%s]" % (local_master_path + RenditionTask.file_name))
-		Source = RenditionTask.svc_path
-	else:
-	    Source = RenditionTask.svc_path
+		Source = GetSmbLocalPath():
+		if Source is None:
+		    ErrorString = "MakeVideoRenditions(): Fail in GetSmbLocalPath"
+		    logging.error("MakeVideoRenditions(): Fail in GetSmbLocalPath")		
+		    return False
 
+	    else:
+		ErrorString = "MakeVideoRenditions(): Can not Find the file in local_svc_path [%s]" % (local_master_path + RenditionTask.file_name)
+		logging.error("MakeVideoRenditions(): Can not Find the file in local_svc_path [%s]" % (local_master_path + RenditionTask.file_name))
+		return False
+	else:
+	    ErrorString = "MakeVideoRenditions(): local_master_path is None"
+	    logging.error("MakeVideoRenditions(): local_master_path is None")
+	    return False
     else:    
-	Source = RenditionTask.svc_path
+	ErrorString = "MakeVideoRenditions(): local_file is No"
+	logging.error("MakeVideoRenditions(): local_file is No")
+	return False
 
     File   = RenditionTask.file_name
     logging.debug("MakeVideoRenditions(): Source-> " + Source + " File-> " + File)    

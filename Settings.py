@@ -21,22 +21,6 @@ QPURGE_SLEEP=2000
 QPACKAGER_SLEEP=300
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Pull Files: Intenta traer los archivos a un repositorio local
-#
-# Nota: El repositorio Remoto debe estar Montado por NFS
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-PULL_FILES=True
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Pull Error: Si Tolera Errores el traer los Files
-#
-# PULL_ERROR=True  -> Si no puede traer los archivos igual sigue el proceso
-# PULL_ERROR=False -> Si no puede traer los archivos Falla
-#
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-PULL_ERROR=False
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Overwrite Pull Files: Politica de escritura si el archivo se encuentra
 #
 # OVERWRITE_PULL_FILES=True  -> Sobreescribe de los arhivos si existen
@@ -49,4 +33,6 @@ PULL_LIMIT_AVAILABLE=True
 
 PULL_LIMIT="30M"
 
+OPTIMIZE_PROFILES_WITH_BRAND=True
 
+LOCAL_SMB_PATH_ROUND_ROBIN=False
