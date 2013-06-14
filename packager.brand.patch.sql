@@ -74,7 +74,7 @@ ALTER TABLE `Packager_app_renditionqueue` DROP COLUMN `svc_path`;
 UNLOCK TABLES;
 
 LOCK TABLES `Packager_app_path` WRITE;
-ALTER TABLE `Packager_app_renditionqueue` DROP INDEX `key`;
+ALTER TABLE `Packager_app_path` DROP INDEX `key`;
 UNLOCK TABLES;
 
 
