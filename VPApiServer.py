@@ -67,7 +67,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     try:
 	Item = models.Item.objects.get(name=ItemMetadata["name"])
 	RQueue = models.RenditionQueue.objects.get(item=Item)
-	RQueue.queue_status = 'Q'
+	RQueue.queue_status = 'W'
 	RQueue.save() 
 	logging.info("VPAddItem(): Reimport an existing Item")
 	return True
@@ -199,7 +199,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     # Agregado 7/6/2013
     #
     try:
-	InternalBrand		= models.InternalBrand.objects.get(name=Item.brand)
+	InternalBrand		= models.InternalBrand.objects.get(name=ItemMetadata["internal_brand"])
     except:
 	InternalBrand		= models.InternalBrand()
 	InternalBrand.name	= Item.brand

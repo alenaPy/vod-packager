@@ -54,6 +54,8 @@ def GetSmbLocalPath():
 
     LocalSmbPath = models.Path.objects.filter(key='local_master_smb')
     
+    logging.info("GetSmbLocalPath(): LocalSmbPath len: %s" % str(len(LocalSmbPath)))
+    
     if len(LocalSmbPath) > 1 and Settings.LOCAL_SMB_PATH_ROUND_ROBIN == True:
 	Static_Counter = Static_Counter + 1
 	return LocalSmbPath[Static_Counter % len(LocalSmbPath)].location
@@ -209,18 +211,7 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 	    if not local_master_path.endswith('/'):
 		local_master_path = local_master_path + '/'
 	
-	    if FileExist(local_master_path,RenditionTask.file_name):
-		logging.info("MakeVideoRenditions(): File Exist in local_svc_path [%s]" % (local_master_path + RenditionTask.file_name))
-		Source = GetSmbLocalPath():
-		if Source is None:
-		    ErrorString = "MakeVideoRenditions(): Fail in GetSmbLocalPath"
-		    logging.error("MakeVideoRenditions(): Fail in GetSmbLocalPath")		
-		    return False
-
-	    else:
-		ErrorString = "MakeVideoRenditions(): Can not Find the file in local_svc_path [%s]" % (local_master_path + RenditionTask.file_name)
-		logging.error("MakeVideoRenditions(): Can not Find the file in local_svc_path [%s]" % (local_master_path + RenditionTask.file_name))
-		return False
+	    
 	else:
 	    ErrorString = "MakeVideoRenditions(): local_master_path is None"
 	    logging.error("MakeVideoRenditions(): local_master_path is None")
@@ -231,8 +222,7 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 	return False
 
     File   = RenditionTask.file_name
-    logging.debug("MakeVideoRenditions(): Source-> " + Source + " File-> " + File)    
-    logging.debug("MakeVideoRenditions(): VProfileList len: " + str(len(VProfileList)))
+    
     #
     # Por cada video profile crea un video rendition
     #
@@ -242,6 +232,21 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 	
 	TranscodeGuid = VProfile.guid
 	
+	if FileExist(local_master_path,RenditionTask.file_name):
+	    logging.info("MakeVideoRenditions(): File Exist in local_svc_path [%s]" % (local_master_path + RenditionTask.file_name))
+	    Source = GetSmbLocalPath()
+	    if Source is None:
+	        ErrorString = "MakeVideoRenditions(): Fail in GetSmbLocalPath"
+	        logging.error("MakeVideoRenditions(): Fail in GetSmbLocalPath")		
+	        return False
+
+	else:
+	    ErrorString = "MakeVideoRenditions(): Can not Find the file in local_svc_path [%s]" % (local_master_path + RenditionTask.file_name)
+	    logging.error("MakeVideoRenditions(): Can not Find the file in local_svc_path [%s]" % (local_master_path + RenditionTask.file_name))
+	    return False
+	
+	logging.info("MakeVideoRenditions(): Source-> " + Source + " File-> " + File)    
+	logging.info("MakeVideoRenditions(): VProfileList len: " + str(len(VProfileList)))
 	#
 	# Si existe ya existe un video rendition con ese profile para ese item
 	# no lo procesa y continua con el siguiente profile

@@ -22,6 +22,7 @@ def ItemMetadata():
 		 ('country_of_origin', ''),
 		 ('year', ''),
 		 ('director', ''),
+		 ('internal_brand', ''),
 		 ('studio_name', ''),
 		 ('group', ''),
 		 ('mam_id', '')])
