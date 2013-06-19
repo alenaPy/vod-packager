@@ -195,6 +195,8 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     Item.brand			= ItemMetadata["studio_name"]
     Item.mam_id 		= ItemMetadata["mam_id"]
 
+    
+    print ItemMetadata["internal_brand"]
     #
     # Agregado 7/6/2013
     #
@@ -202,7 +204,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	InternalBrand		= models.InternalBrand.objects.get(name=ItemMetadata["internal_brand"])
     except:
 	InternalBrand		= models.InternalBrand()
-	InternalBrand.name	= Item.brand
+	InternalBrand.name	= ItemMetadata["internal_brand"]
 	InternalBrand.format	= Item.format
 	InternalBrand.save()
 	

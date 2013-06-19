@@ -72,6 +72,7 @@ class Customer(models.Model):
 		('TVOD', 'True Video on Demand'),
 		('SVOD', 'Subscription Video On Demand'),
 		('MOD', 'Movie On Demand'),
+		('MODADULT', 'Mod Adult'),
 	)
 
 	RUNTIME_DISPLAY = (
@@ -104,6 +105,7 @@ class Customer(models.Model):
 		('FPC', 'Format / Category'),
 		('AM',  'Adultos / Brand'),
 		('CA',  'Adultos / Category'),
+		('ZA',  'Zona Adultos / Format / Category'),
 	)
 	
 	name 						= models.CharField(max_length=256)
@@ -120,7 +122,7 @@ class Customer(models.Model):
 	runtype_display					= models.CharField(max_length=1, choices=RUNTIME_DISPLAY)
 	license_date_format				= models.CharField(max_length=2, choices=LICENSE_DATE_FORMAT)
 	rating_display					= models.ForeignKey('Rating')
-	product_type					= models.CharField(max_length=4, choices=PRODUCT_TYPE)
+	product_type					= models.CharField(max_length=10, choices=PRODUCT_TYPE)
 	viewing_can_be_resumed				= models.CharField(max_length=1, choices=(('Y', 'Yes'),('N', 'No')), default='N')
 	suggested_price_longform_sd			= models.CharField(max_length=10, default='0')
 	suggested_price_longform_hd			= models.CharField(max_length=10, default='0')
@@ -150,8 +152,11 @@ class Customer(models.Model):
 	use_xml_adi_filename				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 	use_three_chars_country				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 	provider_id_with_brand				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	provider_id					= models.CharField(max_length=20, blank=True)
+	provider_qa_contact				= models.CharField(max_length=100, blank=True)
 	brand_in_synopsis				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 	export_complete_package				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	
 		
 	def __unicode__(self):
 		return self.name
@@ -486,7 +491,7 @@ def GetImageProfilesBrand(IBrand=None):
     ImageProfiles = []
     if IBrand is not None:
 	try:
-	    Customers = models.Customer.objects.filter(internal_brand=IBrand)
+	    Customers = Customer.objects.filter(internal_brand=IBrand)
 	    for customer in Customers:
 		if IBrand.format == 'HD':
 		    IProfiles = customer.image_profile.filter(status='E')
@@ -509,7 +514,7 @@ def GetVideoProfilesBrand(IBrand=None):
     
     if IBrand is not None:
 	try:
-	    Customers = models.Customer.objects.filter(internal_brand=IBrand)
+	    Customers = Customer.objects.filter(internal_brand=IBrand)
 	    for customer in Customers:
 		if IBrand.format == 'HD':
 		    VProfiles = customer.video_profile.filter(status='E')

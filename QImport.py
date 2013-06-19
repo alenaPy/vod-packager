@@ -18,6 +18,7 @@ from carbonapi.CarbonUtils import *
 from carbonapi.CarbonJob import *
 from carbonapi.CarbonSched import *
 
+import time
 import logging
 import sys, time
 
@@ -103,7 +104,7 @@ def MakeImageRenditions(RenditionTask=None):
     
     
     if Settings.OPTIMIZE_PROFILES_WITH_BRAND:
-	IProfileList_pre = models.GetImageProfileBrand(Item.internal_brand)
+	IProfileList_pre = models.GetImageProfilesBrand(Item.internal_brand)
 	if Item.internal_brand == 'HD' and Item.format == 'SD':
 	    logging.warning("MakeImageRenditions(): Internal Brand is HD but Item format is SD -> Eliminate HD Profiles")
 	    #
@@ -180,7 +181,9 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 
 
     if Settings.OPTIMIZE_PROFILES_WITH_BRAND:
+	print "Estoy Aca"
 	VProfileList_pre = models.GetVideoProfilesBrand(Item.internal_brand)
+	print VProfileList_pre
 	if Item.internal_brand == 'HD' and Item.format == 'SD':
 	    logging.warning("MakeVideoRenditions(): Internal Brand is HD but Item format is SD -> Eliminate HD Profiles")
 	    #
@@ -372,6 +375,8 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 		ErrorString = '02: Error sending Job'
 		logging.error("MakeVideoRendition(): 02: Error sending Job")
 	        return False
+
+	    time.sleep(0.5)
 
 	print "Estoy Aca"
 	VRendition.save()

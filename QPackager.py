@@ -662,6 +662,9 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     else:
 	Provider_ID = 'playboy.com'
 	
+    if Package.customer.provider_id != '':
+	Provider_ID = Package.customer.provider_id
+	
     MetadataXml = ADIXml.Package(Provider      = 'PLAYBOY',
                 		 Product       = Package.customer.product_type if Package.customer.empty_product_type == 'N' else '',
                 		 Asset_Name    = Asset_Name_Normalized.replace(' ', '_'),
@@ -771,8 +774,12 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     else:
 	MetadataXml.Title.Suggested_Price	  = '0.00'
 
+    if Package.customer.provider_qa_contact != '':
+	MetadataXml.Title.Provider_QA_Contact = Package.customer.provider_qa_contact
+    else:
+	MetadataXml.Title.Provider_QA_Contact = 'www.claxson.com'
 
-    MetadataXml.Title.Provider_QA_Contact = 'www.claxson.com'
+
 
     #
     # Metadata especifica del lenguage
@@ -850,6 +857,8 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	CategoryPath = ''
     elif Package.customer.category_path_style == 'CA':
 	CategoryPath = 'Adultos' + '/' + CustomCategory.name		
+    elif Package.customer.category_path_stype == 'ZA':
+	CategoryPath = 'Zona Adultos' + '/' + VideoRendition.video_profile.format + '/' + CustomCategory.name
 
     if Package.customer.category_with_spaces == 'N':
 	MetadataXml.Title.Category	= CategoryPath.replace(' ', '')
