@@ -62,6 +62,15 @@ class CustomMetadata(models.Model):
 	apply_to					= models.CharField(max_length=1, default='T', choices=(('I', 'Image'),('T', 'Title'),('V', 'Video')))
 	name						= models.CharField(max_length=256)
 	brand_condition					= models.CharField(max_length=30, blank=True)
+	SHOW_TYPE = (('Ad', 'Advertisement'),
+		     ('Events', 'Events'),
+		     ('Kids', 'Kids'),
+		     ('Lifestyle', 'Lifestyle'),
+		     ('Movie', 'Movie'),
+		     ('Music', 'Music'),
+		     ('Series', 'Series'),
+		     ('Sports', 'Sports'))
+	show_type					= models.CharField(max_length=10, choices=SHOW_TYPE,default='Movie')
 	format_condition				= models.CharField(max_length=2, choices=FORMAT, blank=True, default='')
 	value						= models.CharField(max_length=256)
 
@@ -106,6 +115,7 @@ class Customer(models.Model):
 		('AM',  'Adultos / Brand'),
 		('CA',  'Adultos / Category'),
 		('ZA',  'Zona Adultos / Format / Category'),
+		('SHO', 'SHOWRUNNER/ADULTO +18/'),
 	)
 	
 	name 						= models.CharField(max_length=256)
@@ -156,7 +166,10 @@ class Customer(models.Model):
 	provider_qa_contact				= models.CharField(max_length=100, blank=True)
 	brand_in_synopsis				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 	export_complete_package				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
-	
+	use_preview					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))	
+	use_dtd_file					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	id_special_prefix				= models.CharField(max_length=4, default='', blank=True)
+	uppercase_adi					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 		
 	def __unicode__(self):
 		return self.name
@@ -289,6 +302,17 @@ class InternalBrand(models.Model):
 
 	def __unicode__(self):
 		return self.name
+
+class PreviewRenditions(models.Model):
+        file_name                               = models.CharField(max_length=256)
+        video_profile                           = models.ForeignKey('VideoProfile')
+        run_time                                = models.CharField(max_length=8)
+        file_size                               = models.BigIntegerField(default=0)
+        checksum                                = models.CharField(max_length=32)
+                                        
+        def __unicode__(self):
+            return self.file_name
+                                                                
 
 
 class VideoRendition(models.Model):
@@ -540,7 +564,7 @@ def GetTranscodingServer():
     return TranscodingServer.objects.filter(status='E')
 
 def GetWaitingRenditionQueue():
-    return RenditionQueue.objects.filter(queue_status='W')
+    return RenditionQueue.objects.filter(queue_status='W').order_by('id')
 
 def GetRenditionQueue():
     return RenditionQueue.objects.filter(queue_status='Q')

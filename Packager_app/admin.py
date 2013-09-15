@@ -9,7 +9,7 @@ class CustomerAdmin(admin.ModelAdmin):
 	fieldsets = [
 	    ('General info',    {'fields': ['name','vod_active', 'product_type', 'empty_product_type', ]}),
 	    ('Rental period',   {'fields': ['suggested_price_longform_sd', 'suggested_price_longform_hd', 'suggested_price_shortform_sd', 'suggested_price_shortform_hd', 'billing_id', 'license_window', 'preview_period', 'maximum_viewing_length']}),
-	    ('Media and Metadata Profile',   {'fields': ['internal_brand', 'video_profile', 'image_profile', 'image_type', 'metadata_profile', 'runtype_display', 'license_date_format', 'rating_display', 'viewing_can_be_resumed', 'extended_video_information', 'category_with_spaces', 'category_path_style','titles_in_capital_letter', 'use_hdcontent_var', 'doctype', 'summary_long', 'image_aspect_ratio', 'actor_display', 'limit_content_value', 'id_len_reduced', 'use_genres_category', 'custom_genres', 'use_xml_adi_filename', 'use_three_chars_country', 'provider_id_with_brand','provider_id','provider_qa_contact', 'brand_in_synopsis']}),
+	    ('Media and Metadata Profile',   {'fields': ['internal_brand', 'video_profile', 'image_profile', 'image_type', 'metadata_profile', 'runtype_display', 'license_date_format', 'rating_display', 'viewing_can_be_resumed', 'extended_video_information', 'category_with_spaces', 'category_path_style','titles_in_capital_letter', 'use_hdcontent_var', 'doctype', 'summary_long', 'image_aspect_ratio', 'actor_display', 'limit_content_value', 'id_len_reduced', 'use_genres_category', 'custom_genres', 'use_xml_adi_filename', 'use_three_chars_country', 'provider_id_with_brand','provider_id','provider_qa_contact', 'brand_in_synopsis', 'use_preview', 'use_dtd_file', 'id_special_prefix', 'uppercase_adi']}),
 	    ('Exportation rules',    {'fields': ['export_language','export_format', 'export_folder', 'export_complete_package']}), 
 	]
 	
@@ -33,6 +33,9 @@ class RenditionQueueAdmin(admin.ModelAdmin):
 
 class VideoRenditionAdmin(admin.ModelAdmin):
 	list_display = ('id', 'file_name', 'item', 'video_profile', 'src_svc_path', 'transcoding_server', 'status', 'speed', 'progress')
+
+class PreviewRenditionsAdmin(admin.ModelAdmin):
+	list_display = ('id', 'file_name', 'video_profile')
 
 class ImageRenditionAdmin(admin.ModelAdmin):
 	list_display = ('id', 'file_name', 'item', 'image_profile', 'status')
@@ -86,6 +89,7 @@ admin.site.register(Item, ItemAdmin)
 admin.site.register(ItemGroup, ItemGroupAdmin)
 admin.site.register(RenditionQueue, RenditionQueueAdmin)
 admin.site.register(VideoRendition, VideoRenditionAdmin)
+admin.site.register(PreviewRenditions, PreviewRenditionsAdmin)
 admin.site.register(ImageRendition, ImageRenditionAdmin)
 admin.site.register(PackageGroup, PackageGroupAdmin)
 admin.site.register(Package, PackageAdmin)

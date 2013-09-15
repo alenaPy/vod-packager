@@ -68,7 +68,6 @@ def DeleteImageRendition(ImageRendition=None):
 	
 	image_path     = models.GetPath("image_local_path")
 	
-
         print ("DeleteImageRendition(): Delete Image rendition file Name: %s" % ImageRendition.file_name)
         try:
 	    os.unlink(image_path + '/' + ImageRendition.file_name)

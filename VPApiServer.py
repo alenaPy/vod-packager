@@ -213,10 +213,9 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     # Fin Agregado 7/6/2013
     #
 
-
     if ItemMetadata["show_type"].upper() == 'MOVIE':
 	Item.show_type		= 'Movie'
-    elif ItemMetadata["show_type"].upper() == 'SERIES':
+    elif ItemMetadata["show_type"].upper() == 'SERIE':
 	Item.show_type		= 'Series'
 
     Item.status			= 'N'

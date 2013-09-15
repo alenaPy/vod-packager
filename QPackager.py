@@ -52,10 +52,24 @@ def GetStartDate(DateStr=''):
 
     return None, None		
     	
+def write_dtd_file(PackagePath=None):
+    if PackagePath is not None:
+	try:
+	    dtd_src = open('ADI.DTD', 'rt')
+	    dtd_dst = open(PackagePath+'ADI.DTD', 'wt')
+	    dtd_dst.write(dtd_src.read())
+	    dtd_src.close()
+	    dtd_dst.close()
+	except:
+	    pass
+
+    return     	
+	
+    	
 MonthSpanish = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']    	
     	
 
-def MakeAssetId(asset_type='package', asset_id = 0, package_id = 0, reduced = False):
+def MakeAssetId(asset_type='package', asset_id = 0, package_id = 0, reduced = False, special_id = ''):
 
     first = '4'
 
@@ -76,9 +90,15 @@ def MakeAssetId(asset_type='package', asset_id = 0, package_id = 0, reduced = Fa
         i = i + 1
 
     if reduced:
-	return 'PBLA' + first + str_id
+	if special_id != '' and len(special_id) == 4:
+	    return special_id + first + str_id
+	else:
+	    return 'PBLA' + first + str_id
     else:
-	return 'PBLA' + first + zero + str_id
+	if special_id != '' and len(special_id) == 4:
+	    return special_id + first + zero + str_id
+	else:
+	    return 'PBLA' + first + zero + str_id
 
 
 
@@ -271,7 +291,7 @@ def GetVideoRenditions(Package=None):
 
 
 	logging.info("GetVideoRenditions(): Item Format: %s" % Item.format)
-	if Item.format == 'HD':
+	if Item.format == 'HD' and Item.internal_brand.format == 'HD':
 	    #
 	    # El item esta en formato HD
 	    #
@@ -308,7 +328,7 @@ def GetVideoRenditions(Package=None):
 		    logging.error("GetVideoRenditions(): " + ErrorString)
 		    return None
 
-	elif Item.format == 'SD':
+	elif Item.format == 'SD' or Item.internal_brand.format == 'SD':
 	    #
 	    # El item esta en formato SD
 	    #
@@ -653,9 +673,10 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     Asset_Name_Normalized = Asset_Name_Normalized.translate(None, string.punctuation)
 
     if Package.customer.id_len_reduced == 'Y':
-	Asset_ID	= MakeAssetId('package', VideoRendition.id, Package.id, True)
+	Asset_ID	= MakeAssetId('package', VideoRendition.id, Package.id, True,  Package.customer.id_special_prefix)
     else:
-	Asset_ID	= MakeAssetId('package', VideoRendition.id, Package.id)
+	Asset_ID	= MakeAssetId('package', VideoRendition.id, Package.id, False, Package.customer.id_special_prefix)
+
 
     if Package.customer.provider_id_with_brand == 'Y':
 	Provider_ID = 'playboy.' + Package.item.brand.replace(' ', '').upper()
@@ -682,9 +703,9 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 
     MetadataXml.AddTitle()
     if Package.customer.id_len_reduced == 'Y':
-	MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', VideoRendition.id, Package.id, True)
+	MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', VideoRendition.id, Package.id, True,  Package.customer.id_special_prefix)
     else:	
-	MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', VideoRendition.id, Package.id)
+	MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', VideoRendition.id, Package.id, False, Package.customer.id_special_prefix)
 
     
     MetadataXml.Title.Closed_Captioning = 'N'
@@ -847,6 +868,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
         CustomCategory = Package.item.category
 
 
+
     if Package.customer.category_path_style == 'APC':
 	CategoryPath = 'Adultos' + '/' + MetadataXml.Title.Studio + VideoRendition.video_profile.format + '/' + CustomCategory.name
     elif Package.customer.category_path_style == 'DLA':
@@ -857,8 +879,19 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	CategoryPath = ''
     elif Package.customer.category_path_style == 'CA':
 	CategoryPath = 'Adultos' + '/' + CustomCategory.name		
-    elif Package.customer.category_path_stype == 'ZA':
+    elif Package.customer.category_path_style == 'ZA':
 	CategoryPath = 'Zona Adultos' + '/' + VideoRendition.video_profile.format + '/' + CustomCategory.name
+    elif Package.customer.category_path_style == 'SHO':
+	RootPath = 'SHOWRUNNER/ADULTO +18/'
+	if VideoRendition.video_profile.format == 'SD':
+	    RootPath = RootPath + 'CATEGORIAS/' + CustomCategory.name.upper()
+	else:
+	    if VideoRendition.item.brand == 'Hot Shots':
+		RootPath = RootPath + 'HD Y 3D/RAPIDITOS HD $5.50'
+	    else:
+		RootPath = RootPath + 'HD Y 3D/HD'
+	    
+	CategoryPath = RootPath
 
     if Package.customer.category_with_spaces == 'N':
 	MetadataXml.Title.Category	= CategoryPath.replace(' ', '')
@@ -871,13 +904,11 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	MetadataXml.Title.Genre		= Package.customer.custom_genres
 
 
-
-
     MetadataXml.AddMovie()
     if Package.customer.id_len_reduced == 'Y':
-	MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id, Package.id, True)
+	MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id, Package.id, True, Package.customer.id_special_prefix )
     else:
-	MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id, Package.id)
+	MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id, Package.id, False,Package.customer.id_special_prefix )
 
 
     if Package.customer.use_hdcontent_var == 'Y':
@@ -920,6 +951,25 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	else:
 	    MetadataXml.Movie.Content_Value	= MetadataXml.AMS.Asset_Name[:12] + suffix + '.' + VideoRendition.video_profile.file_extension
 
+
+    if Package.customer.use_preview == 'Y':
+	#
+	# Busca el preview que le corresponde al cliente
+	#    
+	try:
+	    Preview = models.PreviewRenditions.objects.get(video_profile=VideoRendition.video_profile)
+	except:
+	    Preview = None
+	
+	if Preview is not None:
+	    MetadataXml.AddPreview()
+	    MetadataXml.Preview.Content_Value 	     = Preview.file_name
+	    MetadataXml.Preview.Content_FileSize     = str(Preview.file_size)
+	    MetadataXml.Preview.Content_CheckSum     = Preview.checksum
+	    MetadataXml.Preview.Audio_Type	     = Preview.video_profile.audio_type
+	    MetadataXml.Preview.Run_Time	     = Preview.run_time
+	    
+	    
     #
     # Defaults values
     #
@@ -935,9 +985,9 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	    MetadataXml.AddBoxCover()
 
 	if Package.customer.id_len_reduced == 'Y':
-	    MetadataXml.StillImage.AMS.Asset_ID	  = MakeAssetId('image', VideoRendition.id, Package.id, True)
+	    MetadataXml.StillImage.AMS.Asset_ID	  = MakeAssetId('image', VideoRendition.id, Package.id, True, Package.customer.id_special_prefix)
 	else:
-	    MetadataXml.StillImage.AMS.Asset_ID	  = MakeAssetId('image', VideoRendition.id, Package.id)
+	    MetadataXml.StillImage.AMS.Asset_ID	  = MakeAssetId('image', VideoRendition.id, Package.id, False, Package.customer.id_special_prefix)
 
 	MetadataXml.StillImage.Content_CheckSum   = ImageRendition.checksum
         MetadataXml.StillImage.Content_FileSize   = str(ImageRendition.file_size)
@@ -962,21 +1012,24 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     	    MetadataXml.StillImage.Image_Aspect_Ratio = ImageRendition.image_profile.image_aspect_ratio
 
 
+
+    show_type = Package.item.show_type
+
     # 
     # Campos inventados por el cliente sin dependencia de marca o formato
     # 
-    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition='', format_condition='')
+    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition='', format_condition='', show_type=show_type)
     for CustomMetadata in CustomMetadataList:
 	if CustomMetadata.apply_to == 'T':
     	    MetadataXml.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
-	elif CustmoMetadata.apply_to == 'V':
+	elif CustomMetadata.apply_to == 'V':
 	    MetadataXml.Movie.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
 	elif CustmoMetadata.apply_to == 'I':
 	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
 
 
      
-    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition=Package.item.brand, format_condition=VideoRendition.video_profile.format)
+    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition=Package.item.brand, format_condition=VideoRendition.video_profile.format, show_type=show_type)
     for CustomMetadata in CustomMetadataList:
 	if CustomMetadata.apply_to == 'T':
     	    MetadataXml.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
@@ -985,22 +1038,22 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	elif CustmoMetadata.apply_to == 'I':
 	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
 
-    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition='', format_condition=VideoRendition.video_profile.format)
+    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition='', format_condition=VideoRendition.video_profile.format, show_type=show_type)
     for CustomMetadata in CustomMetadataList:
 	if CustomMetadata.apply_to == 'T':
     	    MetadataXml.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
-	elif CustmoMetadata.apply_to == 'V':
+	elif CustomMetadata.apply_to == 'V':
 	    MetadataXml.Movie.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
-	elif CustmoMetadata.apply_to == 'I':
+	elif CustomMetadata.apply_to == 'I':
 	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
 
-    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition=Package.item.brand, format_condition='')
+    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition=Package.item.brand, format_condition='', show_type=show_type)
     for CustomMetadata in CustomMetadataList:
 	if CustomMetadata.apply_to == 'T':
     	    MetadataXml.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
-	elif CustmoMetadata.apply_to == 'V':
+	elif CustomMetadata.apply_to == 'V':
 	    MetadataXml.Movie.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
-	elif CustmoMetadata.apply_to == 'I':
+	elif CustomMetadata.apply_to == 'I':
 	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
 
 
@@ -1104,7 +1157,10 @@ def main():
 		if Package.customer.category_path_style == 'PEP':
 		    PackagePath	= ExportPath
 		else: 
-		    PackagePath = ExportPath + MetadataXml.Title.Category + '/' + MetadataXml.AMS.Asset_Name
+		    if Package.customer.category_path_style == 'SHO':
+			PackagePath = ExportPath + MetadataXml.Title.Category + '/'
+		    else:
+			PackagePath = ExportPath + MetadataXml.Title.Category + '/' + MetadataXml.AMS.Asset_Name
 		#
 		# Agrega la barra al final si no existe
 		#
@@ -1141,9 +1197,13 @@ def main():
 		else:
 		    if Package.customer.use_xml_adi_filename == 'Y':
 			PackageXmlFileName = 'adi.xml'
+			if Package.customer.uppercase_adi == 'Y':
+			    PackageXmlFileName = PackageXmlFileName.upper()
+			    
 		    else:
 			PackageXmlFileName = MetadataXml.AMS.Asset_Name + suffix + '.xml'
 		    
+	
 		    if Package.customer.doctype == 'Y':
 			ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName, '1.1', "<!DOCTYPE ADI SYSTEM \"ADI.DTD\">")
 		    else:
@@ -1168,9 +1228,25 @@ def main():
 		else:
 		    logging.error("Critical error: image_local_path is None. Check your configuration")
 		    return None
+
+		
+
+
 		#
 		# Intenta crear los links
 		#
+		if MetadataXml.Preview is not None:
+		    try:
+			if os.path.isfile(PackagePath + MetadataXml.Preview.Content_Value):
+			    os.remove(PackagePath + MetadataXml.Preview.Content_Value)
+			os.link(video_local_path + MetadataXml.Preview.Content_Value, PackagePath + MetadataXml.Preview.Content_Value)
+		    except:
+			ErrorString    = 'Error creating Preview Hard Link -> Catch: ' + e.strerror
+			Package.error  = ErrorString
+		        logging.error('main(): %s' % ErrorString)
+		        Package.status = 'E'
+		        Package.save()
+		        break
 		try:
 		    if os.path.isfile(PackagePath + MetadataXml.Movie.Content_Value):
 			os.remove(PackagePath + MetadataXml.Movie.Content_Value)
@@ -1206,6 +1282,10 @@ def main():
 		    if os.path.isfile(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage.Content_Value):
 			os.remove(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage.Content_Value)
 		    os.link(image_local_path + ImageRendition[1].file_name, PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage.Content_Value)
+		
+		
+		if Package.customer.use_dtd_file == 'Y':
+		    write_dtd_file(PackagePath)
 		    
 		logging.info("main(): END PACKAGE -------------")
 		Package.error  = ''

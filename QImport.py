@@ -184,7 +184,7 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 	print "Estoy Aca"
 	VProfileList_pre = models.GetVideoProfilesBrand(Item.internal_brand)
 	print VProfileList_pre
-	if Item.internal_brand == 'HD' and Item.format == 'SD':
+	if Item.internal_brand.format == 'HD' and Item.format == 'SD':
 	    logging.warning("MakeVideoRenditions(): Internal Brand is HD but Item format is SD -> Eliminate HD Profiles")
 	    #
 	    # Hay que eliminar los HD
@@ -192,7 +192,7 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 	    VProfileList = []
 	    for VProfile in VProfileList_pre:
 		if VProfile.format == 'SD':
-		    VProfileList.add(VProfile)
+		    VProfileList.append(VProfile)
 	else:
 	    VProfileList = VProfileList_pre	    
     else:

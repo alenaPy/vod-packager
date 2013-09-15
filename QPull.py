@@ -28,6 +28,38 @@ import Settings
 
 ErrorString = ''
 
+
+def GetUsage(path = None):
+    usage = 0
+    if path is not None:
+	if not path.endswith('/'):
+	    path = path + '/'
+	list = os.listdir(path)
+	for file in list:
+	    usage = usage + os.stat(path+file).st_size 
+
+    return usage
+
+#
+# La quota debe estar expresada en Gigas
+#
+def PathInQuota(path = None, max_quota = None):
+    usage = 0
+    quota = 0
+    if path is not None:
+	usage = GetUsage(path)
+
+    if max_quota is not None:
+	quota = max_quota * 1024 * 1024 * 1024
+
+    print quota
+    print usage	
+    if quota > usage:
+	return True
+    else:
+	return False
+
+
 def PullFile(SrcPath=None,FileName=None,DstPath=None):
 
     global ErrorString
@@ -47,6 +79,21 @@ def PullFile(SrcPath=None,FileName=None,DstPath=None):
 	    return False
 	try:	    
 	    if Settings.PULL_LIMIT_AVAILABLE:
+	    
+#		if not SrcPath.endswith('\'/'):
+#		    SrcPath = SrcPath + '\'/'
+#	    
+#		FileName = FileName.replace(' ', '\ ')
+#		FileName = FileName.replace('(', '\(')
+#		FileName = FileName.replace(')', '\)')
+#		FileName = FileName.replace('&', '\&')
+#		SrcPath  = SrcPath.replace(' ', '\ ')
+#		SrcPath  = SrcPath.replace('fork', 'Volumes/clx_xsan')
+#		print SrcPath + FileName
+#		cmd = "su - administrador -c \"scp 10.3.3.32:" + "\'" + SrcPath  + "\'" +FileName +"\'" +" " + DstPath + "\""
+#    		print cmd
+#		os.system(cmd)
+#		os.system("su - administrador -c \'scp 10.3.3.32:" + SrcPath+FileName + " " + DstPath + "\'")
 		os.system("pv -L %s \'" % Settings.PULL_LIMIT + SrcPath+FileName + "\' > \'" + DstPath+FileName + "\'")
 	    else:
 		shutil.copy(SrcPath+FileName, DstPath)
@@ -90,6 +137,12 @@ def ProcessWaitingRenditionQueue():
 		    
 	    if not LocalRepository.endswith('/'):	    
 		LocalRepository = LocalRepository + '/'
+
+	    if not PathInQuota(LocalRepository, Settings.MAX_QUOTA): 
+		if not FileExist(LocalRepository,Queue.file_name):
+		    logging.info("ProcessWaitingRenditionQueue(): Maximum Quota Limit Exceeded -> [%d]" % Settings.MAX_QUOTA)
+		    logging.info("ProcessWaitingRenditionQueue(): End Processing Waiting Queue")
+		    return True
 		    
 	    if FileExist(ExternRepositorySD,Queue.file_name):
 	    
