@@ -81,6 +81,8 @@ def MakeAssetId(asset_type='package', asset_id = 0, package_id = 0, reduced = Fa
 	first = '1'
     elif asset_type == 'image':
 	first = '4'
+    elif asset_type == 'preview':
+	first = '5'
 
     str_id = str(asset_id) + str(package_id)
     zero = ''
@@ -963,13 +965,16 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	
 	if Preview is not None:
 	    MetadataXml.AddPreview()
+	    if Package.customer.id_len_reduced == 'Y':
+		MetadataXml.Preview.AMS.Asset_ID = MakeAssetId('preview', VideoRendition.id, Package.id, True, Package.customer.id_special_prefix )
+	    else:
+		MetadataXml.Preview.AMS.Asset_ID = MakeAssetId('preview', VideoRendition.id, Package.id, False,Package.customer.id_special_prefix )
 	    MetadataXml.Preview.Content_Value 	     = Preview.file_name
 	    MetadataXml.Preview.Content_FileSize     = str(Preview.file_size)
 	    MetadataXml.Preview.Content_CheckSum     = Preview.checksum
 	    MetadataXml.Preview.Audio_Type	     = Preview.video_profile.audio_type
 	    MetadataXml.Preview.Run_Time	     = Preview.run_time
-	    
-	    
+	    MetadataXml.Preview.Rating		     = Package.customer.rating_display.name
     #
     # Defaults values
     #
@@ -1199,7 +1204,6 @@ def main():
 			PackageXmlFileName = 'adi.xml'
 			if Package.customer.uppercase_adi == 'Y':
 			    PackageXmlFileName = PackageXmlFileName.upper()
-			    
 		    else:
 			PackageXmlFileName = MetadataXml.AMS.Asset_Name + suffix + '.xml'
 		    
