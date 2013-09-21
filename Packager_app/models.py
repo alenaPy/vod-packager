@@ -356,6 +356,7 @@ class ImageRendition(models.Model):
 	status						= models.CharField(max_length=2, choices=IMAGE_RENDITION_STATUS)
 	
 	error						= models.CharField(max_length=512, blank=True)
+	
 	#
 	# idiomas
 	#
@@ -429,7 +430,7 @@ class VideoProfile(models.Model):
 	codec						= models.CharField(max_length=64)
 	bit_rate					= models.CharField(max_length=64)
 	need_to_be_checked				= models.CharField(max_length=1, choices=(('T', 'True'),('F', 'False')))
-	
+	cloud_duplicate					= models.CharField(max_length=1, choices= (('Y', 'Yes'), ('N', 'No')), default='N', blank= False)
 	def __unicode__(self):
 		return self.name
 
@@ -447,6 +448,7 @@ class ImageProfile(models.Model):
 	regex 						= models.CharField(max_length=512, blank=True)
 	image_aspect_ratio				= models.CharField(max_length=24)
 	type 						= models.CharField(max_length=1, choices=IMAGE_TYPE)
+	cloud_duplicate					= models.CharField(max_length=1, choices= (('Y', 'Yes'), ('N', 'No')), default='N', blank= False)
 	
 	def __unicode__(self):
 		return self.name

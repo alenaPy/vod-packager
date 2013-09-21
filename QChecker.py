@@ -165,6 +165,12 @@ def CheckImageRenditionStatus():
 	    IRendition.status   = 'D'
 	    IRendition.save()
 	    
+	if  IRendition.image_profile.cloud_duplicate == 'Y':
+	    image_cloud = models.GetPath ('cloud_duplicate_image')
+	    if not image_cloud.endswith('/'):
+		image_cloud = image_cloud + '/'
+	    os.link(image_local_path + IRendition.file_name, image_cloud + IRendition.file_name)
+	    
 	    logging.info("CheckImageRenditionStatus(): Image Rendition finish all procesing: " + IRendition.file_name)
 	else:
 	    #
@@ -305,6 +311,11 @@ def CheckVideoRenditionStatus():
 		#RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 		VRendition.save()
 	    
+	    if VRendition.status == 'F' and VRendition.video_profile.cloud_duplicate == 'Y':
+		video_cloud = models.GetPath ('cloud_duplicate_video')
+		if not video_cloud.endswith('/'):
+		    video_cloud = video_cloud + '/'
+		os.link(video_local_path + VRendition.file_name, video_cloud + VRendition.file_name)	    
         else:
 	    if JobState == 'NEX_JOB_STARTED':
 		VRendition.speed = GetJobSpeed(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
