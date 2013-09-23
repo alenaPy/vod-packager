@@ -170,6 +170,7 @@ class Customer(models.Model):
 	use_dtd_file					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 	id_special_prefix				= models.CharField(max_length=4, default='', blank=True)
 	uppercase_adi					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	special_product_type				= models.CharField(max_length=20, default='', blank=True)
 		
 	def __unicode__(self):
 		return self.name
