@@ -32,7 +32,7 @@ class RenditionQueueAdmin(admin.ModelAdmin):
 	list_display = ('id', 'file_name', 'item', 'queue_status')
 
 class VideoRenditionAdmin(admin.ModelAdmin):
-	list_display = ('id', 'file_name', 'item', 'video_profile', 'src_svc_path', 'transcoding_server', 'status', 'speed', 'progress')
+	list_display = ('id', 'file_name', 'item', 'video_profile', 'src_svc_path', 'transcoding_server', 'status', 'speed', 'progress', 'duration')
 
 class PreviewRenditionsAdmin(admin.ModelAdmin):
 	list_display = ('id', 'file_name', 'video_profile')

@@ -165,11 +165,12 @@ def CheckImageRenditionStatus():
 	    IRendition.status   = 'D'
 	    IRendition.save()
 	    
-	if  IRendition.image_profile.cloud_duplicate == 'Y':
-	    image_cloud = models.GetPath ('cloud_duplicate_image')
-	    if not image_cloud.endswith('/'):
-		image_cloud = image_cloud + '/'
-	    os.link(image_local_path + IRendition.file_name, image_cloud + IRendition.file_name)
+	    if  IRendition.image_profile.cloud_duplicate == 'Y':
+		logging.info("CheckImageRenditionStatus(): Send to the cloud: [%s]" % IRendition.file_name)
+		image_cloud = models.GetPath ('cloud_duplicate_image')
+	        if not image_cloud.endswith('/'):
+		    image_cloud = image_cloud + '/'
+		os.link(image_local_path + IRendition.file_name, image_cloud + IRendition.file_name)
 	    
 	    logging.info("CheckImageRenditionStatus(): Image Rendition finish all procesing: " + IRendition.file_name)
 	else:
@@ -307,11 +308,13 @@ def CheckVideoRenditionStatus():
 	    else:
 		VRendition.status = 'F'
 		VRendition.progress = '100'
+		VRendition.duration = str( int(time.time()) - int(VRendition.stimestamp)  )
 		logging.info("RemoveJob(): Job Removing: " + VRendition.transcoding_job_guid)
 		#RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 		VRendition.save()
 	    
 	    if VRendition.status == 'F' and VRendition.video_profile.cloud_duplicate == 'Y':
+		logging.info("CheckVideoRenditionStatus(): Send to the cloud: [%s]" % VRendition.file_name)
 		video_cloud = models.GetPath ('cloud_duplicate_video')
 		if not video_cloud.endswith('/'):
 		    video_cloud = video_cloud + '/'

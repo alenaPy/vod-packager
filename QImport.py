@@ -313,6 +313,7 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 	    VRendition.src_svc_path	    = Source
 	    VRendition.video_profile        = VProfile
 	    VRendition.transcoding_job_guid = JobReply.Job.GetGUID()
+	    VRendition.stimestamp	    = str(int(time.time()))
 	    VRendition.status               = 'Q'	# Queued
 	    VRendition.item		    = Item
 	
@@ -507,7 +508,8 @@ def ReScheduleUnasignedRenditions(ForceSchedule=False):
 		    ErrorString = '02: Can not find the Assigned Carbon Server'
 		    logging.error("ReSheduleUnasignedRenditions(): Can not find the Assigned Carbon Server -> " + JobReply.Job.GetCarbonHostname())
 	    	    return False
-	    	    	
+	
+		VRendition.stimestamp = str(int(time.time()))    	    	
 		VRendition.transcoding_server = TServer
 		VRendition.save()
 	    else:
