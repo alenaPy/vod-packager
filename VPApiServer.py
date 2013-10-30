@@ -60,20 +60,36 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     if FileName is None or SmbPath is None or ItemMetadata is None:
 	return False
 
+
+    ItemUpdate = False
+
+
     #
     # Se crea un nuevo Item
     #
 
+
+    #
+    # 30/10 - Update Item
+    #
     try:
 	Item = models.Item.objects.get(name=ItemMetadata["name"])
-	RQueue = models.RenditionQueue.objects.get(item=Item)
-	RQueue.queue_status = 'W'
-	RQueue.save() 
-	logging.info("VPAddItem(): Reimport an existing Item")
-	return True
-    except: 
-	Item 			= models.Item()
+	ItemUpdate = True
+	logging.info("VPAddItem(): Updating a new item %s" % Item.name)
+    except:
+	Item = models.Item()
 	logging.info("VPAddItem(): Creating new Item")
+
+#    try:
+#	Item = models.Item.objects.get(name=ItemMetadata["name"])
+#	RQueue = models.RenditionQueue.objects.get(item=Item)
+#	RQueue.queue_status = 'W'
+#	RQueue.save() 
+#	logging.info("VPAddItem(): Reimport an existing Item")
+#	return True
+#    except: 
+#	Item 			= models.Item()
+#	logging.info("VPAddItem(): Creating new Item")
 
     
 
@@ -186,7 +202,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     Item.year 			= ItemMetadata["year"]
     Item.director		= ItemMetadata["director"]
     Item.studio_name 		= ItemMetadata["studio_name"]
-    if Item.studio_name == 'Private' or Item.studio_name == 'Sextreme' or Item.studio_name == 'For Man' or Item.studio_name == 'Sexy Hot':
+    if Item.studio_name == 'Private' or Item.studio_name == 'For Man' or Item.studio_name == 'Sexy Hot':
 	Item.format = 'SD'
     else:    
 	Item.format 		= ItemMetadata["format"]
@@ -222,9 +238,21 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     Item.save()
 
     for ItemMetadataLan in ItemMetadataLanList:
+
+	if ItemUpdate:
+	    try:
+		lang = models.Language.objects.get(code=ItemMetadataLan["language"].lower())
+	    except:
+		logging.error("Cannot find the specific language, fail to add Metadata Language: " + ItemMetadataLan["language"].lower())
 	
-    	MetadataLanguage 			= models.MetadataLanguage()
-    	MetadataLanguage.item			= Item
+	    try:
+		MetadataLanguage = models.MetadataLanguage.objects.get(item=Item, language=lang)
+	    except:
+		MetadataLanguage 			= models.MetadataLanguage()
+    		MetadataLanguage.item			= Item
+	else:
+	    MetadataLanguage 				= models.MetadataLanguage()
+    	    MetadataLanguage.item			= Item
 
 	
 	#
@@ -248,18 +276,30 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	except:
 	    logging.error("Cannot find the specific language, fail to add Metadata Language: " + ItemMetadataLan["language"].lower())
 
-
-    ImportQueue = models.RenditionQueue()
-    ImportQueue.item		= Item
-    ImportQueue.file_name 	= FileName
-    ImportQueue.local_file	= 'N'
     
+    if ItemUpdate:
+	try:
+	    ImportQueue = models.RenditionQueue.objects.get(item=Item)
+	except:
+	    ImportQueue = models.RenditionQueue()
+    	    ImportQueue.item		= Item
+    	    ImportQueue.file_name 	= FileName
+    	    ImportQueue.local_file	= 'N'
+	    ImportQueue.queue_status	= 'W'
+	    logging.info("New Rendition Queue: " + FileName  )
+	if ImportQueue.queue_status == 'D':
+	    ImportQueue.queue_status = 'W'
 
-    ImportQueue.queue_status	= 'W'
+    else:
+	ImportQueue = models.RenditionQueue()
+        ImportQueue.item		= Item
+        ImportQueue.file_name 	= FileName
+        ImportQueue.local_file	= 'N'
+	ImportQueue.queue_status	= 'W'
+	logging.info("New Rendition Queue: " + FileName  )
 	
-    logging.info("New Rendition Queue: " + FileName  )
-
     ImportQueue.save()
+
     return True
 
     

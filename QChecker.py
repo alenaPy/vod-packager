@@ -292,6 +292,7 @@ def CheckVideoRenditionStatus():
 		    VRendition.file_size = os.stat(video_local_path + VRendition.file_name).st_size
 		    logging.debug("CheckVideoRenditionStatus(): Video Rendition FileSize: " + VRendition.file_name + "," + str(VRendition.file_size))
 		
+		    VRendition.duration = str( int(time.time()) - int(VRendition.stimestamp)  )
 		    VRendition.status   = 'F'
 		    VRendition.progress = '100'
 		    VRendition.save()
@@ -308,7 +309,6 @@ def CheckVideoRenditionStatus():
 	    else:
 		VRendition.status = 'F'
 		VRendition.progress = '100'
-		VRendition.duration = str( int(time.time()) - int(VRendition.stimestamp)  )
 		logging.info("RemoveJob(): Job Removing: " + VRendition.transcoding_job_guid)
 		#RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 		VRendition.save()
@@ -318,7 +318,10 @@ def CheckVideoRenditionStatus():
 		video_cloud = models.GetPath ('cloud_duplicate_video')
 		if not video_cloud.endswith('/'):
 		    video_cloud = video_cloud + '/'
-		os.link(video_local_path + VRendition.file_name, video_cloud + VRendition.file_name)	    
+		try:
+		    os.link(video_local_path + VRendition.file_name, video_cloud + VRendition.file_name)	    
+    		except:
+    		    pass
         else:
 	    if JobState == 'NEX_JOB_STARTED':
 		VRendition.speed = GetJobSpeed(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)

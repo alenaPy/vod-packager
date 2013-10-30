@@ -32,8 +32,11 @@ setup_environ(settings)
 from Packager_app import models
 
 
+#def GetItemsToPurge():
+#    return models.Item.objects.filter(kill_date__lte=datetime.now())
+
 def GetItemsToPurge():
-    return models.Item.objects.filter(kill_date__lte=datetime.now())
+    return models.Item.objects.filter(group_id=9)
 
 
 def DeleteMetadataLanguages(item = None):
