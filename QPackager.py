@@ -705,6 +705,10 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
                 		 App_Data_App  = Package.customer.product_type)
 
 
+    if Package.customer.provider_content_tier !='': 
+	MetadataXml.Provider_Content_Tier = Package.customer.provider_content_tier
+
+
     #
     # Agrega el titulo
     #
