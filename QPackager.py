@@ -693,7 +693,9 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	Product = Package.customer.special_product_type
     else:
 	Product = Package.customer.product_type
-	    
+
+
+    
     
     MetadataXml = ADIXml.Package(Provider      = 'PLAYBOY',
                 		 Product       = Product if Package.customer.empty_product_type == 'N' else '',
@@ -719,6 +721,14 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', VideoRendition.id, Package.id, True,  Package.customer.id_special_prefix)
     else:	
 	MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', VideoRendition.id, Package.id, False, Package.customer.id_special_prefix)
+
+
+
+    if Package.customer.target_language != '':
+	MetadataXml.Title.Target_Language = Package.customer.target_language
+	
+    if Package.customer.target_country  != '':
+	MetadataXml.Title.Target_Country = Package.customer.target_country
 
     
     MetadataXml.Title.Closed_Captioning = 'N'
