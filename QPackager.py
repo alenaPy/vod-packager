@@ -1162,9 +1162,11 @@ def main():
 		MetadataXmlNepe    = MakeAdiXmlNepe(Package,VideoRendition,ImageRendition[0])
 		
 		if MetadataXml is None or MetadataXmlRiGHT is None:
+		    
 		    #
 		    # ??? Y el error
 		    #
+		    Package.error  = 'Unable to find metadata language'
 		    Package.status = 'E'
 		    Package.save()
 		    break
