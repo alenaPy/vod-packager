@@ -880,7 +880,6 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	MetadataXml.Title.Licensing_Window_Start = MetadataXml.Title.Licensing_Window_Start + 'T00:00:00'
 	MetadataXml.Title.Licensing_Window_End   = MetadataXml.Title.Licensing_Window_End   + 'T23:59:59'
 
-
     #
     # Busca la categoria de acuerdo con el cliente
     #
@@ -1082,6 +1081,9 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	elif CustomMetadata.apply_to == 'I':
 	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
 
+
+    if Package.customer.custom_title_brief != '':
+	MetadataXml.Title.Title_Brief = Package.customer.custom_title_brief
 
 
     return MetadataXml

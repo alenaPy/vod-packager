@@ -174,6 +174,8 @@ class Customer(models.Model):
 	provider_content_tier				= models.CharField(max_length=50, default='', blank=True)
 	target_language					= models.CharField(max_length=20, default='', blank=True)
 	target_country					= models.CharField(max_length=20, default='', blank=True)
+	custom_title_brief				= models.CharField(max_length=100, default='', blank=True)
+	
 	def __unicode__(self):
 		return self.name
 

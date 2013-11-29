@@ -418,6 +418,13 @@ select {
  color: #fff;
  font-family: 'Gafata', sans-serif;
 }
+
+.tblActions {
+ width: 100%;
+ color: #fff;
+ font-family: 'Gafata', sans-serif;
+}
+
 .processDescription {
  font-family: 'Anaheim', sans-serif;
  font-size: 13px;

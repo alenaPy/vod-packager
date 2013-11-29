@@ -21,6 +21,7 @@ from carbonapi.CarbonSched import *
 import time
 import logging
 import sys, time
+import string
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Funciones - Utileria
@@ -271,12 +272,20 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 	DstFilename = DstFilename.replace(' ', '')
 	DstFilename = PrefixStrId(Item.id) + '-' + DstFilename
 
+	####
+	# Reemplaza los signos de puntuacion por vacio
+	#
+	for c in string.punctuation:
+	    if c != '.' or c != '-' or c != '_':
+		DstFilename= DstFilename.replace(c,'')
+
 	DstBasename = SplitExtension(DstFilename)
 	if DstBasename is None:
 	    logging.error = "MakeVideoRenditions(): 04: Unable to stablish DstBasename"
 	    ErrorString   = "04: Unable stablish DstBasename"
 	    return False
 	
+
 
 	#
 	# Arma los parametros de transcodificacion

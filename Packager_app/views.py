@@ -338,6 +338,15 @@ def image_rendition(request, image_rendition_id):
 		resp = 'No ta!'
 		return HttpResponse("You're looking at image rendition %s." % resp)
 
+
+@login_required
+@csrf_protect
+def actions(request):
+	
+
+	return render_to_response('view_actions.html',context_instance=RequestContext(request))
+
+
 @login_required
 @csrf_protect
 def image_renditions_upload(request, item_id):
