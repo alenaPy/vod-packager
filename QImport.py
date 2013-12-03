@@ -276,7 +276,7 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 	# Reemplaza los signos de puntuacion por vacio
 	#
 	for c in string.punctuation:
-	    if c != '.' or c != '-' or c != '_':
+	    if c != '.' and c != '-' and c != '_':
 		DstFilename= DstFilename.replace(c,'')
 
 	DstBasename = SplitExtension(DstFilename)
