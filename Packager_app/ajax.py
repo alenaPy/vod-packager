@@ -63,6 +63,24 @@ def force_to_be_done(request, item_id):
 	
 
 @dajaxice_register
+def unfilled_image_profile(request, item_id):
+	try:
+	        item = models.Item.objects.get(id=int(item_id))
+		IRenditions = models.ImageRendition.objects.filter(item=item)
+		
+		for irendition in IRenditions:
+		    irendition.status = 'U'
+		    irendition.save()
+		
+		item.status = 'P'
+		item.save()
+		return simplejson.dumps({'message': " *** ATENCION *** \n " + item.name + " fue forzado a vaciar sus Image Profiles \n POSIBLES ERRORES"})
+	except DoesNotExist:
+		return simplejson.dumps({'message': "Not exist No se pudo Vaciar"})
+	except:
+		return simplejson.dumps({'message': "No se pudo Vaciar"})
+
+@dajaxice_register
 def export_item(request, item_id, selected_customers, package_group):
 
 	try:

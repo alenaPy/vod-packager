@@ -27,6 +27,7 @@ def CheckImagenRendition(Item=None, IProfile=None):
     return True
 
 
+
 def MakeImageRenditions(Item):
     if Settings.OPTIMIZE_PROFILES_WITH_BRAND:
 	IProfileList_pre = models.GetImageProfilesBrand(Item.internal_brand)
@@ -65,8 +66,7 @@ def MakeImageRenditions(Item):
 
     return True
 
-
-group = models.ItemGroup.objects.get(id=11)
+group = models.ItemGroup.objects.get(id=12)
 
 print group.key
 Items = models.Item.objects.filter(group=group)

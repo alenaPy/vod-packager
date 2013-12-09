@@ -8,7 +8,11 @@ var Dajaxice = {
 
     
     Packager_app: {
-    
+
+    unfilled_image_profile: function(callback_function, argv, custom_settings){
+        Dajaxice.call('Packager_app.unfilled_image_profile', 'POST', callback_function, argv, custom_settings);
+    },
+
     force_to_be_done: function(callback_function, argv, custom_settings){
         Dajaxice.call('Packager_app.force_to_be_done', 'POST', callback_function, argv, custom_settings);
     },

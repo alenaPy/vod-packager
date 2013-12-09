@@ -1189,6 +1189,8 @@ def main():
 		else: 
 		    if Package.customer.category_path_style == 'SHO':
 			PackagePath = ExportPath + MetadataXml.Title.Category + '/'
+		    elif Package.customer.category_path_style == 'ZA':
+			PackagePath = ExportPath + MetadataXml.Title.Category + '/' + MetadataXml.AMS.Asset_Name + suffix
 		    else:
 			PackagePath = ExportPath + MetadataXml.Title.Category + '/' + MetadataXml.AMS.Asset_Name
 		#

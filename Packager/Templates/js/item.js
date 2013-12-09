@@ -53,10 +53,21 @@ function actionForceToBeDoneItem() {
 
 }
 
+function actionUnfilledImageProfile() {
+	var jsonObj = {'item_id':$('#item_id').val()};
+	Dajaxice.Packager_app.unfilled_image_profile(clbkUnfilledImageProfile, jsonObj);
+}
+
 function clbkForceToBeDone(data) {
 	alert(data.message);
 	window.location.reload();
 }
+
+function clbkUnfilledImageProfile(data) {
+	alert(data.message);
+	window.location.reload();
+}	
+
 
 function clbkExportItem(data) {
 	alert(data.message);
