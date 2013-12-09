@@ -902,7 +902,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     elif Package.customer.category_path_style == 'CA':
 	CategoryPath = 'Adultos' + '/' + CustomCategory.name		
     elif Package.customer.category_path_style == 'ZA':
-	CategoryPath = 'Zona Adultos' + '/' + VideoRendition.video_profile.format + '/' + CustomCategory.name
+	CategoryPath = 'Zona Adultos' + '/' + CustomCategory.name
     elif Package.customer.category_path_style == 'SHO':
 	RootPath = 'SHOWRUNNER/ADULTO +18/'
 	if VideoRendition.video_profile.format == 'SD':
