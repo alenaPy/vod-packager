@@ -170,8 +170,11 @@ def CheckImageRenditionStatus():
 		image_cloud = models.GetPath ('cloud_duplicate_image')
 	        if not image_cloud.endswith('/'):
 		    image_cloud = image_cloud + '/'
-		os.link(image_local_path + IRendition.file_name, image_cloud + IRendition.file_name)
-	    
+		try:
+		    os.link(image_local_path + IRendition.file_name, image_cloud + IRendition.file_name)
+		except:
+		    pass
+		    
 	    logging.info("CheckImageRenditionStatus(): Image Rendition finish all procesing: " + IRendition.file_name)
 	else:
 	    #
@@ -321,7 +324,7 @@ def CheckVideoRenditionStatus():
 		try:
 		    os.link(video_local_path + VRendition.file_name, video_cloud + VRendition.file_name)	    
     		except:
-    		    pass
+    		    logging.error("CheckVideoRenditionStatus(): File exist in the cloud folder: [%s]" % VRendition.file_name)
         else:
 	    if JobState == 'NEX_JOB_STARTED':
 		VRendition.speed = GetJobSpeed(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)

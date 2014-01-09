@@ -66,10 +66,10 @@ def MakeImageRenditions(Item):
 
     return True
 
-group = models.ItemGroup.objects.get(id=12)
+group = models.ItemGroup.objects.get(id=13)
 
 print group.key
-Items = models.Item.objects.filter(group=group)
+Items = models.Item.objects.filter(group=group, brand='Sextreme')
 for item in Items:
     MakeImageRenditions(item)
     print Items

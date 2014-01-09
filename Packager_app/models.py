@@ -115,6 +115,7 @@ class Customer(models.Model):
 		('AM',  'Adultos / Brand'),
 		('CA',  'Adultos / Category'),
 		('ZA',  'Zona Adultos / Format / Category'),
+		('NR',  'Nitro Root / Milicom Library / Brand + Format'),
 		('SHO', 'SHOWRUNNER/ADULTO +18/'),
 	)
 	
@@ -175,10 +176,10 @@ class Customer(models.Model):
 	target_language					= models.CharField(max_length=20, default='', blank=True)
 	target_country					= models.CharField(max_length=20, default='', blank=True)
 	custom_title_brief				= models.CharField(max_length=100, default='', blank=True)
+	encoding					= models.CharField(max_length=21,  default='I', choices=(('I', 'ISO-8859-1'),('U', 'UTF-8')))
 	
 	def __unicode__(self):
 		return self.name
-
 
 class MetadataLanguage(models.Model):
 
@@ -194,7 +195,6 @@ class MetadataLanguage(models.Model):
 
 	def __unicode__(self):
 		return self.language.name
-
 
 class Item(models.Model):
 	ITEM_STATUS = (

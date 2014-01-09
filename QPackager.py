@@ -903,6 +903,8 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	CategoryPath = 'Adultos' + '/' + CustomCategory.name		
     elif Package.customer.category_path_style == 'ZA':
 	CategoryPath = 'Zona Adultos' + '/' + CustomCategory.name
+    elif Package.customer.category_path_style == 'NR':
+	CategoryPath = 'Nitro Root/Milicom Tigo/Adult Library' + '/' + MetadataXml.Title.Studio + VideoRendition.video_profile.format
     elif Package.customer.category_path_style == 'SHO':
 	RootPath = 'SHOWRUNNER/ADULTO +18/'
 	if VideoRendition.video_profile.format == 'SD':
@@ -1233,16 +1235,18 @@ def main():
 			    PackageXmlFileName = PackageXmlFileName.upper()
 		    else:
 			PackageXmlFileName = MetadataXml.AMS.Asset_Name + suffix + '.xml'
-		    
+		
+		    if Package.customer.encoding == 'I':
+			encoding = 'ISO-8859-1'
+		    elif Package.customer.encoding == 'U':
+			encoding = 'UTF-8'
 	
 		    if Package.customer.doctype == 'Y':
-			ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName, '1.1', "<!DOCTYPE ADI SYSTEM \"ADI.DTD\">")
+			ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName, '1.1', encoding, "<!DOCTYPE ADI SYSTEM \"ADI.DTD\">")
 		    else:
-			ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName, '1.1')
+			ADIXml.Package_toADIFile(MetadataXml, PackagePath + PackageXmlFileName, '1.1', encoding)
 		    
 		logging.info("main(): Xml Metadata FileName: %s" % PackageXmlFileName)
-	
-		    
 		    
 		video_local_path = models.GetPath('video_local_path') 
 		image_local_path = models.GetPath('image_local_path')
@@ -1259,9 +1263,6 @@ def main():
 		else:
 		    logging.error("Critical error: image_local_path is None. Check your configuration")
 		    return None
-
-		
-
 
 		#
 		# Intenta crear los links
