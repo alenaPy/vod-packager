@@ -904,7 +904,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     elif Package.customer.category_path_style == 'ZA':
 	CategoryPath = 'Zona Adultos' + '/' + CustomCategory.name
     elif Package.customer.category_path_style == 'NR':
-	CategoryPath = 'Nitro Root/Milicom Tigo/Adult Library' + '/' + MetadataXml.Title.Studio + VideoRendition.video_profile.format
+	CategoryPath = 'Nitro Root/Millicom Tigo/Adult Library' + '/' + MetadataXml.Title.Studio.replace(' ', '') + VideoRendition.video_profile.format
     elif Package.customer.category_path_style == 'SHO':
 	RootPath = 'SHOWRUNNER/ADULTO +18/'
 	if VideoRendition.video_profile.format == 'SD':
@@ -1183,7 +1183,7 @@ def main():
 		#
 		# Arma el nombre del Path de Exportacion
 		#
-		if Package.item.especial == 'Y':
+		if Package.item.internal_brand.name == 'Especial':
 		    ExportPath = ExportPath + 'Especial/'
 
 		if Package.customer.category_path_style == 'PEP':
@@ -1272,7 +1272,7 @@ def main():
 			if os.path.isfile(PackagePath + MetadataXml.Preview.Content_Value):
 			    os.remove(PackagePath + MetadataXml.Preview.Content_Value)
 			os.link(video_local_path + MetadataXml.Preview.Content_Value, PackagePath + MetadataXml.Preview.Content_Value)
-		    except:
+		    except OSError as e:
 			ErrorString    = 'Error creating Preview Hard Link -> Catch: ' + e.strerror
 			Package.error  = ErrorString
 		        logging.error('main(): %s' % ErrorString)
