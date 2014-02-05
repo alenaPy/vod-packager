@@ -299,7 +299,8 @@ def CheckVideoRenditionStatus():
 		    VRendition.status   = 'F'
 		    VRendition.progress = '100'
 		    VRendition.save()
-		
+		    logging.info("RemoveJob(): Job Removing: " + VRendition.transcoding_job_guid)
+		    RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 		    logging.info("CheckVideoRenditionStatus(): Video Rendition finish all procesing: " + VRendition.file_name)
 		else:
 		    #
@@ -313,7 +314,7 @@ def CheckVideoRenditionStatus():
 		VRendition.status = 'F'
 		VRendition.progress = '100'
 		logging.info("RemoveJob(): Job Removing: " + VRendition.transcoding_job_guid)
-		#RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
+		RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 		VRendition.save()
 	    
 	    if VRendition.status == 'F' and VRendition.video_profile.cloud_duplicate == 'Y':

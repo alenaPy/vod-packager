@@ -177,6 +177,7 @@ class Customer(models.Model):
 	target_country					= models.CharField(max_length=20, default='', blank=True)
 	custom_title_brief				= models.CharField(max_length=100, default='', blank=True)
 	encoding					= models.CharField(max_length=21,  default='I', choices=(('I', 'ISO-8859-1'),('U', 'UTF-8')))
+	use_title_as_title_brief			= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')))
 	
 	def __unicode__(self):
 		return self.name

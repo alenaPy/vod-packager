@@ -2,7 +2,7 @@ DAJAXICE_MEDIA_PREFIX="dajaxice"
 
 # Django settings for Packager project.
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (

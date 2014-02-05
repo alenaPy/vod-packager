@@ -1087,6 +1087,9 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     if Package.customer.custom_title_brief != '':
 	MetadataXml.Title.Title_Brief = Package.customer.custom_title_brief
 
+    if Package.customer.use_title_as_title_brief == 'Y':
+	MetadataXml.Title.Title_Brief = MetadataXml.Title.Title
+
 
     return MetadataXml
 
