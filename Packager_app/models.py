@@ -114,6 +114,7 @@ class Customer(models.Model):
 		('FPC', 'Format / Category'),
 		('AM',  'Adultos / Brand'),
 		('CA',  'Adultos / Category'),
+		('AIC', 'Adults / Category'),
 		('ZA',  'Zona Adultos / Format / Category'),
 		('NR',  'Nitro Root / Milicom Library / Brand + Format'),
 		('SHO', 'SHOWRUNNER/ADULTO +18/'),

@@ -899,6 +899,9 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	CategoryPath = 'Adultos' + '/' + MetadataXml.Title.Studio + VideoRendition.video_profile.format
     elif Package.customer.category_path_style == 'PEP':
 	CategoryPath = ''
+	
+    elif Package.customer.category_path_style == 'AIC':
+	CategoryPath = 'Adults' + '/' + CustomCategory.name	
     elif Package.customer.category_path_style == 'CA':
 	CategoryPath = 'Adultos' + '/' + CustomCategory.name		
     elif Package.customer.category_path_style == 'ZA':
