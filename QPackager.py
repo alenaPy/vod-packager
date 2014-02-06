@@ -955,8 +955,15 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	MetadataXml.Movie.Bit_Rate	= VideoRendition.video_profile.bit_rate
 
 
-    MetadataXml.Movie.Screen_Format	= VideoRendition.screen_format
-    MetadataXml.Movie.Languages		= Package.item.content_language.code
+    if Package.customer.use_special_screen_format == 'Y':
+	if VideoRendition.screen_format == 'Letterbox':
+	    MetadataXml.Movie.Screen_Format = 'Standard'
+	elif VideoRendition.screen_format == 'Widescreen'
+	    MetadataXml.Movie.Screen_Format = '16:9'
+    else:
+	MetadataXml.Movie.Screen_Format	= VideoRendition.screen_format
+    
+    MetadataXml.Movie.Languages	= Package.item.content_language.code
 
 
     if VideoRendition.video_profile.format == 'HD':

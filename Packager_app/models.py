@@ -179,6 +179,7 @@ class Customer(models.Model):
 	custom_title_brief				= models.CharField(max_length=100, default='', blank=True)
 	encoding					= models.CharField(max_length=21,  default='I', choices=(('I', 'ISO-8859-1'),('U', 'UTF-8')))
 	use_title_as_title_brief			= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')))
+	use_special_screen_format			= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')), help_text='Cambia el screen format a 16:9 o Standard')
 	
 	def __unicode__(self):
 		return self.name
