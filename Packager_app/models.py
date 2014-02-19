@@ -80,6 +80,7 @@ class Customer(models.Model):
 	PRODUCT_TYPE = (
 		('TVOD', 'True Video on Demand'),
 		('SVOD', 'Subscription Video On Demand'),
+		('VOD', 'Video on Demand'),
 		('MOD', 'Movie On Demand'),
 		('MODADULT', 'Mod Adult'),
 	)
@@ -112,9 +113,11 @@ class Customer(models.Model):
 		('BFC', 'Brand Format / Category'),
 		('BPC', 'Brand / Category'),
 		('FPC', 'Format / Category'),
+		('CPR', 'Adult / Brand / Category'),
 		('AM',  'Adultos / Brand'),
 		('CA',  'Adultos / Category'),
 		('ASC', 'Adulto / Category'),
+		('BO', 'Adults Brand Format'),
 		('AIC', 'Adults / Category'),
 		('ZA',  'Zona Adultos / Format / Category'),
 		('NR',  'Nitro Root / Milicom Library / Brand + Format'),
@@ -530,6 +533,10 @@ def GetImageProfilesBrand(IBrand=None):
 	try:
 	    Customers = Customer.objects.filter(internal_brand=IBrand)
 	    for customer in Customers:
+	    
+		if customer.name != 'Telecom HD':
+		    continue
+	    
 		if IBrand.format == 'HD':
 		    IProfiles = customer.image_profile.filter(status='E')
 		elif IBrand.format == 'SD':
@@ -553,6 +560,7 @@ def GetVideoProfilesBrand(IBrand=None):
 	try:
 	    Customers = Customer.objects.filter(internal_brand=IBrand)
 	    for customer in Customers:
+	    
 		if IBrand.format == 'HD':
 		    VProfiles = customer.video_profile.filter(status='E')
 		elif IBrand.format == 'SD':
