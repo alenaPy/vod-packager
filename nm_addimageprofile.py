@@ -29,8 +29,11 @@ def CheckImagenRendition(Item=None, IProfile=None):
 
 
 def MakeImageRenditions(Item):
+    print Item
     if Settings.OPTIMIZE_PROFILES_WITH_BRAND:
 	IProfileList_pre = models.GetImageProfilesBrand(Item.internal_brand)
+	print Item.internal_brand
+	print IProfileList_pre
 	if Item.internal_brand == 'HD' and Item.format == 'SD':
 	    print "MakeImageRenditions(): Internal Brand is HD but Item format is SD -> Eliminate HD Profiles"
 	    #
@@ -66,10 +69,10 @@ def MakeImageRenditions(Item):
 
     return True
 
-group = models.ItemGroup.objects.get(id=14)
+group = models.ItemGroup.objects.get(id=15)
 
 print group.key
-Items = models.Item.objects.filter(group=group, brand='Venus')
+Items = models.Item.objects.filter(group=group)
 for item in Items:
     MakeImageRenditions(item)
-    print Items
+

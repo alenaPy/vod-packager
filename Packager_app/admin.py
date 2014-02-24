@@ -15,7 +15,7 @@ class CustomerAdmin(admin.ModelAdmin):
 	
 
 class ItemAdmin(admin.ModelAdmin):
-	list_display = ('name', 'format', 'status')
+	list_display = ('name', 'format', 'status', 'creation_date', 'modification_date')
 	fieldsets = [
 	    ('General info',	{'fields': ['name', 'status', 'group', 'format', 'internal_brand']}),
 	    ('Rental period',	{'fields': ['kill_date', 'subscriber_view_limit']}),

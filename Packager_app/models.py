@@ -534,9 +534,6 @@ def GetImageProfilesBrand(IBrand=None):
 	    Customers = Customer.objects.filter(internal_brand=IBrand)
 	    for customer in Customers:
 	    
-		if customer.name != 'Telecom HD':
-		    continue
-	    
 		if IBrand.format == 'HD':
 		    IProfiles = customer.image_profile.filter(status='E')
 		elif IBrand.format == 'SD':
