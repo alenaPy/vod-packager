@@ -402,6 +402,7 @@ class Package(models.Model):
 	item						= models.ForeignKey('Item')
 	date_published 					= models.DateField(auto_now_add=True)
 	status						= models.CharField(max_length=2, choices=PACKAGE_STATUS)
+	format						= models.CharField(max_length=2, choices=FORMAT, blank=True)
 	group 						= models.ForeignKey('PackageGroup')
 	error						= models.CharField(max_length=512, blank=True)
 	

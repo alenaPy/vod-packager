@@ -1068,8 +1068,6 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	    MetadataXml.Movie.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
 	elif CustmoMetadata.apply_to == 'I':
 	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
-
-
      
     CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition=Package.item.brand, format_condition=VideoRendition.video_profile.format, show_type=show_type)
     for CustomMetadata in CustomMetadataList:
