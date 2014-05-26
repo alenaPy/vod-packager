@@ -12,6 +12,8 @@ start() {
     python QImport.py  start
     echo "Starting Queue Checker Daemon"
     python QChecker.py start
+    echo "Starting Queue Pre-Packager Daemon"
+    python QPrePackager.py start
     echo "Starting Queue Packager Daemon"
     python QPackager.py start
     echo "Starting Vod Packager Api Server"
@@ -28,6 +30,8 @@ stop() {
     python QImport.py stop
     echo "Stopping Queue Checker Daemon"
     python QChecker.py stop
+    echo "Stopping Queue Pre-Packager Daemon"
+    python QPrePackager.py stop
     echo "Stopping Queue Packager Daemon"
     python QPackager.py stop
     echo "Stopping Vod Packager Api Server"
@@ -44,6 +48,8 @@ status() {
     python QImport.py status
     echo -n "Queue Checker Status: "
     python QChecker.py status
+    echo -n "Queue Pre-Packager Status: "
+    python QPrePackager status
     echo -n "Queue Packager Status: "
     python QPackager.py status
     echo -n "Vod Packager Api Server Status: "
