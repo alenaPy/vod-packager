@@ -1,7 +1,7 @@
 {% extends "base_views.html" %}
 
 {% block title %}
-<a href="/vod/logs">Logs</a> | <a href="/vod/daemons">Daemons</a> | <a href="/vod/actions">Actions</a>
+<a href="/vod/logs">Logs</a> | <a href="/vod/daemons">Daemons</a>
 {% endblock %}
 
 {% block content %}
@@ -23,6 +23,10 @@
 	<tr style="border-bottom: 1px solid white;">
 	    <td ><b>QChecker</b> <span class="processDescription">Check transcoding tasks status, calculate checksums and file sizes.</span></td>
 	    <td class="display_icon" style="width: 1%;"><span class="status_daemon_{{ QChecker_status }}" /></td>
+	</tr>
+	<tr style="border-bottom: 1px solid white;">
+	    <td ><b>QPrePackager</b> <span class="processDescription">Package Dispacher.</span></td>
+	    <td class="display_icon" style="width: 1%;"><span class="status_daemon_{{ QPrePackager_status }}" /></td>
 	</tr>
 	<tr style="border-bottom: 1px solid white;">
 	    <td ><b>QPackager</b> <span class="processDescription">Accommodate packages for delivery.</span></td>

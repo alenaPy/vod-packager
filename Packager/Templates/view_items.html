@@ -18,23 +18,25 @@
 <table id="hor-zebra">
 	<thead>
 		<tr>
-			<th scope="col" width="20px"><!-- <input type="checkbox" name="your-group" value="unit-in-group" /> --></th>
-			<th scope="col" class="center" width="20px"></th>
+			<th scope="col" class="center" width="15px"></th>
 			<th scope="col">Name</th>
-			<th scope="col" width="25px">MAM</th>
-			<th scope="col" width="140px" class="center">Creation</th>
-			<th scope="col" width="140px" class="center">Kill</th>
+			<th scope="col" width="55px">FORK ID</th>
+			<th socpe="col" width="55px">NEPE ID</th>
+			<th scope="col" width="120px" class="center">Creation</th>
+			<th scope="col" width="90px" class="center">Item Group</th>
+			<th socpe="col" width="30px" class="center"></th>
 		</tr>
 	</thead>
 	<tbody>
 		{% for item in items %}
 		<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
-			<td class="display_check"><input type="checkbox" name="entrycheck" value="{{item.id}}"/></td>
 			<td class="display_icon"><span class="status_{{item.status}}" /></td>
 			<td><a href="/vod/item/{{item.id}}">{{ item.name }}</a></td>
 			<td>{{item.mam_id}}</td>
+			<td>{{item.id}}</td>
 			<td class="center">{{ item.creation_date }}</td>
-			<td class="center">{{ item.kill_date }}</td>
+			<td class="center">{{ item.group }}</td>
+			<td><a href="/admin/Packager_app/item/{{item.id}}">ADMIN</a></td>
 		</tr>
 		{% endfor %}
 	</tbody>

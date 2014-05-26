@@ -129,6 +129,7 @@ def GetImageRenditions(Package=None):
 
     return ImageRenditionList
 
+
 def GetVideoRenditions(Package=None):
 
     if Package is not None:
@@ -1128,6 +1129,7 @@ def main():
 	    logging.info("main(): Make package: %s" % str(Package.id))
 	    logging.info("main(): Customer: %s" % Package.customer.name)
 	    logging.info("main(): Item: %s" % str(Package.item.id))
+	
 
 	    ExportPath 		= GetExportPathFromPackage(Package)
 	    if ExportPath is None:
@@ -1138,20 +1140,49 @@ def main():
 
 	    logging.info("main(): Export Path: %s" % ExportPath)
 
-	    VideoRenditionList 	= GetVideoRenditions(Package)
-	    if VideoRenditionList is None:
-		Package.error  = ErrorString
-		Package.status = 'E'
-		Package.save()
-		continue
+	    if Package.format == '' or Package.format is None:
+		VideoRenditionList 	= GetVideoRenditions(Package)
+		if VideoRenditionList is None:
+		    Package.error  = ErrorString
+		    Package.status = 'E'
+		    Package.save()
+		    continue
 
-	    ImageRenditionList	= GetImageRenditions(Package)
-	    if ImageRenditionList is None:
-		Package.error  = ErrorString
-		Package.status = 'E'
-		Package.save()
-		continue
+		ImageRenditionList	= GetImageRenditions(Package)
+		if ImageRenditionList is None:
+		    Package.error  = ErrorString
+		    Package.status = 'E'
+		    Package.save()
+		    continue
 
+	    else:
+		logging.info("main(): Format: %s" % Package.format)
+		VProfile = Package.customer.video_profile.filter(status='E', format=Package.format)
+		IProfile = Package.customer.image_profile.filter(status='E', format=Package.format)
+
+		VideoRenditionList = []     
+		ImageRenditionList = []
+		
+		if len(VProfile) != 1:
+		    logging.error("main(): Customer: %s, have errors in video profile (%s)" % (Package.customer, Package.format) )
+		    Package.error = "main(): Customer: %s, have errors in  video profile (%s)" % (Package.customer, Package.format)
+		    Package.status = 'E'
+		    Package.save()
+		    continue
+		
+		try:
+		    VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0]))
+		except:
+		    logging.error("main(): Item: %s, not have VideoRendition in profile (%s)" % (Package.item, VProfile[0]) )
+		    Package.error = "main(): Customer: %s, have errors in  video profile (%s)" % (Package.customer, Package.format)
+		    Package.status = 'E'
+		    Package.save()
+		    continue        
+		
+		for iprofile in IProfile:
+		    ImageRenditionList.append(models.ImageRendition.objects.get(item=Package.item, image_profile=iprofile))
+	    
+	    
 	    for VideoRendition in VideoRenditionList:
 		#
 		# Genera el XML

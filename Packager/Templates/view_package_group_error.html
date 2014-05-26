@@ -1,6 +1,6 @@
 {% extends "base_views.html" %}
 
-{% block title %}Package's view{% endblock %}
+{% block title %}Package's view error{% endblock %}
 
 {% block content %}
 <!-- TOOLTIPS -->
@@ -21,11 +21,9 @@
 <table id="hor-zebra">
 	<thead>
 		<tr>
-			<th scope="col" width="20px"><!-- <input type="checkbox" name="your-group" value="unit-in-group" /> --></th>
-			<th scope="col" class="center" width="20px"></th>
 			<th scope="col">Item</th>
 			<th scope="col">Customer</th>
-			<th scope="col">Group</th>
+			<th scope="col">Error</th>
 		</tr>
 	</thead>
 	
@@ -33,11 +31,9 @@
 	<tbody>
 	{% for package in packages %}
 		<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
-			<td><input type="checkbox" name="entrycheck" value="{{package.id}}"/></td>
-			<td class="display_icon"><span id="status" class="pkgstatus_{{package.status}}" title="{{package.error}}" /></td>
-			<td><a href="/vod/package/{{package.id}}">{{package.item}}</a></td>
+			<td>{{package.item}}</td>
 			<td>{{package.customer}}</td>
-			<td>{{package.group}}</td>
+			<td>{{package.error}}</td>
 		</tr>
 	{% endfor %}
 	</tbody>
@@ -46,20 +42,7 @@
 </fieldset>
 
 <!-- VIEW'S ICONOGRAPHY -->
-<hr />
-<fieldset id="iconography">
-	<table id="tblIconography">
-		<tr>
-			<td class="tdIconographyIcon" title="Package being processed.">
-				<a href="#"><img src="/images/icons/hourglass.png"><br />Queued</a></td>
-			<td class="tdIconographyIcon" title="Package ready for download.">
-				<a href="#"><img src="/images/icons/tick.png"><br />Packaged</a></td>
-			<td class="tdIconographyIcon" title="Error while creating package. Please contact system administrator.">
-				<a href="#"><img src="/images/icons/exclamation.png"><br />Error</a></td>
-			<td width="99%"></td>
-		<tr>
-	</table>
-</fieldset>
+
 {% endblock %}
 
 {% block action_bar %}
@@ -67,7 +50,6 @@
 {% if packages.has_previous %}
 <a href="?page={{ packages.previous_page_number }}" class="bttn prev">Previous</a>
 {% endif %}
-<a href="#" onclick="javascript:actionViewEntry('/vod/item');" class="bttn icon view">View</a>
 <a href="#" onclick="javascript:actionRefreshView();" class="bttn icon refresh">Refresh<a>
 {% if packages.has_next %}
 <a href="?page={{ packages.next_page_number }}" class="bttn next">Next</a>

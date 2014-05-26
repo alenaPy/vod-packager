@@ -6,6 +6,8 @@
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 FORCE_SCHEDULE=False
 
+
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Sleep Time: Tiempo en que los Daemons duermen esperando nuevos trabajos
 #
@@ -19,6 +21,7 @@ QPULL_SLEEP=100
 QCHECKER_SLEEP=900
 QPURGE_SLEEP=2000
 QPACKAGER_SLEEP=300
+QPREPACKAGER_SLEEP=300
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Overwrite Pull Files: Politica de escritura si el archivo se encuentra
@@ -38,3 +41,6 @@ MAX_QUOTA=650
 OPTIMIZE_PROFILES_WITH_BRAND=True
 
 LOCAL_SMB_PATH_ROUND_ROBIN=True
+
+ZONE="NEPE-TEST"
+

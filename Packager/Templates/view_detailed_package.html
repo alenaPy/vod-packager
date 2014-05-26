@@ -1,6 +1,6 @@
 {% extends "base_views.html" %}
 
-{% block title %}Dashboard view{% endblock %}
+{% block title %}Detailed Package view: {{package_group.name}}  {% endblock %}
 
 {% block content %}
 <!-- TOOLTIPS -->
@@ -21,10 +21,12 @@
 <table id="hor-zebra">
 	<thead>
 		<tr>
-			<th scope="col">Package Group</th>
+			<th scope="col">Customer</th>
 			<th scope="col">Queued</th>
 			<th scope="col">Packaged</th>
 			<th scope="col">Error</th>
+			<th scope="col">Re Enqueue</th>
+			<th scope="col"></th> 
 		</tr>
 	</thead>
 	
@@ -32,10 +34,12 @@
 	<tbody>
 	{% for package in packages %}
 		<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
-			<td><a href="/vod/detailed_package/{{package.id}}">{{package.name}}</td>
+			<td>{{package.name}}</td>
 			<td>{{package.queue}}</td>
 			<td>{{package.packaged}}</td>
-			<td><a href="/vod/package_group_error/{{package.id}}">{{package.error}}</a></td>
+			<td>{{package.error}}</a></td>
+			<td><a href="/vod/reenqueue_all/{{package.id}}/{{package_group.id}}" class="bttn" style="width: 30px;">All</a><br /></td>
+			<td><a href="/vod/reenqueue_error/{{package.id}}/{{package_group.id}}" class="bttn" style="width: 30px;">Error</a><br /></td>
 		</tr>
 	{% endfor %}
 	</tbody>
@@ -45,6 +49,7 @@
 
 <!-- VIEW'S ICONOGRAPHY -->
 <hr />
+
 {% endblock %}
 
 {% block action_bar %}

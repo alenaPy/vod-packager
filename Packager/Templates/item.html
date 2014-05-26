@@ -29,12 +29,7 @@
 		</tr>
 		<tr>
 			<td class="tdFieldLabel">Status</td>
-			<td><input type="text" id="status" readonly value="{{item.status}}" /></td>
-			
-		</tr>
-		<tr>
-			<td class="tdFieldLabel">Episode</td>
-			<td><input type="text" id="episode_name" readonly value="{{item.episode_name}}" /></td>
+			<td class="display_icon"><span class="status_{{item.status}}" /></td>
 		</tr>
 		<tr>
 			<td class="tdFieldLabel">Rating</td>
@@ -61,8 +56,12 @@
 			<td><input type="text" id="director" readonly value="{{item.director}}" style="width: 200px;" /></td>
 		</tr>
 		<tr>
-			<td class="tdFieldLabel">Studio name</td>
-			<td><input type="text" id="studio_name" readonly value="{{item.studio_name}}" style="width: 200px;" /></td>
+			<td class="tdFieldLabel">Brand</td>
+			<td><input type="text" id="brand" readonly value="{{item.studio_name}}" style="width: 200px;" /></td>
+		</tr>
+		<tr>
+			<td class="tdFieldLabel">Internal Brand</td>
+			<td><input type="text" id="format" readonly value="{{item.internal_brand}}" style="width: 200px;" /></td>
 		</tr>
 		<tr>
 			<td class="tdFieldLabel">Format</td>
@@ -178,6 +177,40 @@
 			</table>
 		</div>
 	</div>
+	<h3 class="accordion" id="section3" style="background: #6b6e80; padding-left: 3px;">
+		<table class="itemSecTbl">
+			<tr>
+				<td class="itemSecTitle">
+					<a href="#">Metadata Language</a><!-- <span></span> -->
+				</td>
+				<td class="itemSecBtt">
+					<a href="#"><img src="/images/icons/magnifier.png" /></a>
+				</td>
+			</tr>
+		</table>
+	<h3>
+	<div class="container">
+		<div class="content">
+			<table class="itemVwTbl">
+				<thead class="itemVwThead">
+					<th>Name</th>
+					<th>Language</th>
+					<th class="center"></th>
+				</thead>
+				<tbody class="itemVwTbody">
+			{% for ml in metadata_language %}
+			<tr>
+				<td>{{ml.title_brief}}</td>
+				<td>{{ml.language}}</td>
+				<td><a href="/admin/Packager_app/metadatalanguage/{{ml.id}}">ADMIN</a></td>
+			</tr>
+			{% endfor %}
+			<tbody>
+			</table>
+		</div>
+	</div>
+	
+	
 </div>
 <!-- HIDDEN FIELDS -->
 <input type="hidden" id="item_id" value="{{item.id}}" />

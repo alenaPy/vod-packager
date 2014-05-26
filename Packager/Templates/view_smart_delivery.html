@@ -1,6 +1,6 @@
 {% extends "base_views.html" %}
 
-{% block title %}Dashboard view{% endblock %}
+{% block title %}Smart Delivery{% endblock %}
 
 {% block content %}
 <!-- TOOLTIPS -->
@@ -21,23 +21,24 @@
 <table id="hor-zebra">
 	<thead>
 		<tr>
-			<th scope="col">Package Group</th>
-			<th scope="col">Queued</th>
-			<th scope="col">Packaged</th>
-			<th scope="col">Error</th>
+			<th scope="col"></th>
+			{% for zone in group_list.0.zone_list %}
+			    <th scope="col">{{zone.zone_name}}</th>
+			{% endfor %}
 		</tr>
 	</thead>
 	
 	
 	<tbody>
-	{% for package in packages %}
-		<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
-			<td><a href="/vod/detailed_package/{{package.id}}">{{package.name}}</td>
-			<td>{{package.queue}}</td>
-			<td>{{package.packaged}}</td>
-			<td><a href="/vod/package_group_error/{{package.id}}">{{package.error}}</a></td>
+	{% for group in group_list %}
+		<tr>
+			<td>{{group.name}}</td>
+		{% for zone in group.zone_list %}	
+			<td><a href="/vod/create_prepackage/{{group.id}}/{{zone.id}}/" class="bttn">Export</a></td>
+		
+		{% endfor %}
 		</tr>
-	{% endfor %}
+	{% endfor %} 
 	</tbody>
 	
 </table>

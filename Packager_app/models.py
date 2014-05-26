@@ -184,9 +184,25 @@ class Customer(models.Model):
 	encoding					= models.CharField(max_length=21,  default='I', choices=(('I', 'ISO-8859-1'),('U', 'UTF-8')))
 	use_title_as_title_brief			= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')))
 	use_special_screen_format			= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')), help_text='Cambia el screen format a 16:9 o Standard')
+	export_zone					= models.ForeignKey('ExportZone')
 	
 	def __unicode__(self):
 		return self.name
+
+class PrePackage(models.Model):
+	export_zone					= models.ForeignKey('ExportZone')
+	item_group					= models.ForeignKey('ItemGroup')
+	status						= models.CharField(max_length=1, choices=(('Q', 'Queue'), ('D', 'Done')))
+    
+	def __unicode__(self):
+		return '%s-%s' % (self.export_zone, self.item_group)
+
+
+class ExportZone(models.Model):
+	zone_name					= models.CharField(max_length=50, blank=False)
+
+	def __unicode__(self):
+		return self.zone_name
 
 class MetadataLanguage(models.Model):
 
