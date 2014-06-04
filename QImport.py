@@ -17,6 +17,7 @@ from carbonapi.CarbonSocketLayer import *
 from carbonapi.CarbonUtils import *
 from carbonapi.CarbonJob import *
 from carbonapi.CarbonSched import *
+from carbonapi.BitmapKeying import *
 
 import time
 import logging
@@ -182,9 +183,7 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 
 
     if Settings.OPTIMIZE_PROFILES_WITH_BRAND:
-	print "Estoy Aca"
 	VProfileList_pre = models.GetVideoProfilesBrand(Item.internal_brand)
-	print VProfileList_pre
 	if Item.internal_brand.format == 'HD' and Item.format == 'SD':
 	    logging.warning("MakeVideoRenditions(): Internal Brand is HD but Item format is SD -> Eliminate HD Profiles")
 	    #
@@ -290,9 +289,29 @@ def MakeVideoRenditions(RenditionTask=None, CPool=None, ForceSchedule=False):   
 	#
 	# Arma los parametros de transcodificacion
 	#	
-	TranscodeInfo = { 'd_guid'    : TranscodeGuid, 
-	                  'd_basename': DstBasename, 
-	                  'd_path'    : models.GetPath("video_smb_path") }
+	if len(Item.internal_brand.logo.filter(format=VProfile.format)) != 0:
+	    Logo = Item.internal_brand.logo.filter(format=VProfile.format)
+	    BitMap = BitmapKeying()
+	    BitMap.Filename      = Logo[0].filename
+	    BitMap.Dialog_BIN    = Logo[0].dialog
+	    BitMap.Position_DWD  = Logo[0].position
+	    BitMap.Scale_DBL     = Logo[0].scale
+	    BitMap.Offset_DBL    = Logo[0].offset
+	    BitMap.Opacity_DBL   = Logo[0].opacity
+
+	    logging.info("MakeVideoRenditions(): Adding logo: %s (%s)" % (Logo[0].name, Logo[0].filename))
+	
+	    TranscodeInfo = { 'd_guid'    : TranscodeGuid, 
+		              'd_basename': DstBasename, 
+	    	              'd_path'    : models.GetPath("video_smb_path"), 
+	    	              'logo'      : BitMap.ToElement()	  }
+	    	              
+	else:
+	    TranscodeInfo = { 'd_guid'    : TranscodeGuid, 
+	                      'd_basename': DstBasename, 
+	                      'd_path'    : models.GetPath("video_smb_path") }
+
+    
 
 	logging.debug("MakeVideoRenditions(): Transcode Info: " +  str(TranscodeInfo))
 	#
@@ -473,9 +492,33 @@ def ReScheduleUnasignedRenditions(ForceSchedule=False):
 	    logging.info("ReSheduleUnasignedRenditions(): -----")
 	    logging.info("ReSheduleUnasignedRenditions(): VideoRendition ID: %d" % VRendition.id)
 	    logging.info("ReSheduleUnasignedRenditions(): Item -> [%s], VideoProfile -> [%s]" % (VRendition.item.name, VRendition.video_profile.name))	
-	    TranscodeInfo = { 'd_guid'    : VRendition.video_profile.guid, 
-	                      'd_basename': SplitExtension(VRendition.file_name), 
-	                      'd_path'    : models.GetPath("video_smb_path") }
+
+
+
+	    #
+	    # Arma los parametros de transcodificacion
+	    #	
+	    if len(Item.internal_brand.logo.filter(format=VProfile.format)) != 0:
+		Logo = Item.internal_brand.logo.filter(format=VProfile.format)
+	        BitMap = BitmapKeying()
+	        BitMap.Filename      = Logo[0].filename
+	        BitMap.Dialog_BIN    = Logo[0].dialog
+	        BitMap.Position_DWD  = Logo[0].position
+	        BitMap.Scale_DBL     = Logo[0].scale
+	        BitMap.Offset_DBL    = Logo[0].offset
+	        BitMap.Opacity_DBL   = Logo[0].opacity
+
+		logging.info("ReScheduleUnasignedRenditions(): Adding logo: %s (%s)" % (Logo[0].name, Logo[0].filename))
+	
+		TranscodeInfo = { 'd_guid'    : VRendition.video_profile.guid, 
+	                    	  'd_basename': SplitExtension(VRendition.file_name), 
+	                          'd_path'    : models.GetPath("video_smb_path"),
+	    	    	          'logo'      : BitMap.ToElement()	  }
+	    	              
+	    else:
+		TranscodeInfo = { 'd_guid'    : VRendition.video_profile.guid, 
+	                          'd_basename': SplitExtension(VRendition.file_name), 
+	                          'd_path'    : models.GetPath("video_smb_path") }	    
 
 
 	    logging.debug("ReSheduleUnasignedRenditions(): Transcode Info: " +  str(TranscodeInfo))

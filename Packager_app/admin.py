@@ -22,8 +22,14 @@ class ItemAdmin(admin.ModelAdmin):
 	    ('Metadata info',	{'fields': ['content_language', 'material_type', 'eidr', 'isan', 'closed_captioning', 'run_time', 'display_run_time', 'year', 'country_of_origin', 'actors', 'actors_display', 'episode_name', 'episode_id', 'especial', 'category', 'audience', 'show_type', 'rating', 'genres', 'director', 'brand', 'studio', 'studio_name', 'mam_id']}),
 	]
 	
+class LogoAdmin(admin.ModelAdmin):
+	list_display = ('name',)
+		
 class InternalBrandAdmin(admin.ModelAdmin):
 	list_display = ('name', 'format')	
+	fieldsets = [
+	    ('Data', {'fields': ['name', 'format', 'logo']}),
+	]
 
 class ItemGroupAdmin(admin.ModelAdmin):
         list_display = ('id', 'key',  'name')
@@ -93,6 +99,7 @@ admin.site.register(PrePackage, PrePackageAdmin)
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(CustomMetadata, CustomMetadataAdmin)
 admin.site.register(Item, ItemAdmin)
+admin.site.register(Logo, LogoAdmin)
 admin.site.register(ItemGroup, ItemGroupAdmin)
 admin.site.register(RenditionQueue, RenditionQueueAdmin)
 admin.site.register(VideoRendition, VideoRenditionAdmin)

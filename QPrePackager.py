@@ -19,8 +19,6 @@ import os, time, sys, re
 import logging
 import Settings
 
-
-
 def PrePackageToPackages(PrePackage=None):
 
     if PrePackage is not None:
@@ -30,12 +28,15 @@ def PrePackageToPackages(PrePackage=None):
         Items = models.Item.objects.filter(status='D', group=PrePackage.item_group)
 
 	try:
+	    logging.info("")
 	    PackageGroup = models.PackageGroup.objects.get(name=PrePackage.item_group.key)
+	    logging.info
 	except ObjectDoesNotExist:
+	    logging.info("")
 	    PackageGroup = models.PackageGroup()
 	    PackageGroup.name = PrePackage.item_group.key
 	    PackageGroup.description = PrePackage.item_group.name
-	    
+	    PackageGroup.save()
 
         print Items
 
@@ -207,6 +208,4 @@ if __name__ == "__main__":
     else:
     	print "usage: %s start|stop|restart|run" % sys.argv[0]
 	sys.exit(2)
-    
-    
-    		
+	

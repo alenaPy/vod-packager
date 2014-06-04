@@ -75,6 +75,21 @@ class CustomMetadata(models.Model):
 	value						= models.CharField(max_length=256)
 
 
+
+class Logo(models.Model):
+	name						= models.CharField(max_length=50)
+	format						= models.CharField(max_length=2, choices=BRAND_FORMAT)
+	filename					= models.CharField(max_length=255)
+	dialog						= models.CharField(max_length=1024)
+	position					= models.CharField(max_length=50)	
+	scale						= models.CharField(max_length=50)
+	offset						= models.CharField(max_length=50)
+	opacity						= models.CharField(max_length=50)
+	
+	def __unicode__(self):
+		return self.name
+
+
 class Customer(models.Model):
 
 	PRODUCT_TYPE = (
@@ -326,7 +341,7 @@ class RenditionQueue(models.Model):
 class InternalBrand(models.Model):
 	name					= models.CharField(max_length=20)
 	format					= models.CharField(max_length=2, choices=BRAND_FORMAT)
-	
+	logo					= models.ManyToManyField('Logo')
 
 	def __unicode__(self):
 		return self.name
