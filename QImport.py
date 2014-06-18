@@ -498,8 +498,8 @@ def ReScheduleUnasignedRenditions(ForceSchedule=False):
 	    #
 	    # Arma los parametros de transcodificacion
 	    #	
-	    if len(Item.internal_brand.logo.filter(format=VProfile.format)) != 0:
-		Logo = Item.internal_brand.logo.filter(format=VProfile.format)
+	    if len(VRendition.item.internal_brand.logo.filter(format=VRendition.video_profile.format)) != 0:
+		Logo = VRendition.item.internal_brand.logo.filter(format=VRendition.video_profile.format)
 	        BitMap = BitmapKeying()
 	        BitMap.Filename      = Logo[0].filename
 	        BitMap.Dialog_BIN    = Logo[0].dialog

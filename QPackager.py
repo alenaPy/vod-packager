@@ -890,7 +890,6 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     except:
         CustomCategory = Package.item.category
 
-
     if Package.customer.category_path_style == 'APC':
 	CategoryPath = 'Adultos' + '/' + MetadataXml.Title.Studio + VideoRendition.video_profile.format + '/' + CustomCategory.name
     elif Package.customer.category_path_style == 'DLA':
@@ -914,7 +913,9 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     elif Package.customer.category_path_style == 'ZA':
 	CategoryPath = 'Zona Adultos' + '/' + CustomCategory.name
     elif Package.customer.category_path_style == 'NR':
-	CategoryPath = 'Nitro Root/Millicom Tigo/Adult Library' + '/' + MetadataXml.Title.Studio.replace(' ', '') + VideoRendition.video_profile.format
+    	CategoryPath = 'Nitro Root/Millicom Tigo/Adult Library' + '/' + MetadataXml.Title.Studio.replace(' ', '') + VideoRendition.video_profile.format
+    elif Package.customer.category_path_style == 'CMR':
+	CategoryPath = 'Cablevision_Monterrey_SVODF/Cinema Premier/Adultos/' + CustomCategory.name + '/' 
     elif Package.customer.category_path_style == 'SHO':
 	RootPath = 'SHOWRUNNER/ADULTO +18/'
 	if VideoRendition.video_profile.format == 'SD':

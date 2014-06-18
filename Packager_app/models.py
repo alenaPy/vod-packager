@@ -137,6 +137,7 @@ class Customer(models.Model):
 		('ZA',  'Zona Adultos / Format / Category'),
 		('NR',  'Nitro Root / Milicom Library / Brand + Format'),
 		('SHO', 'SHOWRUNNER/ADULTO +18/'),
+		('CMR', 'Cablevision_Monterrey_SVODF / Cinema Premier / Adultos / Categoria / Titulo'),
 	)
 	
 	name 						= models.CharField(max_length=256)
