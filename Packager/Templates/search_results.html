@@ -9,8 +9,8 @@
 			<th scope="col" class="center" width="15px"></th>
 			<th scope="col">Name</th>
 			<th scope="col" width="55px">FORK ID</th>
-			<th scope="col" width="55px">NEPE ID</th>
-			<th scope="col" width="120px" class="center">Creation Date</th>
+			<th scope="col" width="90px">Brand</th>
+			<th scope="col" width="90px" class="center">Internal Brand</th>
 			<th scope="col" width="90px"  class="center">Item Group</th>
 			<th socpe="col" width="30px" class="center"></th>
 		</tr>
@@ -22,8 +22,8 @@
 			<td class="display_icon"><span class="status_{{entry.status}}" /></td>
 			<td><a href="/vod/item/{{entry.id}}">{{ entry.name }}</a></td>
 			<td>{{entry.mam_id}}</td>
-			<td>{{entry.id}}</td>
-			<td class="center">{{ entry.creation_date }}</td>
+			<td>{{entry.brand}}</td>
+			<td class="center">{{ entry.internal_brand }}</td>
 			<td class="center">{{ entry.group }}</td>
 			<td><a href="/admin/Packager_app/item/{{entry.id}}">ADMIN</a></td>
 		</tr>
