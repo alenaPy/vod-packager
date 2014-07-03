@@ -342,7 +342,7 @@ class RenditionQueue(models.Model):
 class InternalBrand(models.Model):
 	name					= models.CharField(max_length=20)
 	format					= models.CharField(max_length=2, choices=BRAND_FORMAT)
-	logo					= models.ManyToManyField('Logo')
+	logo					= models.ManyToManyField('Logo', null=True, blank=True)
 
 	def __unicode__(self):
 		return self.name

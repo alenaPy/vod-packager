@@ -919,7 +919,10 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     elif Package.customer.category_path_style == 'SHO':
 	RootPath = 'SHOWRUNNER/ADULTO +18/'
 	if VideoRendition.video_profile.format == 'SD':
-	    RootPath = RootPath + 'CATEGORIAS/' + CustomCategory.name.upper()
+	    if CustomCategory.name == 'M.I.L.F' or CustomCategory.name == 'Anal' or CustomCategory.name == 'Jovencitas':
+		RootPath = RootPath + CustomCategory.name.upper()
+	    else:
+		RootPath = RootPath + 'MAS CATEGORIAS/' + CustomCategory.name.upper()
 	else:
 	    if VideoRendition.item.brand == 'Hot Shots':
 		RootPath = RootPath + 'HD Y 3D/RAPIDITOS HD $5.50'
