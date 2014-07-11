@@ -499,6 +499,7 @@ def MakeAdiXmlNepe(Package=None, VideoRendition=None, ImageRendition=None):
     MetadataXml.Rating    = 'XXX'
     MetadataXml.AudioType = 'Stereo'
     MetadataXml.VideoFormat = VideoRendition.video_profile.codec
+    MetadataXml.NepeVideoFile = VideoRendition.file_name
     
     suffix = '_' + MetadataXml.Standard
 
