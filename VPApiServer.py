@@ -259,22 +259,24 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	# Buscar el lenguaje
 	#
 	try:	    
-	    Language	= models.Language.objects.get(code=ItemMetadataLan["language"].lower())
-
-	    logging.info("Adding Metadata Language: " + ItemMetadataLan["language"].lower())
-
-	    MetadataLanguage.language 		= Language
-	    MetadataLanguage.title_sort_name 	= ItemMetadataLan["title_sort_name"]
-	    MetadataLanguage.title_brief 	= ItemMetadataLan["title_brief"]
-	    MetadataLanguage.title 		= ItemMetadataLan["title"]
-	    MetadataLanguage.episode_title 	= ItemMetadataLan["episode_title"]
-	    MetadataLanguage.summary_long 	= ItemMetadataLan["summary_long"]
-	    MetadataLanguage.summary_medium 	= ItemMetadataLan["summary_short"]
-	    MetadataLanguage.summary_short 	= ItemMetadataLan["summary_short"]
-	    MetadataLanguage.save()
-	    
+    	    Language	= models.Language.objects.get(code=ItemMetadataLan["language"].lower())
 	except:
 	    logging.error("Cannot find the specific language, fail to add Metadata Language: " + ItemMetadataLan["language"].lower())
+	
+        logging.info("Adding Metadata Language: " + ItemMetadataLan["language"].lower())
+
+        MetadataLanguage.language 		= Language
+        MetadataLanguage.title_sort_name 	= ItemMetadataLan["title_sort_name"]
+        MetadataLanguage.title_brief 	= ItemMetadataLan["title_brief"]
+        MetadataLanguage.title 		= ItemMetadataLan["title"]
+        MetadataLanguage.episode_title 	= ItemMetadataLan["episode_title"]
+        MetadataLanguage.summary_long 	= ItemMetadataLan["summary_long"]
+        MetadataLanguage.summary_medium 	= ItemMetadataLan["summary_short"]
+        MetadataLanguage.summary_short 	= ItemMetadataLan["summary_short"]
+	try:
+    	    MetadataLanguage.save()
+	except:
+	    logging.error("Can not Save: " +  str(sys.exc_info()[1]))
 
     
     if ItemUpdate:

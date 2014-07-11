@@ -1338,13 +1338,15 @@ def main():
 		    os.link(video_local_path + VideoRendition.file_name, PackagePath + MetadataXml.Movie.Content_Value)
 		    
 		except OSError as e:
-		    ErrorString    = 'Error creating Video Hard Link -> Catch: ' + e.strerror
-		    Package.error  = ErrorString
-		    logging.error('main(): %s' % ErrorString)
-		    Package.status = 'E'
-		    Package.save()
-		    break
-
+		    if VideoRendition.video_profile.need_to_be_checked == 'T':
+			ErrorString    = 'Error creating Video Hard Link -> Catch: ' + e.strerror
+		        Package.error  = ErrorString
+		        logging.error('main(): %s' % ErrorString)
+		        Package.status = 'E'
+		        Package.save()
+		        break
+		    			
+			
     		try:
     		    if os.path.isfile(PackagePath + MetadataXml.StillImage.Content_Value):
     			os.remove(PackagePath + MetadataXml.StillImage.Content_Value)
