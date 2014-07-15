@@ -916,7 +916,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     elif Package.customer.category_path_style == 'NR':
     	CategoryPath = 'Nitro Root/Millicom Tigo/Adult Library' + '/' + MetadataXml.Title.Studio.replace(' ', '') + VideoRendition.video_profile.format
     elif Package.customer.category_path_style == 'CMR':
-	CategoryPath = 'Cablevision_Monterrey_SVODF/Cinema Premier/Adultos/' + CustomCategory.name + '/' 
+	CategoryPath = 'Cablevision_Monterrey_SVODF/Cinema_Premier/Adultos/' + CustomCategory.name + '/' 
     elif Package.customer.category_path_style == 'SHO':
 	RootPath = 'SHOWRUNNER/ADULTO +18/'
 	if VideoRendition.video_profile.format == 'SD':
