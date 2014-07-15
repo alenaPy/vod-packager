@@ -1186,8 +1186,10 @@ def main():
 		    continue        
 		
 		for iprofile in IProfile:
-		    ImageRenditionList.append(models.ImageRendition.objects.get(item=Package.item, image_profile=iprofile))
-	    
+		    try:
+			ImageRenditionList.append(models.ImageRendition.objects.get(item=Package.item, image_profile=iprofile))
+		    except:
+			pass
 	    
 	    for VideoRendition in VideoRenditionList:
 		#
