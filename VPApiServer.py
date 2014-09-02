@@ -172,7 +172,8 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 
     Item.run_time		= ItemMetadata["run_time"]
     Item.display_run_time	= ItemMetadata["display_runtime"]
-
+    Item.subtitle_spa		= ItemMetadata["subtitle_spa"]
+    Item.subtitle_prt		= ItemMetadata["subtitle_prt"]
     #
     # Busca el Country of Origin
     #

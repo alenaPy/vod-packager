@@ -36,7 +36,7 @@ from Packager_app import models
 #    return models.Item.objects.filter(kill_date__lte=datetime.now())
 
 def GetItemsToPurge():
-    return models.Item.objects.filter(group_id=17)
+    return models.Item.objects.filter(group_id=18)
 
 
 def DeleteMetadataLanguages(item = None):

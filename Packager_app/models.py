@@ -201,6 +201,7 @@ class Customer(models.Model):
 	use_title_as_title_brief			= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')))
 	use_special_screen_format			= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')), help_text='Cambia el screen format a 16:9 o Standard')
 	export_zone					= models.ForeignKey('ExportZone')
+	subtitle_language				= models.CharField(max_length=1, default='N', choices=(('S', 'Spanish'),('P', 'Portuguese'), ('N', 'None')))
 	
 	def __unicode__(self):
 		return self.name
@@ -250,7 +251,8 @@ class Item(models.Model):
 	format				= models.CharField(max_length=2, choices=FORMAT)
 	status 				= models.CharField(max_length=2, choices=ITEM_STATUS)
 	content_language		= models.ForeignKey('Language')
-	
+	subtitle_spa			= models.CharField(max_length=256, blank=True)
+	subtitle_prt			= models.CharField(max_length=256, blank=True)
 	#
 	# Si es Short form o long form!
 	#
