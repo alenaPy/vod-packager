@@ -830,13 +830,18 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     #
     # Metadata especifica del lenguage
     # 
+    
+    
+    #
+    # MODIFICAR EL TITLE BRIEF
+    #
 
     if Package.customer.titles_in_capital_letter == 'Y':
-	MetadataXml.Title.Title_Brief		= MetadataLanguage.title_brief[:19].upper()
+	MetadataXml.Title.Title_Brief		= MetadataLanguage.title_brief[:18].upper()
         MetadataXml.Title.Title_Sort_Name	= MetadataLanguage.title_sort_name.upper()
         MetadataXml.Title.Title			= MetadataLanguage.title.upper()
     else:
-	MetadataXml.Title.Title_Brief	= MetadataLanguage.title_brief[:19]
+	MetadataXml.Title.Title_Brief	= MetadataLanguage.title_brief[:18]
         MetadataXml.Title.Title_Sort_Name	= MetadataLanguage.title_sort_name
         MetadataXml.Title.Title		= MetadataLanguage.title
         
