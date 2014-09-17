@@ -49,7 +49,7 @@ status() {
     echo -n "Queue Checker Status: "
     python QChecker.py status
     echo -n "Queue Pre-Packager Status: "
-    python QPrePackager status
+    python QPrePackager.py status
     echo -n "Queue Packager Status: "
     python QPackager.py status
     echo -n "Vod Packager Api Server Status: "

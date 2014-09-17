@@ -1,8 +1,19 @@
+from django.core import serializers
 from django.db import models
 from datetime import *
+
+import xmlrpclib
+
+def ReplicateObject(xmlFile):
+    XFile = open(xmlFile, 'r')
+    s = xmlrpclib.ServerProxy('http://54.224.29.104:4000')
+#    print XFile.read()
+    return s.DeserializeObject(XFile.read())
+    
 # importar User y DateTime
 
 # Create your models here.
+
 
 ACTIVE_STATUS = (
 	('E', 'Enabled'),
@@ -22,6 +33,61 @@ BRAND_FORMAT = (
 	('3D', '3D'),
 )
 
+
+class ReplicateServer(models.Model):
+	status						= models.CharField(max_length=1, choices=ACTIVE_STATUS)    
+	hostname					= models.CharField(max_length=256)
+	port						= models.CharField(max_length=5)
+
+	def __unicode__(self):
+	    return self.hostname
+	    
+	def __str__(self):
+	    return 'http://%s:%s' % (self.hostname, self.port)
+
+class Settings(models.Model):
+        force_schedule					=models.CharField(max_length=1, choices=(('Y', 'Yes'),('N', 'No')), help_text='')
+        global_sleep_time				=models.CharField(max_length=5,blank=True)
+	qimport_sleep					=models.CharField(max_length=5,blank=True)
+	qpull_sleep					=models.CharField(max_length=5,blank=True)
+	qchecker_sleep					=models.CharField(max_length=5,blank=True)
+	qpurge_sleep					=models.CharField(max_length=5,blank=True)
+	qpackager_sleep					=models.CharField(max_length=5,blank=True)
+	qprepackager_speep				=models.CharField(max_length=5,blank=True)
+	overwrite_pull_files				=models.CharField(max_length=1,choices=(('Y', 'Yes'),('N', 'No')), help_text='')
+	pull_limit_available				=models.CharField(max_length=1,choices=(('Y', 'Yes'),('N', 'No')), help_text='')
+	pull_limit					=models.CharField(max_length=5,blank=True)
+	optimize_profiles_with_brand			=models.CharField(max_length=1,choices=(('Y', 'Yes'),('N', 'No')), help_text='a')
+	local_smb_path_round_robin			=models.CharField(max_length=1,choices=(('Y', 'Yes'),('N', 'No')), help_text='')
+	max_quota					=models.CharField(max_length=5)
+#
+# Cambiar Zona a ForeignKey
+#
+	zone						=models.ForeignKey('ExportZone')
+	master						=models.CharField(max_length=1,choices=(('Y', 'Yes'),('N', 'No')), help_text='')
+
+
+
+class SubtitleProfile (models.Model):
+	name						=models.CharField(max_length=256)
+	font						=models.CharField(max_length=32)
+	format						=models.CharField(max_length=2, choices=BRAND_FORMAT)
+	charsize					=models.CharField(max_length=10)
+	posx						=models.CharField(max_length=5, blank=True,help_text='Values between 0.0 (left) and 1.0 (right)') 
+	posy						=models.CharField(max_length=5, blank=True, help_text='Values between 0.0 (top) and 1.0 (bottom)')
+	color_rgb					=models.CharField(max_length=20, help_text='Values between 0.0 - 255.0 (R,G,B)')
+	transparency					=models.CharField(max_length=5, help_text='Values between 0.0 (opaque) and 1.0 (transparent')
+	shadow_size					=models.CharField(max_length=5, help_text='Values between 0.0 (no glow) and 1.0 (strong glow)')
+	hard_shadow					=models.CharField(max_length=1, blank=True, choices=(('0', 'Normal Shadow'), ('1', 'Shadow with border')), default='0')
+	bkg_enable					=models.CharField(max_length=1, blank=True, choices=(('0', 'Normal'), ('1', 'Black Background behind text')), default='0')
+	bkg_semitransparent				=models.CharField(max_length=1, blank=True, choices=(('0', 'Normal'), ('1', 'Background Semi Transparent')), default='0')
+	bkg_extra_width					=models.CharField(max_length=5, blank=True, help_text ='How wider the background should be in relation to the text')
+	bkg_extra_height				=models.CharField(max_length=5, blank=True, help_text ='How taller the background should be in relation to the text')
+	right_to_left					=models.CharField(max_length=1, choices=(('0', 'Normal'), ('1', 'Right to Left order')), default='0')
+	h_align						=models.CharField(max_length=1, choices=(('0', 'Center'), ('1', 'Left'), ('2', 'Right')), default='0')
+	v_align						=models.CharField(max_length=1, choices=(('0', 'Centered around the first line'), ('1', 'Centered'), ('2', 'Top'), ('3', 'Bottom')), default='0')
+	def __unicode__(self):
+    	    return self.name
 
 class ItemGroup(models.Model):
 	key						= models.CharField(max_length=6)
@@ -45,6 +111,15 @@ class Language(models.Model):
 
 	def __unicode__(self):
 	    return self.name
+
+	def save(self):
+	    XMLSerializer = serializers.get_serializer("xml")
+	    xml_serializer = XMLSerializer()
+
+	    super(Language,self).save()
+	    with open("/var/xmldump/Language-%s.xml" % str(self.id), "w") as out:
+		xml_serializer.serialize([self], stream=out)
+	    ReplicateObject("/var/xmldump/Language-%s.xml" % str(self.id))
 
 
 class Rating(models.Model):
@@ -215,6 +290,8 @@ class PrePackage(models.Model):
 		return '%s-%s' % (self.export_zone, self.item_group)
 
 
+# Cambiar el nombre a Zona
+#
 class ExportZone(models.Model):
 	zone_name					= models.CharField(max_length=50, blank=False)
 
@@ -311,7 +388,7 @@ class Item(models.Model):
 	director 			= models.CharField(max_length=128)
 
 	group				= models.ForeignKey('ItemGroup')
-	brand				= models.CharField(max_length=64, blank=True)
+	brand				= models.ForeignKey('Brand')
 	internal_brand			= models.ForeignKey('InternalBrand')
 	studio				= models.CharField(max_length=64)
 	studio_name 			= models.CharField(max_length=128)
@@ -344,10 +421,17 @@ class RenditionQueue(models.Model):
 class InternalBrand(models.Model):
 	name					= models.CharField(max_length=20)
 	format					= models.CharField(max_length=2, choices=BRAND_FORMAT)
+
+	def __unicode__(self):
+		return self.name
+
+class Brand(models.Model):
+	name					= models.CharField(max_length=20)
 	logo					= models.ManyToManyField('Logo', null=True, blank=True)
 
 	def __unicode__(self):
 		return self.name
+
 
 class PreviewRenditions(models.Model):
         file_name                               = models.CharField(max_length=256)
@@ -377,6 +461,7 @@ class VideoRendition(models.Model):
 	item 					= models.ForeignKey('Item')
 	src_file_name         			= models.CharField(max_length=256)
 	src_svc_path          			= models.CharField(max_length=256)
+	sub_file_name				= models.CharField(max_length=512, blank=True)
 	file_size 				= models.BigIntegerField(default=0)
 	checksum 				= models.CharField(max_length=32)
 	error					= models.CharField(max_length=512, blank=True)
@@ -385,6 +470,8 @@ class VideoRendition(models.Model):
 	progress				= models.CharField(max_length=10, blank=True)
 	stimestamp				= models.CharField(max_length=10, blank=True)
 	duration				= models.CharField(max_length=10, blank=True)
+	subtitle_burned				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'), ('N', 'No')))
+	subtitle_language			= models.CharField(max_length=1, default='N', choices=(('S', 'Spanish'),('P', 'Portuguese'), ('N', 'None')))
 	
 	def __unicode__(self):
 		return self.file_name
@@ -438,6 +525,8 @@ class Package(models.Model):
 	status						= models.CharField(max_length=2, choices=PACKAGE_STATUS)
 	format						= models.CharField(max_length=2, choices=FORMAT, blank=True)
 	group 						= models.ForeignKey('PackageGroup')
+	subtitle_burned					= models.CharField(max_length=1, choices=(('Y', 'Yes'), ('N', 'No')))
+	subtitle_language				= models.CharField(max_length=1, default='N', choices=(('S', 'Spanish'),('P', 'Portuguese'), ('N', 'None')))
 	error						= models.CharField(max_length=512, blank=True)
 	
 	def __unicode__(self):
@@ -468,6 +557,8 @@ class VideoProfile(models.Model):
 	file_extension 					= models.CharField(max_length=64)
 	status 						= models.CharField(max_length=1, choices=ACTIVE_STATUS)
 	sufix 						= models.CharField(max_length=32)
+	sufix_sub_spa					= models.CharField(max_length=32)
+	sufix_sub_prt					= models.CharField(max_length=32)
 	format 						= models.CharField(max_length=2, choices=FORMAT)
 	notes 						= models.CharField(max_length=512)
 	#

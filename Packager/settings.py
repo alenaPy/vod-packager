@@ -160,6 +160,10 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+    },
+    'logfile': {
+        'class': 'logging.handlers.WatchedFileHandler',
+        'filename': '/var/log/myapp.log'
     }
 }
 

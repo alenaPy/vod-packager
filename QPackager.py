@@ -22,7 +22,7 @@ import xml.etree.ElementTree as ET
 import string
 import os, time, sys, re
 import logging
-import Settings
+import Zone
 
 from unicodedata import normalize
 
@@ -492,7 +492,7 @@ def MakeAdiXmlNepe(Package=None, VideoRendition=None, ImageRendition=None):
     MetadataXml.Country   = Package.item.country_of_origin.code
     MetadataXml.Actors    = Package.item.actors_display
     MetadataXml.Directors = Package.item.director
-    MetadataXml.Brand     = Package.item.brand
+    MetadataXml.Brand     = Package.item.brand.name
     MetadataXml.Category  = CustomCategory.name
     MetadataXml.Duration  = Package.item.run_time
     MetadataXml.Standard  = VideoRendition.video_profile.format
@@ -683,7 +683,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 
 
     if Package.customer.provider_id_with_brand == 'Y':
-	Provider_ID = 'playboy.' + Package.item.brand.replace(' ', '').upper()
+	Provider_ID = 'playboy.' + Package.item.brand.name.replace(' ', '').upper()
     else:
 	Provider_ID = 'playboy.com'
 	
@@ -849,7 +849,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     MetadataXml.Title.Episode_Name	= MetadataLanguage.episode_name
 
     if Package.customer.brand_in_synopsis == 'Y':
-	PreSynopsis = Package.item.brand.upper() + ' - '
+	PreSynopsis = Package.item.brand.name.upper() + ' - '
     else:
 	PreSynopsis = ''
 
@@ -930,7 +930,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	    else:
 		RootPath = RootPath + 'MAS CATEGORIAS/' + CustomCategory.name.upper()
 	else:
-	    if VideoRendition.item.brand == 'Hot Shots':
+	    if VideoRendition.item.brand.name == 'Hot Shots':
 		RootPath = RootPath + 'HD Y 3D/RAPIDITOS HD $5.50'
 	    else:
 		RootPath = RootPath + 'HD Y 3D/HD'
@@ -1081,7 +1081,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	elif CustmoMetadata.apply_to == 'I':
 	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
      
-    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition=Package.item.brand, format_condition=VideoRendition.video_profile.format, show_type=show_type)
+    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition=Package.item.brand.name, format_condition=VideoRendition.video_profile.format, show_type=show_type)
     for CustomMetadata in CustomMetadataList:
 	if CustomMetadata.apply_to == 'T':
     	    MetadataXml.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
@@ -1099,7 +1099,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	elif CustomMetadata.apply_to == 'I':
 	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
 
-    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition=Package.item.brand, format_condition='', show_type=show_type)
+    CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition=Package.item.brand.name, format_condition='', show_type=show_type)
     for CustomMetadata in CustomMetadataList:
 	if CustomMetadata.apply_to == 'T':
     	    MetadataXml.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
@@ -1389,11 +1389,31 @@ def main():
 
 	logging.info("main(): Nothing to do... Sleep")
 
-	if Settings.GLOBAL_SLEEP_TIME:
-	    time.sleep(Settings.SLEEP_TIME)
+
+	try:
+	    LocalZone = models.ExportZone.objects.get(zone_name=Zone.LOCAL)
+	    Settings  = models.Settings.objects.get(zone=LocalZone)      
+	except:
+	    e = sys.exc_info()[0]
+	    d = sys.exc_info()[1]
+	    logging.error("Main(): Error in LocalZone / Settings [%s -> %s]" % (e,d))
+	    return False
+
+
+        if Settings.global_sleep_time != '':
+    	    try:
+	        time.sleep(int(Settings.global_sleep_time))
+	    except:
+	        end = True 
+	        logging.error("main(): Critical error, plase check global_sleep_time [SHUTDOWN]")   
+		raise KeyboardInterrupt
 	else:
-	    time.sleep(Settings.QPACKAGER_SLEEP)
-	
+	    try:
+	        time.sleep(int(Settings.qpackager_sleep))
+	    except:
+	        end = True 
+	        logging.error("main(): Critical error, plase check qpackager_sleep [SHUTDOWN]") 
+		raise KeyboardInterrupt
 
 
 

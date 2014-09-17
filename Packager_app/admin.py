@@ -28,7 +28,7 @@ class LogoAdmin(admin.ModelAdmin):
 class InternalBrandAdmin(admin.ModelAdmin):
 	list_display = ('name', 'format')	
 	fieldsets = [
-	    ('Data', {'fields': ['name', 'format', 'logo']}),
+	    ('Data', {'fields': ['name', 'format']}),
 	]
 
 class ItemGroupAdmin(admin.ModelAdmin):
@@ -94,6 +94,23 @@ class ExportZoneAdmin(admin.ModelAdmin):
 class PrePackageAdmin(admin.ModelAdmin):
 	list_display = ('export_zone', 'item_group', 'status')	
 
+class SettingsAdmin(admin.ModelAdmin):
+	list_display = ('zone',)
+
+class SubtitleProfileAdmin(admin.ModelAdmin):
+	list_display = ('name',)
+	
+class ReplicateServerAdmin(admin.ModelAdmin):
+	list_display = ('hostname',)
+
+class BrandAdmin(admin.ModelAdmin):
+	list_display = ('name',)	
+
+	
+admin.site.register(Brand,BrandAdmin)
+admin.site.register(Settings,SettingsAdmin)
+admin.site.register(SubtitleProfile,SubtitleProfileAdmin)
+admin.site.register(ReplicateServer,ReplicateServerAdmin)
 admin.site.register(ExportZone, ExportZoneAdmin)
 admin.site.register(PrePackage, PrePackageAdmin)
 admin.site.register(Customer, CustomerAdmin)

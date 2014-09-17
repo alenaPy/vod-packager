@@ -75,7 +75,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     try:
 	Item = models.Item.objects.get(name=ItemMetadata["name"])
 	ItemUpdate = True
-	logging.info("VPAddItem(): Updating a new item %s" % Item.name)
+	logging.info("VPAddItem(): Updating a item %s" % Item.name)
     except:
 	Item = models.Item()
 	logging.info("VPAddItem(): Creating new Item")
@@ -208,11 +208,18 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     else:    
 	Item.format 		= ItemMetadata["format"]
     Item.studio			= ItemMetadata["studio_name"]
-
-    Item.brand			= ItemMetadata["studio_name"]
+    try:
+	print 
+	Brand 			= models.Brand.objects.get(name=ItemMetadata["studio_name"])
+    except:
+	err = sys.exc_info()[0]
+	logging.error("Brand Error: %s " % err)
+	Brand			= models.Brand()
+	Brand.name		= ItemMetadata["studio_name"]
+	Brand.save()
+    Item.brand			= Brand
     Item.mam_id 		= ItemMetadata["mam_id"]
 
-    
     print ItemMetadata["internal_brand"]
     #
     # Agregado 7/6/2013

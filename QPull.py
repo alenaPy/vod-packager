@@ -24,7 +24,8 @@ setup_environ(settings)
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 from Packager_app import models
 
-import Settings
+import Zone
+
 
 ErrorString = ''
 
@@ -77,24 +78,13 @@ def PullFile(SrcPath=None,FileName=None,DstPath=None):
 	if not FileExist(SrcPath,FileName):
 	    ErrorString = 'Unable to find File: %s' % SrcPath+FileName
 	    return False
-	try:	    
-	    if Settings.PULL_LIMIT_AVAILABLE:
-	    
-#		if not SrcPath.endswith('\'/'):
-#		    SrcPath = SrcPath + '\'/'
-#	    
-#		FileName = FileName.replace(' ', '\ ')
-#		FileName = FileName.replace('(', '\(')
-#		FileName = FileName.replace(')', '\)')
-#		FileName = FileName.replace('&', '\&')
-#		SrcPath  = SrcPath.replace(' ', '\ ')
-#		SrcPath  = SrcPath.replace('fork', 'Volumes/clx_xsan')
-#		print SrcPath + FileName
-#		cmd = "su - administrador -c \"scp 10.3.3.32:" + "\'" + SrcPath  + "\'" +FileName +"\'" +" " + DstPath + "\""
-#    		print cmd
-#		os.system(cmd)
-#		os.system("su - administrador -c \'scp 10.3.3.32:" + SrcPath+FileName + " " + DstPath + "\'")
-		os.system("pv -L %s \'" % Settings.PULL_LIMIT + SrcPath+FileName + "\' > \'" + DstPath+FileName + "\'")
+
+	try:
+	    LocalZone = models.ExportZone.objects.get(zone_name=Zone.LOCAL)
+	    Settings  = models.Settings.objects.get(zone=LocalZone)    
+	    	    
+	    if Settings.pull_limit_available == 'T':
+		os.system("pv -L %s \'" % Settings.pull_limit + SrcPath+FileName + "\' > \'" + DstPath+FileName + "\'")
 	    else:
 		shutil.copy(SrcPath+FileName, DstPath)
 	    
@@ -119,6 +109,15 @@ def ProcessWaitingRenditionQueue():
     logging.info("ProcessWaitingRenditionQueue(): Exter Repository SD -> %s" % ExternRepositorySD)
     logging.info("ProcessWaitingRenditionQueue(): Exter Repository HD -> %s" % ExternRepositoryHD)
 
+    try:
+	LocalZone = models.ExportZone.objects.get(zone_name=Zone.LOCAL)
+	Settings  = models.Settings.objects.get(zone=LocalZone)      
+    except:
+	e = sys.exc_info()[0]
+	d = sys.exc_info()[1]
+	logging.error("ProcessWaitingRenditionQueue(): Error in LocalZone / Settings [%s -> %s]" % (e,d))
+	return False
+
     if LocalRepository is not None and ExternRepositorySD is not None and ExternRepositoryHD is not None:
 
 	QueueLst = models.GetWaitingRenditionQueue()
@@ -138,9 +137,9 @@ def ProcessWaitingRenditionQueue():
 	    if not LocalRepository.endswith('/'):	    
 		LocalRepository = LocalRepository + '/'
 
-	    if not PathInQuota(LocalRepository, Settings.MAX_QUOTA): 
+	    if not PathInQuota(LocalRepository, int(Settings.max_quota)): 
 		if not FileExist(LocalRepository,Queue.file_name):
-		    logging.info("ProcessWaitingRenditionQueue(): Maximum Quota Limit Exceeded -> [%d]" % Settings.MAX_QUOTA)
+		    logging.info("ProcessWaitingRenditionQueue(): Maximum Quota Limit Exceeded -> [%d]" % int(Settings.max_quota))
 		    logging.info("ProcessWaitingRenditionQueue(): End Processing Waiting Queue")
 		    return True
 		    
@@ -151,8 +150,8 @@ def ProcessWaitingRenditionQueue():
 		if FileExist(LocalRepository,Queue.file_name):
 		    
 		    logging.info("ProcessWaitingRenditionQueue(): File Exist local -> [%s]" % LocalRepository+Queue.file_name)
-		    logging.info("ProcessWaitingRenditionQueue(): Overwrite Policy   -> [%s]" % str(Settings.OVERWRITE_PULL_FILES))
-		    if Settings.OVERWRITE_PULL_FILES:
+		    logging.info("ProcessWaitingRenditionQueue(): Overwrite Policy   -> [%s]" % Settings.overwite_pull_files)
+		    if Settings.overwrite_pull_files == 'T':
 			logging.info("ProcessWaitingRenditionQueue(): Pulling File -> [%s]" % Queue.file_name)
 			Queue.queue_status = 'P'
 			Queue.save()
@@ -195,8 +194,8 @@ def ProcessWaitingRenditionQueue():
 		if FileExist(LocalRepository,Queue.file_name):
 		    
 		    logging.info("ProcessWaitingRenditionQueue(): File Exist local -> [%s]" % LocalRepository+Queue.file_name)
-		    logging.info("ProcessWaitingRenditionQueue(): Overwrite Policy   -> [%s]" % str(Settings.OVERWRITE_PULL_FILES))
-		    if Settings.OVERWRITE_PULL_FILES:
+		    logging.info("ProcessWaitingRenditionQueue(): Overwrite Policy   -> [%s]" % Settings.overwrite_pull_files)
+		    if Settings.overwrite_pull_files == 'T':
 			logging.info("ProcessWaitingRenditionQueue(): Pulling File -> [%s]" % Queue.file_name)
 			Queue.queue_status = 'P'
 			Queue.save()
@@ -265,11 +264,29 @@ def main():
 	    logging.error("Main(): Fail in ProcessWaitingRenditionQueue [SHUTDOWN]")
 	    End = True
 	
-	if Settings.GLOBAL_SLEEP_TIME:
-	    time.sleep(Settings.SLEEP_TIME)
-	else:
-	    time.sleep(Settings.QPULL_SLEEP)
+	try:
+	    LocalZone = models.ExportZone.objects.get(zone_name=Zone.LOCAL)
+	    Settings  = models.Settings.objects.get(zone=LocalZone)    
+	except:
+	    end = True
+	    logging.error("main(): Critical error, plase check global_sleep_time [SHUTDOWN]")
+	    return False
 	    
+        if Settings.global_sleep_time != '':
+    	    try:
+	        time.sleep(int(Settings.global_sleep_time))
+	    except:
+	        end = True 
+	        logging.error("main(): Critical error, plase check global_sleep_time [SHUTDOWN]")   
+	        raise KeyboardInterrupt
+	else:
+	    try:
+	        time.sleep(int(Settings.qpull_sleep))
+	    except:
+	        end = True 
+    	        logging.error("main(): Critical error, plase check qpull_sleep [SHUTDOWN]") 
+		raise KeyboardInterrupt
+
 
 class main_daemon(Daemon):
     def run(self):

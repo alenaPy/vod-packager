@@ -130,13 +130,17 @@
 		<div class="content">
 			<table class="itemVwTbl">
 				<thead class="itemVwThead">
-					<th>Name</th><th>Video profile</th><th class="center">Status</th>
+					<th>Name</th>
+					<th>Video profile</th>
+					<th>Subtitle</th>
+					<th class="center">Status</th>
 				</thead>
 				<tbody class="itemVwTbody">
 			{% for vr in video_renditions %}
 			<tr>
 				<td><a href="/videos/{{vr.file_name}}">{{vr.file_name}}</a></td>
 				<td>{{vr.video_profile}}</td>
+				<td>{{vr.subtitle_language}}</td>
 				<td><center><span class="vrstatus_{{vr.status}}" /></center></td>
 			</tr>
 			{% endfor %}

@@ -11,7 +11,7 @@ from carbonapi.CarbonSched import *
 import logging
 import os
 import time
-import Settings
+
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Funciones - Utileria
@@ -40,6 +40,34 @@ setup_environ(settings)
 # Modelo de la aplicacion
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 from Packager_app import models
+
+
+import Zone
+
+def NeedToDuplicateImage(ImageRendition):
+    InternalBrand = ImageRendition.item.internal_brand
+    ImageProfile  = ImageRendition.image_profile
+    DstZone       = models.ExportZone.objects.all().exclude(zone_name=Zone.LOCAL)
+    if len(models.Customer.objects.filter(export_zone=DstZone, internal_brand=InternalBrand, image_profile=ImageProfile)) > 0:
+	return True
+    else:
+	return False
+
+def NeedToDuplicateVideo(VideoRendition):
+    InternalBrand = VideoRendition.item.internal_brand
+    VideoProfile  = VideoRendition.video_profile
+    DstZone = models.ExportZone.objects.all().exclude(zone_name=Zone.LOCAL)
+    
+    if VideoRendition.subtitle_burned == 'Y':
+	language = VideoRendition.subtitle_language
+	Customers = models.Customer.objects.filter(subtitle_language=language,export_zone=DstZone,internal_brand=InternalBrand,video_profile=VideoProfile)
+    else:
+	Customers = models.Customer.objects.filter(export_zone=DstZone,internal_brand=InternalBrand,video_profile=VideoProfile)
+
+    if len(Customers) > 0:
+	return True
+    else:
+	return False
 
 
 
@@ -165,7 +193,9 @@ def CheckImageRenditionStatus():
 	    IRendition.status   = 'D'
 	    IRendition.save()
 	    
-	    if  IRendition.image_profile.cloud_duplicate == 'Y':
+	    
+#	    if  IRendition.image_profile.cloud_duplicate == 'Y':
+	    if NeedToDuplicateImage(IRendition):
 		logging.info("CheckImageRenditionStatus(): Send to the cloud: [%s]" % IRendition.file_name)
 		image_cloud = models.GetPath ('cloud_duplicate_image')
 	        if not image_cloud.endswith('/'):
@@ -196,7 +226,6 @@ def CancelVideoRenditions():
     logging.info("CancelVideoRendition(): Start Canceling Video Rendition")
     
     video_local_path = models.GetPath("video_local_path")
-
 
     
     if video_local_path is None:
@@ -317,7 +346,9 @@ def CheckVideoRenditionStatus():
 		RemoveJob(VRendition.transcoding_server.ip_address, VRendition.transcoding_job_guid)
 		VRendition.save()
 	    
-	    if VRendition.status == 'F' and VRendition.video_profile.cloud_duplicate == 'Y':
+#	    if VRendition.status == 'F' and VRendition.video_profile.cloud_duplicate == 'Y':
+	    
+	    if VRendition.status == 'F' and NeedToDuplicateVideo(VRendition):
 		logging.info("CheckVideoRenditionStatus(): Send to the cloud: [%s]" % VRendition.file_name)
 		video_cloud = models.GetPath ('cloud_duplicate_video')
 		if not video_cloud.endswith('/'):
@@ -369,6 +400,16 @@ def main():
     end = False
 
     while not end:
+    
+	try:
+	    LocalZone = models.ExportZone.objects.get(zone_name=Zone.LOCAL)
+	    Settings  = models.Settings.objects.get(zone=LocalZone)      
+	except:
+	    e = sys.exc_info()[0]
+	    d = sys.exc_info()[1]
+	    logging.error("Main(): Error in LocalZone / Settings [%s -> %s]" % (e,d))
+	    return False
+    
 	CancelVideoRenditions()
     
 	if not CheckVideoRenditionStatus():
@@ -382,12 +423,20 @@ def main():
 
 	CheckItemStatus()
 
-	if Settings.GLOBAL_SLEEP_TIME:
-	    time.sleep(Settings.SLEEP_TIME)
+        if Settings.global_sleep_time != '':
+    	    try:
+	        time.sleep(int(Settings.global_sleep_time))
+	    except:
+	        end = True 
+	        logging.error("main(): Critical error, plase check global_sleep_time [SHUTDOWN]")   
+		raise KeyboardInterrupt
 	else:
-	    time.sleep(Settings.QCHECKER_SLEEP)
-	    
-    
+	    try:
+	        time.sleep(int(Settings.qchecker_sleep))
+	    except:
+	        end = True 
+	        logging.error("main(): Critical error, plase check qchecker_sleep [SHUTDOWN]") 
+		raise KeyboardInterrupt
     logging.info("main(): End loop")
 
 class main_daemon(Daemon):

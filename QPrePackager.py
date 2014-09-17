@@ -17,7 +17,7 @@ from Lib.daemon import Daemon
 import string
 import os, time, sys, re
 import logging
-import Settings
+import Zone
 
 def PrePackageToPackages(PrePackage=None):
 
@@ -171,14 +171,40 @@ def Main():
     logging.basicConfig(format='%(asctime)s - QPrePackager.py -[%(levelname)s]: %(message)s', filename='./log/QPrePackager.log',level=logging.INFO)
 
     while True:
-	Zone        = models.ExportZone.objects.get(zone_name=Settings.ZONE)
-        PrePackages = models.PrePackage.objects.filter(status='Q', export_zone=Zone)
     
+
+	try:
+	    LocalZone = models.ExportZone.objects.get(zone_name=Zone.LOCAL)
+	    Settings  = models.Settings.objects.get(zone=LocalZone)      
+	except:
+	    e = sys.exc_info()[0]
+	    d = sys.exc_info()[1]
+	    logging.error("Main(): Error in LocalZone / Settings [%s -> %s]" % (e,d))
+	    return False
+
+        PrePackages = models.PrePackage.objects.filter(status='Q', export_zone=LocalZone)
+
 	print PrePackages
 	for PPackage in PrePackages:
 	    PrePackageToPackages(PPackage)
-    
-	time.sleep(Settings.QPREPACKAGER_SLEEP)
+
+    	
+
+        if Settings.global_sleep_time != '':
+    	    try:
+	        time.sleep(int(Settings.global_sleep_time))
+	    except:
+	        end = True 
+	        logging.error("main(): Critical error, plase check global_sleep_time [SHUTDOWN]")   
+	        raise KeyboardInterrupt    
+	else:
+	    try:
+	        time.sleep(int(Settings.qprepackager_sleep))
+	    except:
+	        end = True 
+	        logging.error("main(): Critical error, plase check qprepackager_sleep [SHUTDOWN]") 
+		raise KeyboardInterrupt    
+
     
     
 class main_daemon(Daemon):
