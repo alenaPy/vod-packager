@@ -23,7 +23,7 @@ class ItemAdmin(admin.ModelAdmin):
 	]
 	
 class LogoAdmin(admin.ModelAdmin):
-	list_display = ('name',)
+	list_display = ('name','filename',)
 		
 class InternalBrandAdmin(admin.ModelAdmin):
 	list_display = ('name', 'format')	

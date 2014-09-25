@@ -189,6 +189,7 @@ def Main():
 	    PrePackageToPackages(PPackage)
 
     	
+    	print Settings.qprepackager_sleep
 
         if Settings.global_sleep_time != '':
     	    try:

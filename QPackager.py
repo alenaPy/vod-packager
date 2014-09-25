@@ -1078,8 +1078,8 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     	    MetadataXml.Title.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
 	elif CustomMetadata.apply_to == 'V':
 	    MetadataXml.Movie.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
-	elif CustmoMetadata.apply_to == 'I':
-	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
+	elif CustomMetadata.apply_to == 'I':
+	    MetadataXml.StillImage.AddCustomMetadata(CustomMetadata.name,CustomMetadata.value)
      
     CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition=Package.item.brand.name, format_condition=VideoRendition.video_profile.format, show_type=show_type)
     for CustomMetadata in CustomMetadataList:
@@ -1088,7 +1088,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	elif CustmoMetadata.apply_to == 'V':
 	    MetadataXml.Movie.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
 	elif CustmoMetadata.apply_to == 'I':
-	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
+	    MetadataXml.StillImage.AddCustomMetadata(CustomMetadata.name,CustomMetadata.value)
 
     CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition='', format_condition=VideoRendition.video_profile.format, show_type=show_type)
     for CustomMetadata in CustomMetadataList:
@@ -1097,7 +1097,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	elif CustomMetadata.apply_to == 'V':
 	    MetadataXml.Movie.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
 	elif CustomMetadata.apply_to == 'I':
-	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
+	    MetadataXml.StillImage.AddCustomMetadata(CuatomMetadata.name,CustomMetadata.value)
 
     CustomMetadataList = models.CustomMetadata.objects.filter(customer=Package.customer, brand_condition=Package.item.brand.name, format_condition='', show_type=show_type)
     for CustomMetadata in CustomMetadataList:
@@ -1106,7 +1106,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	elif CustomMetadata.apply_to == 'V':
 	    MetadataXml.Movie.AddCustomMetadata(CustomMetadata.name, CustomMetadata.value)
 	elif CustomMetadata.apply_to == 'I':
-	    MetadataXml.StillImage.AddCusmomMetadata(CuatomMetadata.name,CustomMetadata.value)
+	    MetadataXml.StillImage.AddCustomMetadata(CustomMetadata.name,CustomMetadata.value)
 
 
     if Package.customer.custom_title_brief != '':

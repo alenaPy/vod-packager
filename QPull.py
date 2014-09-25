@@ -150,7 +150,7 @@ def ProcessWaitingRenditionQueue():
 		if FileExist(LocalRepository,Queue.file_name):
 		    
 		    logging.info("ProcessWaitingRenditionQueue(): File Exist local -> [%s]" % LocalRepository+Queue.file_name)
-		    logging.info("ProcessWaitingRenditionQueue(): Overwrite Policy   -> [%s]" % Settings.overwite_pull_files)
+		    logging.info("ProcessWaitingRenditionQueue(): Overwrite Policy   -> [%s]" % Settings.overwrite_pull_files)
 		    if Settings.overwrite_pull_files == 'T':
 			logging.info("ProcessWaitingRenditionQueue(): Pulling File -> [%s]" % Queue.file_name)
 			Queue.queue_status = 'P'

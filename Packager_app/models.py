@@ -53,7 +53,7 @@ class Settings(models.Model):
 	qchecker_sleep					=models.CharField(max_length=5,blank=True)
 	qpurge_sleep					=models.CharField(max_length=5,blank=True)
 	qpackager_sleep					=models.CharField(max_length=5,blank=True)
-	qprepackager_speep				=models.CharField(max_length=5,blank=True)
+	qprepackager_sleep				=models.CharField(max_length=5,blank=True)
 	overwrite_pull_files				=models.CharField(max_length=1,choices=(('Y', 'Yes'),('N', 'No')), help_text='')
 	pull_limit_available				=models.CharField(max_length=1,choices=(('Y', 'Yes'),('N', 'No')), help_text='')
 	pull_limit					=models.CharField(max_length=5,blank=True)
