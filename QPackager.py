@@ -13,8 +13,8 @@ from Packager_app import models
 from cablelabsadi import ADIXml
 from cablelabsadi import RiGHTvAsset
 from cablelabsadi import NepeXml
-from datetime import datetime, timedelta
-from Lib.daemon import Daemon
+from datetime     import datetime, timedelta
+from Lib.daemon   import Daemon
 
 
 import xml.etree.ElementTree as ET
@@ -300,7 +300,19 @@ def GetVideoRenditions(Package=None):
 	    #
 	    if ExportHD:
 		try:
-		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileHD, status='F')
+		    if Customer.subtitle_language == 'S':
+			try:
+			    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileHD, status='F', subtitle_language='S')
+			except:
+			    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileHD, status='F', subtitle_language='N')
+		    elif Customer.subtitle_language == 'P':
+			try:
+			    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileHD, status='F', subtitle_language='P')
+			except:
+			    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileHD, status='F', subtitle_language='N')
+		    else:
+			VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileHD, status='F', subtitle_language='N')
+			
 		    VRenditionList.append(VRendition)
 		    logging.info("GetVideoRendition(): Video Rendition HD: %s" % VRendition.file_name)
 		    #
@@ -320,7 +332,19 @@ def GetVideoRenditions(Package=None):
 
 	    if ExportSD:
 		try:
-		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD,status='F')
+		    if Customer.subtitle_language == 'S':
+			try:
+			    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD, status='F', subtitle_language='S')
+			except:
+			    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD, status='F', subtitle_language='N')
+		    elif Customer.subtitle_language == 'P':
+			try:
+			    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD, status='F', subtitle_language='P')
+			except:
+			    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD, status='F', subtitle_language='N')
+		    else:
+			VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD, status='F', subtitle_language='N')
+		
 		    VRenditionList.append(VRendition)
 		    logging.info("GetVideoRendition(): Video Rendition SD: %s" % VRendition.file_name)
 		except:
@@ -337,7 +361,19 @@ def GetVideoRenditions(Package=None):
 	    #
 	    if ExportSD:
 	    	try:
-		    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD, status='F')
+		    if Customer.subtitle_language == 'S':
+			try:
+			    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD, status='F', subtitle_language='S')
+			except:
+			    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD, status='F', subtitle_language='N')
+		    elif Customer.subtitle_language == 'P':
+			try:
+			    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD, status='F', subtitle_language='P')
+			except:
+			    VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD, status='F', subtitle_language='N')
+		    else:
+			VRendition = models.VideoRendition.objects.get(item=Item,video_profile=ProfileSD, status='F', subtitle_language='N')
+
 		    VRenditionList.append(VRendition)
 		    logging.info("GetVideoRendition(): Video Rendition SD: %s" % VRendition.file_name)
 		
@@ -853,6 +889,13 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     else:
 	PreSynopsis = ''
 
+    if VideoRendition.subtitle_burned == 'Y':
+	if VideoRendition.subtitle_language == 'S':
+	    PreSynopsis = '(Subtitulado) ' + PreSynopsis	
+	elif VideoRendition.subtitle_language == 'P':
+	    PreSynopsis = '(Legendado) ' + PreSynopsis
+
+
     if Package.customer.summary_long == 'Y':
 	MetadataXml.Title.Summary_Long	= PreSynopsis + MetadataLanguage.summary_long
 
@@ -1181,14 +1224,54 @@ def main():
 		    Package.save()
 		    continue
 		
-		try:
-		    VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0]))
-		except:
-		    logging.error("main(): Item: %s, not have VideoRendition in profile (%s)" % (Package.item, VProfile[0]) )
-		    Package.error = "main(): Customer: %s, have errors in  video profile (%s)" % (Package.customer, Package.format)
-		    Package.status = 'E'
-		    Package.save()
-		    continue        
+		
+		#
+		# Subtitulo SPA
+		#
+		
+		if Package.customer.subtitle_language == 'S':
+		    try:
+			VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0], subtitle_language='S', status='F'))
+		    except:
+			try:
+			    VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0], status='F'))
+			except:
+			    logging.error("main(): Item: %s, not have VideoRendition in profile (%s)" % (Package.item, VProfile[0]) )
+		    	    Package.error = "main(): Customer: %s, have errors in  video profile (%s)" % (Package.customer, Package.format)
+		    	    Package.status = 'E'
+		    	    Package.save()
+		    	    continue    
+		
+		#
+		# Subtitulo PRT
+		#
+		
+		elif Package.customer.subtitle_language == 'P':
+		    try:
+			VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0], subtitle_language='P', status='F'))
+		    except:
+			try:
+			    VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0], status = 'F'))
+			except:
+			    logging.error("main(): Item: %s, not have VideoRendition in profile (%s)" % (Package.item, VProfile[0]) )
+		    	    Package.error = "main(): Customer: %s, have errors in  video profile (%s)" % (Package.customer, Package.format)
+		    	    Package.status = 'E'
+		    	    Package.save()
+		    	    continue 
+		
+		#
+		# Sin Subtitulo
+		#
+		
+		else:
+		    try:
+			VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0], status='F'))
+		    except:
+			logging.error("main(): Item: %s, not have VideoRendition in profile (%s)" % (Package.item, VProfile[0]) )
+		        Package.error = "main(): Customer: %s, have errors in  video profile (%s)" % (Package.customer, Package.format)
+		        Package.status = 'E'
+		        Package.save()
+		        continue        
 		
 		for iprofile in IProfile:
 		    try:
@@ -1206,6 +1289,17 @@ def main():
 		# filtrada o en su defecto, enviar uno solo
 		#
 		ImageRendition = []
+	    
+		if VideoRendition.subtitle_burned == 'Y':
+		    Package.subtitle_burned   = 'Y'
+		    if VideoRendition.subtitle_language == 'S':
+			Package.subtitle_language = 'S'
+		    else:
+			Package.subtitle_language = 'P'
+		else:
+		    Package.subtitle_language = 'N'
+		    Package.subtitle_burned   = 'N'
+	    
 	    
 		for IRendition in ImageRenditionList:
 		    if IRendition.image_profile.format == VideoRendition.video_profile.format:
