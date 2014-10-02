@@ -1234,10 +1234,11 @@ def main():
 			VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0], subtitle_language='S', status='F'))
 		    except:
 			try:
-			    VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0], status='F'))
+			    VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0], status='F', subtitle_language='N'))
 			except:
-			    logging.error("main(): Item: %s, not have VideoRendition in profile (%s)" % (Package.item, VProfile[0]) )
-		    	    Package.error = "main(): Customer: %s, have errors in  video profile (%s)" % (Package.customer, Package.format)
+			    e = sys.exc_info()[0]
+			    logging.error("main(): Item: %s, not have VideoRendition in profile (%s)[%s]" % (Package.item, VProfile[0] ,e))
+		    	    Package.error = "main(): Customer: %s, have errors in  video profile (%s)[%s]" % (Package.customer, Package.format, e)
 		    	    Package.status = 'E'
 		    	    Package.save()
 		    	    continue    
@@ -1251,10 +1252,11 @@ def main():
 			VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0], subtitle_language='P', status='F'))
 		    except:
 			try:
-			    VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0], status = 'F'))
+			    VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0], status = 'F',subtitle_language='N'))
 			except:
-			    logging.error("main(): Item: %s, not have VideoRendition in profile (%s)" % (Package.item, VProfile[0]) )
-		    	    Package.error = "main(): Customer: %s, have errors in  video profile (%s)" % (Package.customer, Package.format)
+			    e = sys.exc_info()[0]
+			    logging.error("main(): Item: %s, not have VideoRendition in profile (%s)[%s]" % (Package.item, VProfile[0],e ))
+		    	    Package.error = "main(): Customer: %s, have errors in  video profile (%s)[%s]" % (Package.customer, Package.format, e)
 		    	    Package.status = 'E'
 		    	    Package.save()
 		    	    continue 
@@ -1265,10 +1267,11 @@ def main():
 		
 		else:
 		    try:
-			VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0], status='F'))
+			VideoRenditionList.append(models.VideoRendition.objects.get(item=Package.item, video_profile=VProfile[0], status='F',subtitle_language='N'))
 		    except:
-			logging.error("main(): Item: %s, not have VideoRendition in profile (%s)" % (Package.item, VProfile[0]) )
-		        Package.error = "main(): Customer: %s, have errors in  video profile (%s)" % (Package.customer, Package.format)
+			e = sys.exc_info()[0]
+			logging.error("main(): Item: %s, not have VideoRendition in profile (%s)[%s]" % (Package.item, VProfile[0],e ))
+		        Package.error = "main(): Customer: %s, have errors in  video profile (%s)[%s]" % (Package.customer, Package.format,e)
 		        Package.status = 'E'
 		        Package.save()
 		        continue        
