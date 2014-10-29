@@ -540,7 +540,7 @@ def MakeAdiXmlNepe(Package=None, VideoRendition=None, ImageRendition=None):
     suffix = '_' + MetadataXml.Standard
 
 
-    Asset_Name_Normalized = normalize_string(MetadataLanguage.title)
+    Asset_Name_Normalized = normalize_string(MetadataLanguage.title_brief)
     Asset_Name_Normalized = Asset_Name_Normalized.translate(None, string.punctuation)
     Asset_Name_Normalized = Asset_Name_Normalized.replace(' ', '_')
 

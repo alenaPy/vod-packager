@@ -9,6 +9,7 @@ import models
 import sys
 import re
 import traceback
+import os
 
 @dajaxice_register
 def dajaxice_example(request):
@@ -69,6 +70,9 @@ def unfilled_image_profile(request, item_id):
 		IRenditions = models.ImageRendition.objects.filter(item=item)
 		
 		for irendition in IRenditions:
+#		    path = models.GetPath('image_proc')
+#		    os.unlink(path+irendition.file_name)    
+		    irendition.file_name = ''
 		    irendition.status = 'U'
 		    irendition.save()
 		
