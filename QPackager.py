@@ -1046,6 +1046,10 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	    MetadataXml.Movie.Content_Value	= MetadataXml.AMS.Asset_Name[:12] + suffix + '.' + VideoRendition.video_profile.file_extension
 
 
+    #
+    # Hay que agregar la logica del Preview por Marca
+    #
+    #
     if Package.customer.use_preview == 'Y':
 	#
 	# Busca el preview que le corresponde al cliente
@@ -1067,6 +1071,30 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	    MetadataXml.Preview.Audio_Type	     = Preview.video_profile.audio_type
 	    MetadataXml.Preview.Run_Time	     = Preview.run_time
 	    MetadataXml.Preview.Rating		     = Package.customer.rating_display.name
+    
+    if Package.customer.custom_preview == 'Y':
+	IBrand = Package.item.internal_brand
+	print IBrand
+	try:
+	    CustomPreview = models.CustomPreview.objects.get(internal_brand=IBrand, customer=Package.customer, format=VideoRendition.video_profile.format)
+	    Preview = CustomPreview.preview
+	except:
+	    print "None"
+	    Preview = None
+	    
+	if Preview is not None:
+	    MetadataXml.AddPreview()
+	    if Package.customer.id_len_reduced == 'Y':
+		MetadataXml.Preview.AMS.Asset_ID = MakeAssetId('preview', VideoRendition.id, Package.id, True, Package.customer.id_special_prefix )
+	    else:
+		MetadataXml.Preview.AMS.Asset_ID = MakeAssetId('preview', VideoRendition.id, Package.id, False,Package.customer.id_special_prefix )
+	    MetadataXml.Preview.Content_Value 	     = Preview.file_name
+	    MetadataXml.Preview.Content_FileSize     = str(Preview.file_size)
+	    MetadataXml.Preview.Content_CheckSum     = Preview.checksum
+	    MetadataXml.Preview.Audio_Type	     = Preview.video_profile.audio_type
+	    MetadataXml.Preview.Run_Time	     = Preview.run_time
+	    MetadataXml.Preview.Rating		     = Package.customer.rating_display.name
+
     #
     # Defaults values
     #

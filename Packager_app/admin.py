@@ -9,7 +9,7 @@ class CustomerAdmin(admin.ModelAdmin):
 	fieldsets = [
 	    ('General info',    {'fields': ['name','vod_active', 'product_type', 'empty_product_type', 'special_product_type']}),
 	    ('Rental period',   {'fields': ['suggested_price_longform_sd', 'suggested_price_longform_hd', 'suggested_price_shortform_sd', 'suggested_price_shortform_hd', 'billing_id', 'license_window', 'preview_period', 'maximum_viewing_length']}),
-	    ('Media and Metadata Profile',   {'fields': ['internal_brand', 'video_profile', 'image_profile', 'image_type', 'metadata_profile', 'runtype_display', 'license_date_format', 'rating_display', 'viewing_can_be_resumed', 'extended_video_information', 'category_with_spaces', 'category_path_style','titles_in_capital_letter', 'use_hdcontent_var', 'doctype', 'summary_long', 'image_aspect_ratio', 'actor_display', 'limit_content_value', 'id_len_reduced', 'use_genres_category', 'custom_genres', 'use_xml_adi_filename', 'use_three_chars_country', 'provider_id_with_brand','provider_id','provider_qa_contact', 'brand_in_synopsis', 'use_preview', 'use_dtd_file', 'id_special_prefix', 'uppercase_adi', 'provider_content_tier', 'target_language', 'target_country', 'custom_title_brief', 'encoding', 'use_title_as_title_brief', 'use_special_screen_format','subtitle_language']}),
+	    ('Media and Metadata Profile',   {'fields': ['internal_brand', 'video_profile', 'image_profile', 'image_type', 'metadata_profile', 'runtype_display', 'license_date_format', 'rating_display', 'viewing_can_be_resumed', 'extended_video_information', 'category_with_spaces', 'category_path_style','titles_in_capital_letter', 'use_hdcontent_var', 'doctype', 'summary_long', 'image_aspect_ratio', 'actor_display', 'limit_content_value', 'id_len_reduced', 'use_genres_category', 'custom_genres', 'use_xml_adi_filename', 'use_three_chars_country', 'provider_id_with_brand','provider_id','provider_qa_contact', 'brand_in_synopsis', 'use_preview', 'use_dtd_file', 'id_special_prefix', 'uppercase_adi', 'provider_content_tier', 'target_language', 'target_country', 'custom_title_brief', 'encoding', 'use_title_as_title_brief', 'use_special_screen_format','subtitle_language', 'custom_preview']}),
 	    ('Exportation rules',    {'fields': ['export_language','export_format', 'export_folder', 'export_complete_package', 'export_zone']}), 
 	]
 	
@@ -106,7 +106,11 @@ class ReplicateServerAdmin(admin.ModelAdmin):
 class BrandAdmin(admin.ModelAdmin):
 	list_display = ('name',)	
 
-	
+class CustomPreviewAdmin(admin.ModelAdmin):
+	list_display = ('customer', 'internal_brand')
+
+
+admin.site.register(CustomPreview,CustomPreviewAdmin)	
 admin.site.register(Brand,BrandAdmin)
 admin.site.register(Settings,SettingsAdmin)
 admin.site.register(SubtitleProfile,SubtitleProfileAdmin)

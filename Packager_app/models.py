@@ -67,6 +67,15 @@ class Settings(models.Model):
 	master						=models.CharField(max_length=1,choices=(('Y', 'Yes'),('N', 'No')), help_text='')
 
 
+class CustomPreview(models.Model):
+	customer					=models.ForeignKey('Customer')
+	internal_brand					=models.ForeignKey('InternalBrand')
+	format						=models.CharField(max_length=2, choices=BRAND_FORMAT)
+	preview						=models.ForeignKey('PreviewRenditions')
+
+	def __unicode__(self):
+	    return '%s-%s' % (self.customer,self.internal_brand)
+
 
 class SubtitleProfile (models.Model):
 	name						=models.CharField(max_length=256)
@@ -277,6 +286,7 @@ class Customer(models.Model):
 	use_special_screen_format			= models.CharField(max_length=1, default='Y', choices=(('Y', 'Yes'),('N', 'No')), help_text='Cambia el screen format a 16:9 o Standard')
 	export_zone					= models.ForeignKey('ExportZone')
 	subtitle_language				= models.CharField(max_length=1, default='N', choices=(('S', 'Spanish'),('P', 'Portuguese'), ('N', 'None')))
+	custom_preview					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 	
 	def __unicode__(self):
 		return self.name
