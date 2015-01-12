@@ -55,20 +55,15 @@ def TestApiVersion(remote_api_version):
 	return True
 
 
-def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanList=[] ):
+def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanList=[], onlyUpdate=False ):
 
     if FileName is None or SmbPath is None or ItemMetadata is None:
 	return False
-
-
+	
     ItemUpdate = False
-
-
     #
     # Se crea un nuevo Item
     #
-
-
     #
     # 30/10 - Update Item
     #
@@ -79,23 +74,13 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     except:
 	Item = models.Item()
 	logging.info("VPAddItem(): Creating new Item")
-
-#    try:
-#	Item = models.Item.objects.get(name=ItemMetadata["name"])
-#	RQueue = models.RenditionQueue.objects.get(item=Item)
-#	RQueue.queue_status = 'W'
-#	RQueue.save() 
-#	logging.info("VPAddItem(): Reimport an existing Item")
-#	return True
-#    except: 
-#	Item 			= models.Item()
-#	logging.info("VPAddItem(): Creating new Item")
-
-    
-
     #
     # Se cargan los Datos Basicos
     #
+
+    if ItemUpdate == False and onlyUpdate == True:
+	raise
+
     Item.name 			= ItemMetadata["name"]
     Item.material_type		= ItemMetadata["material_type"]
     Item.especial		= ItemMetadata["especial"]
@@ -124,9 +109,6 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	ItemGroup.save()
     	
     Item.group = ItemGroup  
-    
-    
-    
     logging.info("VPAddItem(): Item Name:   " + Item.name)
     logging.info("VPAddItem(): Item Format: " + Item.format)
     logging.info("VPAddItem(): Item Material Type: " + Item.material_type)
@@ -150,10 +132,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	# Si no encuentra el Lenguage falla
 	#
 	#return False
-
-
     Item.content_language	= Language
-
     #
     # Buscar la Categoria
     #
@@ -203,7 +182,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     Item.year 			= ItemMetadata["year"]
     Item.director		= ItemMetadata["director"]
     Item.studio_name 		= ItemMetadata["studio_name"]
-    if Item.studio_name == 'Private' or Item.studio_name == 'Sexy Hot':
+    if Item.studio_name == 'Private':
 	Item.format = 'SD'
     else:    
 	Item.format 		= ItemMetadata["format"]
@@ -242,7 +221,8 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     elif ItemMetadata["show_type"].upper() == 'SERIE':
 	Item.show_type		= 'Series'
 
-    Item.status			= 'N'
+    if onlyUpdate == False:
+	Item.status = 'N'
     Item.save()
 
     for ItemMetadataLan in ItemMetadataLanList:
@@ -286,7 +266,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	except:
 	    logging.error("Can not Save: " +  str(sys.exc_info()[1]))
 
-    
+
     if ItemUpdate:
 	try:
 	    ImportQueue = models.RenditionQueue.objects.get(item=Item)
@@ -299,7 +279,6 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	    logging.info("New Rendition Queue: " + FileName  )
 	if ImportQueue.queue_status == 'D':
 	    ImportQueue.queue_status = 'W'
-
     else:
 	ImportQueue = models.RenditionQueue()
         ImportQueue.item		= Item
@@ -308,7 +287,8 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
 	ImportQueue.queue_status	= 'W'
 	logging.info("New Rendition Queue: " + FileName  )
 	
-    ImportQueue.save()
+    if onlyUpdate == False:
+	ImportQueue.save()
 
     return True
 

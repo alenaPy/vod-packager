@@ -727,13 +727,11 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	Provider_ID = Package.customer.provider_id
 
     
-    if Package.customer.special_product_type != '':
+    if Package.customer.special_product_type != '' and Package.customer.special_product_type_applies_to == 'A':
 	Product = Package.customer.special_product_type
     else:
 	Product = Package.customer.product_type
 
-
-    
     
     MetadataXml = ADIXml.Package(Provider      = 'PLAYBOY',
                 		 Product       = Product if Package.customer.empty_product_type == 'N' else '',
@@ -996,6 +994,27 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id, Package.id, True, Package.customer.id_special_prefix )
     else:
 	MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id, Package.id, False,Package.customer.id_special_prefix )
+
+    if Package.customer.special_product_type != '' and Package.customer.special_product_type_applies_to == 'M':
+	MetadataXml.Movie.AMS.Product = ''
+	PreParse = Package.customer.special_product_type.split(';')
+	size = len(PreParse)
+	for Var in PreParse:
+	    if Var.startswith('{') and Var.endswith('}'):
+		if Var == '{PRICE}':
+		    MetadataXml.Movie.AMS.Product = MetadataXml.Movie.AMS.Product + MetadataXml.Title.Suggested_Price
+		elif Var == '{START_DATE}':
+		    MetadataXml.Movie.AMS.Product = MetadataXml.Movie.AMS.Product + MetadataXml.Title.Licensing_Window_Start + 'T00:00:00Z'
+		elif Var == '{END_DATE}':
+		    MetadataXml.Movie.AMS.Product = MetadataXml.Movie.AMS.Product + MetadataXml.Title.Licensing_Window_End   + 'T00:00:00Z'
+	    else:
+		MetadataXml.Movie.AMS.Product = MetadataXml.Movie.AMS.Product + Var 
+	
+	    size = size - 1
+	
+	    if size != 0:
+    		MetadataXml.Movie.AMS.Product = MetadataXml.Movie.AMS.Product + ';'
+
 
 
     if Package.customer.use_hdcontent_var == 'Y':

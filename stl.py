@@ -117,7 +117,9 @@ class STL(object):
 	    try:
     		fd = open(filename,'rb')
 	    except:
-		pass
+		e = sys.exc_info()[0]
+		print e
+		raise
 		
 	    buff = fd.read(1024)
 	    self.gsi = GSI_Block(buff)

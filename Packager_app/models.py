@@ -276,7 +276,7 @@ class Customer(models.Model):
 	use_dtd_file					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 	id_special_prefix				= models.CharField(max_length=4, default='', blank=True)
 	uppercase_adi					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
-	special_product_type				= models.CharField(max_length=20, default='', blank=True)
+	special_product_type				= models.CharField(max_length=200, default='', blank=True)
 	provider_content_tier				= models.CharField(max_length=50, default='', blank=True)
 	target_language					= models.CharField(max_length=20, default='', blank=True)
 	target_country					= models.CharField(max_length=20, default='', blank=True)
@@ -287,6 +287,7 @@ class Customer(models.Model):
 	export_zone					= models.ForeignKey('ExportZone')
 	subtitle_language				= models.CharField(max_length=1, default='N', choices=(('S', 'Spanish'),('P', 'Portuguese'), ('N', 'None')))
 	custom_preview					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
+	special_product_type_applies_to			= models.CharField(max_length=1, default='A', choices=(('P', 'Package'), ('M', 'Movie'), ('I', 'Image'), ('A', 'All')))
 	
 	def __unicode__(self):
 		return self.name
