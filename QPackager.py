@@ -751,7 +751,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     # Agrega el titulo
     #
     
-
+    MetadataXml.AddMovie()
     MetadataXml.AddTitle()
     if Package.customer.id_len_reduced == 'Y':
 	MetadataXml.Title.AMS.Asset_ID = MakeAssetId('title', VideoRendition.id, Package.id, True,  Package.customer.id_special_prefix)
@@ -887,12 +887,16 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     else:
 	PreSynopsis = ''
 
-    if VideoRendition.subtitle_burned == 'Y':
+    if VideoRendition.subtitle_burned == 'Y' and Package.customer.use_subtitle_language == 'N':
 	if VideoRendition.subtitle_language == 'S':
 	    PreSynopsis = '(Subtitulado) ' + PreSynopsis	
 	elif VideoRendition.subtitle_language == 'P':
 	    PreSynopsis = '(Legendado) ' + PreSynopsis
-
+    elif Package.customer.use_subtitle_language == 'Y':
+	if VideoRendition.subtitle_language == 'S':
+	    MetadataXml.Movie.Subtitle_Languages = 'es'
+	elif VideoRendition.subtitle_language == 'P':
+	    MetadataXml.Movie.Subtitle_Languages = 'pt'
 
     if Package.customer.summary_long == 'Y':
 	MetadataXml.Title.Summary_Long	= PreSynopsis + MetadataLanguage.summary_long
@@ -989,7 +993,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	MetadataXml.Title.Genre		= Package.customer.custom_genres
 
 
-    MetadataXml.AddMovie()
+    
     if Package.customer.id_len_reduced == 'Y':
 	MetadataXml.Movie.AMS.Asset_ID = MakeAssetId('movie', VideoRendition.id, Package.id, True, Package.customer.id_special_prefix )
     else:
@@ -1009,7 +1013,7 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 		    MetadataXml.Movie.AMS.Product = MetadataXml.Movie.AMS.Product + MetadataXml.Title.Licensing_Window_End   + 'T00:00:00Z'
 	    else:
 		MetadataXml.Movie.AMS.Product = MetadataXml.Movie.AMS.Product + Var 
-	
+
 	    size = size - 1
 	
 	    if size != 0:

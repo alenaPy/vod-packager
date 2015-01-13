@@ -288,7 +288,8 @@ class Customer(models.Model):
 	subtitle_language				= models.CharField(max_length=1, default='N', choices=(('S', 'Spanish'),('P', 'Portuguese'), ('N', 'None')))
 	custom_preview					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 	special_product_type_applies_to			= models.CharField(max_length=1, default='A', choices=(('P', 'Package'), ('M', 'Movie'), ('I', 'Image'), ('A', 'All')))
-	
+	use_subtitle_language				= models.CharField(max_length=1, default='N', choices=(('N', 'No'),('Y','Yes')))
+	    
 	def __unicode__(self):
 		return self.name
 
