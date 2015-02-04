@@ -289,6 +289,11 @@ class Customer(models.Model):
 	custom_preview					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'),('N', 'No')))
 	special_product_type_applies_to			= models.CharField(max_length=1, default='A', choices=(('P', 'Package'), ('M', 'Movie'), ('I', 'Image'), ('A', 'All')))
 	use_subtitle_language				= models.CharField(max_length=1, default='N', choices=(('N', 'No'),('Y','Yes')))
+	use_fake_director				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'), ('N', 'No')))    
+	use_image_encoding_type				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'), ('N', 'No')))
+	use_multiimage					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'), ('N', 'No')))
+	multiimage_pattern    				= models.CharField(max_length=255, blank=True)
+	    
 	    
 	def __unicode__(self):
 		return self.name
@@ -397,8 +402,8 @@ class Item(models.Model):
 	show_type			= models.CharField(max_length=10, choices=SHOW_TYPE,default='Movie')
 	rating				= models.CharField(max_length=32)
 	genres				= models.CharField(max_length=32)
-	director 			= models.CharField(max_length=128)
-
+	director 			= models.CharField(max_length=128, blank=True)
+	fake_director			= models.CharField(max_length=255, blank=True)
 	group				= models.ForeignKey('ItemGroup')
 	brand				= models.ForeignKey('Brand')
 	internal_brand			= models.ForeignKey('InternalBrand')
@@ -484,6 +489,7 @@ class VideoRendition(models.Model):
 	duration				= models.CharField(max_length=10, blank=True)
 	subtitle_burned				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'), ('N', 'No')))
 	subtitle_language			= models.CharField(max_length=1, default='N', choices=(('S', 'Spanish'),('P', 'Portuguese'), ('N', 'None')))
+	
 	
 	def __unicode__(self):
 		return self.file_name
@@ -601,7 +607,8 @@ class ImageProfile(models.Model):
 	image_aspect_ratio				= models.CharField(max_length=24)
 	type 						= models.CharField(max_length=1, choices=IMAGE_TYPE)
 	cloud_duplicate					= models.CharField(max_length=1, choices= (('Y', 'Yes'), ('N', 'No')), default='N', blank= False)
-	
+	encoding_type					= models.CharField(max_length=4)
+		
 	def __unicode__(self):
 		return self.name
 

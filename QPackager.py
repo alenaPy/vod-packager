@@ -68,6 +68,16 @@ def write_dtd_file(PackagePath=None):
     	
 MonthSpanish = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']    	
     	
+    	
+def FindImagePattern(Pattern=None, Encoding=None):
+    if Pattern is not None and Encoding is not None:
+	profiles = Pattern.split(',')
+	for i in profiles:
+	    encd = i.split('=')
+	    if encd[0] == Encoding:
+		return encd[1]
+	
+    return None	    	
 
 def MakeAssetId(asset_type='package', asset_id = 0, package_id = 0, reduced = False, special_id = ''):
 
@@ -690,7 +700,7 @@ def MakeAdiXmlRiGHTvAsset(Package=None, VideoRendition=None, ImageRendition=None
 
         
     
-def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
+def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None, ImageRendition2=None):
 
     if Package is None or VideoRendition is None or ImageRendition is None:
 	#
@@ -803,7 +813,10 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     elif Package.customer.actor_display == 'N':
 	MetadataXml.Title.Actors_Display	= Package.item.actors_display	    
 
-    MetadataXml.Title.Director		= Package.item.director
+    if Package.customer.use_fake_director == 'Y' and Package.item.director == '':
+	MetadataXml.Title.Director		= Package.item.fake_director
+    else:
+        MetadataXml.Title.Director		= Package.item.director
         
     
     MetadataXml.Title.Box_Office	= '0'
@@ -1125,26 +1138,29 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
     MetadataXml.Movie.Copy_Protection		= 'N'
     MetadataXml.Movie.Watermarking		= 'N'
 
-    if ImageRendition != []:
+    if ImageRendition != None:
 
-	if Package.customer.image_type == 'poster':
-	    MetadataXml.AddPoster()
+	if Package.customer.use_multiimage == 'Y':
+	    if FindImagePattern(Package.customer.multiimage_pattern, ImageRendition.image_profile.encoding_type) == 'poster':
+	    	MetadataXml.AddPoster()
+	    else:
+	        MetadataXml.AddStillImage(FindImagePattern(Package.customer.multiimage_pattern, ImageRendition.image_profile.encoding_type))
 	else:
-	    MetadataXml.AddBoxCover()
+
+	    if Package.customer.image_type == 'poster':
+		MetadataXml.AddPoster()
+	    else:
+	        MetadataXml.AddBoxCover()
 
 	if Package.customer.id_len_reduced == 'Y':
 	    MetadataXml.StillImage.AMS.Asset_ID	  = MakeAssetId('image', VideoRendition.id, Package.id, True, Package.customer.id_special_prefix)
 	else:
 	    MetadataXml.StillImage.AMS.Asset_ID	  = MakeAssetId('image', VideoRendition.id, Package.id, False, Package.customer.id_special_prefix)
-
 	MetadataXml.StillImage.Content_CheckSum   = ImageRendition.checksum
         MetadataXml.StillImage.Content_FileSize   = str(ImageRendition.file_size)
+	if Package.customer.use_image_encoding_type == 'Y':
+	    MetadataXml.StillImage.Encoding_Type = ImageRendition.image_profile.encoding_type
 
-
-	#
-	# Nombre del file de imagen
-	# 
-	
 	if Package.customer.limit_content_value == 'N':
 	    if ImageRendition.image_profile.file_extension.startswith('.'):
 		MetadataXml.StillImage.Content_Value  = MetadataXml.AMS.Asset_Name + suffix + ImageRendition.image_profile.file_extension
@@ -1159,7 +1175,42 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None):
 	if Package.customer.image_aspect_ratio == 'Y':
     	    MetadataXml.StillImage.Image_Aspect_Ratio = ImageRendition.image_profile.image_aspect_ratio
 
+    if ImageRendition2 != None:
 
+	if Package.customer.use_multiimage == 'Y':
+	    if FindImagePattern(Package.customer.multiimage_pattern, ImageRendition2.image_profile.encoding_type) == 'poster':
+	    	MetadataXml.AddPoster()
+	    else:
+	        MetadataXml.AddStillImage_2(FindImagePattern(Package.customer.multiimage_pattern, ImageRendition2.image_profile.encoding_type))
+	else:
+
+	    if Package.customer.image_type == 'poster':
+		MetadataXml.AddPoster()
+	    else:
+	        MetadataXml.AddBoxCover()
+
+	if Package.customer.id_len_reduced == 'Y':
+	    MetadataXml.StillImage_2.AMS.Asset_ID	  = MakeAssetId('image', VideoRendition.id, Package.id, True, Package.customer.id_special_prefix)
+	else:
+	    MetadataXml.StillImage_2.AMS.Asset_ID	  = MakeAssetId('image', VideoRendition.id, Package.id, False, Package.customer.id_special_prefix)
+	MetadataXml.StillImage_2.Content_CheckSum   = ImageRendition2.checksum
+        MetadataXml.StillImage_2.Content_FileSize   = str(ImageRendition2.file_size)
+	if Package.customer.use_image_encoding_type == 'Y':
+	    MetadataXml.StillImage_2.Encoding_Type = ImageRendition2.image_profile.encoding_type
+
+	if Package.customer.limit_content_value == 'N':
+	    if ImageRendition.image_profile.file_extension.startswith('.'):
+		MetadataXml.StillImage_2.Content_Value  = MetadataXml.AMS.Asset_Name + suffix + ImageRendition2.image_profile.file_extension
+	    else:
+    		MetadataXml.StillImage_2.Content_Value  = MetadataXml.AMS.Asset_Name + suffix + '.' + ImageRendition2.image_profile.file_extension
+	else:
+	    if ImageRendition.image_profile.file_extension.startswith('.'):
+		MetadataXml.StillImage_2.Content_Value  = MetadataXml.AMS.Asset_Name[:12] + suffix + ImageRendition2.image_profile.file_extension
+	    else:
+    		MetadataXml.StillImage_2.Content_Value  = MetadataXml.AMS.Asset_Name[:12] + suffix + '.' + ImageRendition2.image_profile.file_extension
+
+	if Package.customer.image_aspect_ratio == 'Y':
+    	    MetadataXml.StillImage_2.Image_Aspect_Ratio = ImageRendition2.image_profile.image_aspect_ratio
 
     show_type = Package.item.show_type
 
@@ -1369,7 +1420,11 @@ def main():
 		    break
 
 		logging.info("main(): Making Package for VideoRendition: %s" % VideoRendition.file_name)
-		MetadataXml 	   = MakeAdiXmlCablelabs(Package, VideoRendition, ImageRendition[0])
+
+		if Package.customer.use_multiimage == 'Y' and len(ImageRendition) > 1:
+		    MetadataXml 	   = MakeAdiXmlCablelabs(Package, VideoRendition, ImageRendition[0],ImageRendition[1])
+		else:
+		    MetadataXml 	   = MakeAdiXmlCablelabs(Package, VideoRendition, ImageRendition[0],None)
 		MetadataXmlRiGHT   = MakeAdiXmlRiGHTvAsset(Package,VideoRendition,ImageRendition[0])
 		MetadataXmlNepe    = MakeAdiXmlNepe(Package,VideoRendition,ImageRendition[0])
 		
@@ -1521,10 +1576,12 @@ def main():
 		# Si tiene dos profiles de imagen, exporta el otro aunque no este linkeado al XML
 		#
 		if len(ImageRendition[1:]) == 1:
-		    if os.path.isfile(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage.Content_Value):
-			os.remove(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage.Content_Value)
-		    os.link(image_local_path + ImageRendition[1].file_name, PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage.Content_Value)
-		
+		    if MetadataXml.StillImage.Content_Value == MetadataXml.StillImage_2.Content_Value:
+	    		if os.path.isfile(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage_2.Content_Value):
+			    os.remove(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage_2.Content_Value)
+			os.link(image_local_path + ImageRendition[1].file_name, PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage_2.Content_Value)
+		    else:
+			os.link(image_local_path + ImageRendition[1].file_name, PackagePath + MetadataXml.StillImage_2.Content_Value)
 		
 		if Package.customer.use_dtd_file == 'Y':
 		    write_dtd_file(PackagePath)

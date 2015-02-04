@@ -181,6 +181,7 @@ def VPAddItem(SmbPath=None, FileName=None, ItemMetadata=None, ItemMetadataLanLis
     Item.actors_display		= ItemMetadata["actors_display"]
     Item.year 			= ItemMetadata["year"]
     Item.director		= ItemMetadata["director"]
+    Item.fake_director		= ItemMetadata["fake_director"]
     Item.studio_name 		= ItemMetadata["studio_name"]
     if Item.studio_name == 'Private':
 	Item.format = 'SD'
