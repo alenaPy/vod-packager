@@ -1380,7 +1380,7 @@ def main():
 		
 		for iprofile in IProfile:
 		    try:
-			ImageRenditionList.append(models.ImageRendition.objects.get(item=Package.item, image_profile=iprofile))
+			ImageRenditionList.append(models.ImageRendition.objects.get(item=Package.item, image_profile=iprofile, status='D'))
 		    except:
 			pass
 	    
@@ -1575,14 +1575,33 @@ def main():
 		#
 		# Si tiene dos profiles de imagen, exporta el otro aunque no este linkeado al XML
 		#
+		if Package.customer.use_multiimage == 'Y' and len(ImageRendition[1:]) == 0:
+		    ErrorString    = 'Customer use 2 image profiles but only one exist'
+		    Package.error  = ErrorString
+		    logging.error('main(): %s' % ErrorString)
+		    Package.status = 'E'
+		    Package.save()
+		    break;
+		    
+
 		if len(ImageRendition[1:]) == 1:
-		    if MetadataXml.StillImage.Content_Value == MetadataXml.StillImage_2.Content_Value:
-	    		if os.path.isfile(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage_2.Content_Value):
-			    os.remove(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage_2.Content_Value)
-			os.link(image_local_path + ImageRendition[1].file_name, PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage_2.Content_Value)
-		    else:
-			os.link(image_local_path + ImageRendition[1].file_name, PackagePath + MetadataXml.StillImage_2.Content_Value)
-		
+			if MetadataXml.StillImage.Content_Value == MetadataXml.StillImage_2.Content_Value:
+	    		    if os.path.isfile(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage_2.Content_Value):
+				os.remove(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage_2.Content_Value)
+			    os.link(image_local_path + ImageRendition[1].file_name, PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage_2.Content_Value)
+			else:
+			    try:
+				if not os.path.isfile(PackagePath + MetadataXml.StillImage_2.Content_Value):
+				    os.link(image_local_path + ImageRendition[1].file_name, PackagePath + MetadataXml.StillImage_2.Content_Value)
+			    except OSError as e:
+				print ImageRendition
+				print image_local_path + ImageRendition[1].file_name
+				print ImageRendition[1].status
+				Package.error = 'Error in second Image Profile -> Catch %s' % e.strerror
+				Package.status = 'E'
+				Package.save()
+				break;
+			
 		if Package.customer.use_dtd_file == 'Y':
 		    write_dtd_file(PackagePath)
 		    
