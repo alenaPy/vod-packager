@@ -1585,6 +1585,7 @@ def main():
 		    
 
 		if len(ImageRendition[1:]) == 1:
+		    if Package.customer.use_multiimage == 'Y':
 			if MetadataXml.StillImage.Content_Value == MetadataXml.StillImage_2.Content_Value:
 	    		    if os.path.isfile(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage_2.Content_Value):
 				os.remove(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage_2.Content_Value)
@@ -1601,6 +1602,10 @@ def main():
 				Package.status = 'E'
 				Package.save()
 				break;
+		    else:
+			if os.path.isfile(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage.Content_Value):
+			    os.remove(PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage.Content_Value)
+			os.link(image_local_path + ImageRendition[1].file_name, PackagePath + ImageRendition[1].image_profile.type + "_" + MetadataXml.StillImage.Content_Value)
 			
 		if Package.customer.use_dtd_file == 'Y':
 		    write_dtd_file(PackagePath)
