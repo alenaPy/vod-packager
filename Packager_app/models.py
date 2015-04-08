@@ -293,7 +293,7 @@ class Customer(models.Model):
 	use_image_encoding_type				= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'), ('N', 'No')))
 	use_multiimage					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'), ('N', 'No')))
 	multiimage_pattern    				= models.CharField(max_length=255, blank=True)
-	    
+	hd_in_title					= models.CharField(max_length=1, default='N', choices=(('Y', 'Yes'), ('N', 'No')))    
 	    
 	def __unicode__(self):
 		return self.name

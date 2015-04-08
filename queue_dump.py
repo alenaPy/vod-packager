@@ -43,8 +43,11 @@ def usage():
 
 def get_seconds(duration=None):
     if duration is not None:
-	hh,mm,ss = duration.split(':')
-	return ( int(hh) * 3600 + int(mm) * 60 + int(ss) )
+	try:
+	    hh,mm,ss = duration.split(':')
+	    return ( int(hh) * 3600 + int(mm) * 60 + int(ss) )
+	except:
+	    return 1
     return -1
 
 

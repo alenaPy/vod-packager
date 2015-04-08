@@ -891,6 +891,10 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None, 
 	MetadataXml.Title.Title_Brief	= MetadataLanguage.title_brief[:18]
         MetadataXml.Title.Title_Sort_Name	= MetadataLanguage.title_sort_name
         MetadataXml.Title.Title		= MetadataLanguage.title
+    
+    if Package.customer.hd_in_title == 'Y' and VideoRendition.video_profile.format == 'HD':
+	MetadataXml.Title.Title = MetadataXml.Title.Title + ' HD'
+    
         
     MetadataXml.Title.Contract_Name	= MetadataLanguage.title
     MetadataXml.Title.Episode_Name	= MetadataLanguage.episode_name

@@ -117,9 +117,7 @@ class STL(object):
 	    try:
     		fd = open(filename,'rb')
 	    except:
-		e = sys.exc_info()[0]
-		print e
-		raise
+		pass
 		
 	    buff = fd.read(1024)
 	    self.gsi = GSI_Block(buff)
@@ -205,7 +203,23 @@ class TextField(object):
 	return True if ( ( self.tf[index] >= 0xe0 ) and (self.tf[index] <= 0xef ) ) else False
 
     def isSign(self,index=0):
-	return True if (self.tf[index] == 0xBF) or (self.tf[index] == 0xA1) or (self.tf[index] == 0xEC) or (self.tf[index] == 0xE1) or (self.tf[index] == 0xED) or (self.tf[index] == 0xAA ) or (self.tf[index] == 0xBA) or (self.tf[index] == 0xA4) or (self.tf[index] == 0xB0) or (self.tf[index] == 0xA9) or (self.tf[index] == 0xB9) or (self.tf[index] == 0xC9 ) or (self.tf[index] == 0xA6) else False
+	if ( (self.tf[index] == 0xBF) or 
+	      (self.tf[index] == 0xA1) or 
+	      (self.tf[index] == 0xEC) or 
+	      (self.tf[index] == 0xE1) or 
+	      (self.tf[index] == 0xED) or 
+	      (self.tf[index] == 0xAA) or 
+	      (self.tf[index] == 0xBA) or 
+	      (self.tf[index] == 0xA4) or 
+	      (self.tf[index] == 0xB0) or 
+	      (self.tf[index] == 0xA9) or 
+	      (self.tf[index] == 0xB9) or 
+	      (self.tf[index] == 0xC9) or 
+	      (self.tf[index] == 0xA6) or 
+	      (self.tf[index] == 0xd0) ):
+	    return True
+	else:
+	    return False
 
     def isItalicOn(self, index=0):
 	return True if ( self.tf[index] == 0x80 ) else False
@@ -252,7 +266,8 @@ class TextField(object):
 			utf8_str = utf8_str + '\xC2\xB4'
 		    elif self.tf[i] == 0xC9:
 			utf8_str = utf8_str + ' '
-		    
+		    elif self.tf[i] == 0xD0:
+			utf8_str = utf8_str + '-'
 		    else:
 			utf8_str = utf8_str + '*'
 		elif self.isCrLf(i):
