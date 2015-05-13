@@ -981,7 +981,16 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None, 
     elif Package.customer.category_path_style == 'ZA':
 	CategoryPath = 'Zona Adultos' + '/' + CustomCategory.name
     elif Package.customer.category_path_style == 'NR':
-    	CategoryPath = 'Nitro Root/Millicom Tigo/Adult Library' + '/' + MetadataXml.Title.Studio.replace(' ', '') + VideoRendition.video_profile.format
+	RootPath     = 'Nitro Root/Millicom Tigo/Adult Library' + '/'
+	if VideoRendition.video_profile.format == 'SD':
+	    if CustomCategory.name == 'M.I.L.F' or CustomCategory.name == 'Anal' or CustomCategory.name == 'Jovencitas' or CustomCategory.name == 'Orgias':
+		RootPath = RootPath + CustomCategory.name.upper()
+	    else:
+		RootPath = RootPath + 'MAS CATEGORIAS/' + CustomCategory.name.upper()
+	else:
+	    RootPath = RootPath + 'HD' + '/'
+    	CategoryPath = RootPath
+    	
     elif Package.customer.category_path_style == 'CMR':
 	CategoryPath = 'Cablevision_Monterrey_SVODF/Cinema_Premier/Adultos/' + CustomCategory.name
     elif Package.customer.category_path_style == 'SHO':
