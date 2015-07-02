@@ -132,7 +132,7 @@ class Language(models.Model):
 
 
 class Rating(models.Model):
-	name						= models.CharField(max_length=6)
+	name						= models.CharField(max_length=12)
 
 	def __unicode__(self):
 	    return self.name
@@ -215,6 +215,7 @@ class Customer(models.Model):
 		('CPR', 'Adult / Brand / Category'),
 		('AM',  'Adultos / Brand'),
 		('CA',  'Adultos / Category'),
+		('CAA', 'Adultos / Alquileres / Category'),
 		('ASC', 'Adulto / Category'),
 		('BO', 'Adults Brand Format'),
 		('AIC', 'Adults / Category'),
@@ -597,6 +598,12 @@ class ImageProfile(models.Model):
 		('S', 'Soft'),
 		('H', 'Hard'),
 	)
+	LANGUAGE = (
+		('S', 'Spanish'),
+		('E', 'English'),
+		('P', 'Portuguese'),
+		('L', 'Lusitano'),
+	)
 	name 						= models.CharField(max_length=256)
 	description 					= models.CharField(max_length=512, blank=True)
 	sufix 						= models.CharField(max_length=32)
@@ -608,6 +615,8 @@ class ImageProfile(models.Model):
 	type 						= models.CharField(max_length=1, choices=IMAGE_TYPE)
 	cloud_duplicate					= models.CharField(max_length=1, choices= (('Y', 'Yes'), ('N', 'No')), default='N', blank= False)
 	encoding_type					= models.CharField(max_length=4)
+	language					= models.CharField(max_length=1, choices=LANGUAGE)
+	
 		
 	def __unicode__(self):
 		return self.name

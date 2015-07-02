@@ -978,6 +978,8 @@ def MakeAdiXmlCablelabs(Package=None, VideoRendition=None, ImageRendition=None, 
 	CategoryPath = 'Adults' + '/' + CustomCategory.name	
     elif Package.customer.category_path_style == 'CA':
 	CategoryPath = 'Adultos' + '/' + CustomCategory.name		
+    elif Package.customer.category_path_style == 'CAA':
+	CategoryPath = 'Adultos' + '/' + 'Alquileres' + '/' + CustomCategory.name
     elif Package.customer.category_path_style == 'ZA':
 	CategoryPath = 'Zona Adultos' + '/' + CustomCategory.name
     elif Package.customer.category_path_style == 'NR':
