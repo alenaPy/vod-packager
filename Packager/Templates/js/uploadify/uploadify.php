@@ -73,12 +73,37 @@ function processImageRendition($link, $itemId, $fileName, $fileExtension, $fileS
 
 	$imageProfileId = getImageProfileId($link, $fileExtension, $fileSuffix);
 //echo "IMAGE PROFILE: ".$imageProfileId."\n";
-	if (updateImageRendition($link, $itemId, $imageProfileId, $fileName.".".$fileExtension)) {
+
+	if (isMaster($link, $imageProfileId) == true) {
+	    if (updateImageRenditionMaster($link, $itemId, $imageProfileId, $fileName.".".$fileExtension)) {
 		echo "LO ENCONTRE";
-	} else {
+	    } else {
 		echo "NO LO ENCONTRE";
+	    }
+	} else {
+	    if (updateImageRendition($link, $itemId, $imageProfileId, $fileName.".".$fileExtension)) {
+		echo "LO ENCONTRE";
+	    } else {
+		echo "NO LO ENCONTRE";
+	    }
 	}
 }
+
+function isMaster($link, $imageProfileId) {
+    $query = "SELECT is_master FROM Packager_app_imageprofile WHERE id=".$imageProfileId." LIMIT 1;";
+    echo $query;
+    if ($result = mysqli_query($link, $query)) {
+	echo $query;
+	$row = mysqli_fetch_assoc($result);
+	mysqli_free_result($result);
+	if ( $row['is_master'] == "Y" ) {
+	    return true;
+	} else {
+	    return false;
+	}
+    }
+}
+
 
 function getImageProfileId($link, $fileExtension, $fileSuffix) {
 
@@ -95,6 +120,23 @@ function getImageProfileId($link, $fileExtension, $fileSuffix) {
 	}
 }
 
+function updateImageRenditionMaster($link, $itemId, $imageProfileId, $fileName) {
+
+	$query = "UPDATE Packager_app_imagerenditionmaster
+			SET file_name=\"".$fileName."\", status=\"F\" 
+			WHERE image_profile_id =".$imageProfileId." AND item_id=".$itemId." AND status=\"U\" LIMIT 1;";
+//echo $query."\n";
+	/* If we have to retrieve large amount of data we use mysqliI_USE_RESULT */
+	if ($result = mysqli_query($link, $query, MYSQLI_USE_RESULT)) {
+		return true;
+		mysqli_free_result($result);
+	} else {
+	    return false;
+	
+	}
+}
+
+
 function updateImageRendition($link, $itemId, $imageProfileId, $fileName) {
 
 	$query = "UPDATE Packager_app_imagerendition 
@@ -106,7 +148,8 @@ function updateImageRendition($link, $itemId, $imageProfileId, $fileName) {
 		return true;
 		mysqli_free_result($result);
 	} else {
-		return false;
+	    return false;
+	
 	}
 }
 

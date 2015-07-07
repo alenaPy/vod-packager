@@ -345,11 +345,12 @@ def daemons(request):
 
 	pidpath = '/opt/packager/app/vod-packager/pid'
 
-	DaemonList = [ 'QChecker', 'QImport', 'QPrePackager','QPackager', 'VPApiServer', 'QPull', 'QPurge' ]
+	DaemonList = [ 'QChecker', 'QImport', 'QPrePackager','QPackager', 'QVirtualVcn', 'VPApiServer', 'QPull', 'QPurge' ]
         DaemonStatus = { 'QChecker_status'    : 'N', 
 			 'QImport_status'     : 'N',
 			 'QPrePackager_status': 'N',
 			 'QPackager_status'   : 'N',
+			 'QVirtualVcn_status' : 'N',
 			 'VPApiServer_status' : 'N',
 			 'QPull_status'	      : 'N',
 			 'QPurge_status'      : 'N' }
@@ -378,6 +379,8 @@ def daemons(request):
 					DaemonStatus['QPackager_status']   = 'R'
 				elif daemon == 'VPApiServer': 
 					DaemonStatus['VPApiServer_status'] = 'R'
+				elif daemon == 'QVirtualVcn': 
+					DaemonStatus['QVirtualVcn_status'] = 'R'	
 				elif daemon == 'QPurge': 
 					DaemonStatus['QPurge_status'] = 'R'
 				elif daemon == 'QPull':
@@ -404,11 +407,12 @@ def item(request, item_id):
 		item = models.Item.objects.get(id=item_id)
 		resp = item.name
 		image_renditions = models.ImageRendition.objects.filter(item=item_id)
+		image_renditions_master = models.ImageRenditionMaster.objects.filter(item=item_id)
 		video_renditions = models.VideoRendition.objects.filter(item=item_id)
 		metadata_language = models.MetadataLanguage.objects.filter(item=item_id)
 		packages_groups = models.PackageGroup.objects.all()
 		customers_for_export = models.GetCustomersForExport(item)
-		return render_to_response('item.html', {'item': item, 'metadata_language': metadata_language,'video_renditions': video_renditions, 'image_renditions': image_renditions, 'customers_for_export': customers_for_export, 'packages_groups': packages_groups}, context_instance=RequestContext(request)) 
+		return render_to_response('item.html', {'item': item, 'metadata_language': metadata_language,'video_renditions': video_renditions, 'image_renditions': image_renditions,'image_renditions_master':image_renditions_master, 'customers_for_export': customers_for_export, 'packages_groups': packages_groups}, context_instance=RequestContext(request)) 
 #	except:
 #		resp = 'No ta!'
 #		return HttpResponse("You're looking at item %s." % resp)

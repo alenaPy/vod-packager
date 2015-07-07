@@ -215,6 +215,16 @@ def MakeImageRenditions(RenditionTask=None):
 	logging.info("MakeImageRendition(): Creating Image rendition for Item: " + Item.name + " [IP: " + IProfile.name + "]")
 	IRendition.save()
 
+
+
+    IProfileList = models.ImageProfile.objects.filter(is_master='Y')
+    for IProfile in IProfileList:
+	IRM = models.ImageRenditionMaster()
+	IRM.image_profile = IProfile
+	IRM.item          = Item
+	IRM.status	  = 'U'
+	IRM.save()
+
     return True
 
 

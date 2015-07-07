@@ -171,6 +171,39 @@ jQuery(document).ready(function() {
 		<table class="itemSecTbl">
 			<tr>
 				<td class="itemSecTitle">
+					<a href="#">Image renditions Master</a><!-- <span></span> -->
+				</td>
+				<td class="itemSecBtt">
+					<a href="/vod/image_renditions/upload/{{item.id}}" onclick="javascript:actionUploadImageRenditions(event);">
+						<img src="/images/icons/image_link.png" />
+					</a>
+					<a href="#"><img src="/images/icons/magnifier.png" /></a>
+				</td>
+			</tr>
+		</table>
+	<h3>
+	<div class="container">
+		<div class="content">
+			<table class="itemVwTbl">
+				<thead class="itemVwThead">
+					<th>Name</th><th>Image profile master</th><th class="center">Status</th>
+				</thead>
+				<tbody class="itemVwTbody">
+			{% for ir in image_renditions_master %}
+			<tr>
+				<td><a class="mypop" href="/images_proc/{{ir.file_name}}">{{ir.file_name}}</a></td>
+				<td>{{ir.image_profile}}</td>
+				<td><center><span class="irstatus_{{ir.status}}" /></center></td>
+			</tr>
+			{% endfor %}
+			<tbody>
+			</table>
+		</div>
+	</div>
+	<h3 class="accordion" id="section2" style="background: #6b6e80; padding-left: 3px;">
+		<table class="itemSecTbl">
+			<tr>
+				<td class="itemSecTitle">
 					<a href="#">Image renditions</a><!-- <span></span> -->
 				</td>
 				<td class="itemSecBtt">

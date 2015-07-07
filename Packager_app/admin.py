@@ -46,6 +46,9 @@ class PreviewRenditionsAdmin(admin.ModelAdmin):
 class ImageRenditionAdmin(admin.ModelAdmin):
 	list_display = ('id', 'file_name', 'item', 'image_profile', 'status')
 
+class ImageRenditionMasterAdmin(admin.ModelAdmin):
+	list_display = ('id', 'file_name', 'status')
+
 class PackageGroupAdmin(admin.ModelAdmin):
 	list_display = ('id', 'name',  'description')
 
@@ -110,6 +113,7 @@ class CustomPreviewAdmin(admin.ModelAdmin):
 	list_display = ('customer', 'internal_brand')
 
 
+admin.site.register(ImageRenditionMaster, ImageRenditionMasterAdmin)
 admin.site.register(CustomPreview,CustomPreviewAdmin)	
 admin.site.register(Brand,BrandAdmin)
 admin.site.register(Settings,SettingsAdmin)

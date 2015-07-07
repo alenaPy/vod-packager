@@ -519,6 +519,19 @@ class ImageRendition(models.Model):
 	def filteredItems(self, item):
 		return self.objects.filter(item=item)
 
+class ImageRenditionMaster(models.Model):
+	IMAGE_MASTER_RENDITION_STATUS = (
+		('U', 'Unfilled'),
+		('F', 'Filled'),
+		('D', 'Done'),
+		('E', 'Error'),
+	)
+	file_name					= models.CharField(max_length=256)
+	image_profile					= models.ForeignKey('ImageProfile')
+	item						= models.ForeignKey('Item')
+	status						= models.CharField(max_length=1, choices=IMAGE_MASTER_RENDITION_STATUS)
+
+
 class Provider(models.Model):
 	provider					= models.CharField(max_length=20)
 	provider_id					= models.CharField(max_length=20)
@@ -593,6 +606,7 @@ class VideoProfile(models.Model):
 	def __unicode__(self):
 		return self.name
 
+
 class ImageProfile(models.Model):
 	IMAGE_TYPE = (
 		('S', 'Soft'),
@@ -616,7 +630,7 @@ class ImageProfile(models.Model):
 	cloud_duplicate					= models.CharField(max_length=1, choices= (('Y', 'Yes'), ('N', 'No')), default='N', blank= False)
 	encoding_type					= models.CharField(max_length=4)
 	language					= models.CharField(max_length=1, choices=LANGUAGE)
-	
+	is_master					= models.CharField(max_length=1, choices=(('Y', 'Yes'), ('N', 'No')), default='N')	
 		
 	def __unicode__(self):
 		return self.name
